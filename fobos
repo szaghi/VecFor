@@ -1,0 +1,206 @@
+[modes]
+modes = vecfor-static-gnu vecfor-static-gnu-debug vecfor-shared-gnu vecfor-shared-gnu-debug
+        vecfor-static-intel vecfor-static-intel-debug vecfor-shared-intel vecfor-shared-intel-debug
+        vecfor-static-gnu-coverage
+
+[common-variables]
+$CSHARED_GNU = -cpp -c -fPIC -frealloc-lhs
+$CSHARED_INT = -cpp -c -fpic -assume realloc_lhs
+$LSHARED     = -shared
+$CSTATIC_GNU = -cpp -c -frealloc-lhs
+$CSTATIC_INT = -cpp -c -assume realloc_lhs
+$DEBUG_GNU   = -O0 -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wuninitialized -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan -std=f2008 -fall-intrinsics
+$DEBUG_INT   = -O0 -debug all -check all -warn all -extend-source 132 -traceback -gen-interfaces -fp-stack-check -fstack-protector-all -ftrapuv -no-ftz -std08
+$OPTIMIZE    = -O2
+
+# main modes
+[vecfor-static-gnu]
+help            = Build VecFor library in static release mode with GNU gfortran
+compiler        = gnu
+cflags          = $CSTATIC_GNU $OPTIMIZE
+lflags          = $OPTIMIZE
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.a
+mklib           = static
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-static-gnu-debug]
+help            = Build VecFor library in static debug mode with GNU gfortran
+compiler        = gnu
+cflags          = $CSTATIC_GNU $DEBUG_GNU
+lflags          = $DEBUG_GNU
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.a
+mklib           = static
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-shared-gnu]
+help            = Build VecFor library in shared release mode with GNU gfortran
+compiler        = gnu
+cflags          = $CSHARED_GNU $OPTIMIZE
+lflags          = $LSHARED
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.so
+mklib           = shared
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-shared-gnu-debug]
+help            = Build VecFor library in shared debug mode with GNU gfortran
+compiler        = gnu
+cflags          = $CSHARED_GNU $DEBUG_GNU
+lflags          = $LSHARED $DEBUG_GNU
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.so
+mklib           = shared
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-static-intel]
+help            = Build VecFor library in static release mode with Intel Fortran
+compiler        = intel
+cflags          = $CSTATIC_INT $OPTIMIZE
+lflags          = $OPTIMIZE
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.a
+mklib           = static
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-static-intel-debug]
+help            = Build VecFor library in static debug mode with Intel Fortran
+compiler        = intel
+cflags          = $CSTATIC_INT $DEBUG_INT
+lflags          = $DEBUG_INT
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.a
+mklib           = static
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-shared-intel]
+help            = Build VecFor library in shared release mode with Intel Fortran
+compiler        = intel
+cflags          = $CSHARED_INT $OPTIMIZE
+lflags          = $LSHARED
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.so
+mklib           = shared
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-shared-intel-debug]
+help            = Build VecFor library in shared debug mode with Intel Fortran
+compiler        = intel
+cflags          = $CSHARED_INT $DEBUG_INT
+lflags          = $LSHARED $DEBUG_INT
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.so
+mklib           = shared
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+[vecfor-static-gnu-coverage]
+help            = Build VecFor library in static release coverage mode with GNU gfortran
+compiler        = gnu
+cflags          = $CSTATIC_GNU $OPTIMIZE
+lflags          = $OPTIMIZE
+coverage        = True
+cflags_heritage = True
+build_dir       = ./build/lib/
+mod_dir         = mod
+obj_dir         = obj
+src             = src/lib/
+target          = vecfor.F90
+output          = libvecfor.a
+mklib           = static
+colors          = True
+quiet           = False
+log             = True
+jobs            = 10
+
+# rules
+[rule-makedoc]
+help   = Rule for building documentation from source files
+rule_1 = rm -rf doc/html/*
+rule_2 = ford doc/main_page.md
+rule_3 = cp -r doc/html/publish/* doc/html/
+
+[rule-makecoverage]
+help   = Rule for performing coverage analysis
+rule_1 = FoBiS.py build -f src/tests/fobos -mode gnu-coverage
+rule_2 = ./build/tests/simple
+
+[rule-coverage-analysis]
+help   = Rule for performing coverage analysis and saving reports in markdown
+rule_1 = FoBiS.py build -f src/tests/fobos -mode gnu-coverage
+rule_2 = ./build/tests/simple
+rule_3 = gcov -o ./build/lib/obj/ src/lib/vecfor.f90
+rule_4 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
+rule_5 = rm -f *.gcov
+
+[rule-deldoc]
+help = Rule for deleting documentation
+rule = rm -rf doc/html/*
+
+[rule-maketar]
+help = Rule for making tar archive of the project
+rule = tar -czf vecfor.tar.gz *
