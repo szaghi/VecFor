@@ -1,0 +1,1971 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	 
+	 <meta name="description" content="Vector algebra class for Fortran poor people">
+    
+    <meta name="author" content="Chris MacMackin" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>normL2 &ndash; VecFor</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">VecFor </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+				
+                
+            <li><a href="../lists/files.html">Source Files</a></li>
+				
+				
+            <li><a href="../lists/modules.html">Modules</a></li>
+				
+				
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+				
+								
+            <li><a href="../lists/types.html">Derived Types</a></li>
+				
+				
+            <li><a href="../program/simple.html">Program</a></li>
+				
+          </ul>
+        
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+  
+  <div class="row">
+    <h1>normL2
+    <small>Function</small>
+    
+    </h1>
+	 
+<div class="row">
+<div class="col-lg-12">
+<div class="well well-sm">
+  <ul class="list-inline" style="margin-bottom:0px;display:inline">
+     
+     
+     
+     
+    
+    
+    <li><i class="fa fa-code"></i><a href="../src/vecfor.F90"> Source File</a></li>
+     
+  </ul>
+  <ol class="breadcrumb in-well text-right">
+  
+     <li><a href='../sourcefile/vecfor.f90.html'>vecfor.F90</a></li>
+  
+     <li><a href='../module/vecfor.html'>VecFor</a></li>
+  
+     <li class="active">normL2</li>
+  </ol>
+</div>
+</div>
+</div>
+    
+  </div>
+  
+  <div class="row">
+    <div class="col-lg-3">
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="panel panel-primary">
+    <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+    <div class="list-group">
+      <a class="list-group-item" href="../proc/norml2.html#src">normL2</a>
+    </div>
+  </div>
+  
+  <hr>
+  
+  <div class="panel panel-default">
+    <div class="panel-heading text-left"><h3 class="panel-title">All Procedures</h3></div>
+    <div class="list-group">
+      
+      <a class="list-group-item" href="../proc/assign_scali1p.html">assign_ScalI1P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scali2p.html">assign_ScalI2P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scali4p.html">assign_ScalI4P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scali8p.html">assign_ScalI8P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scalr16p.html">assign_ScalR16P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scalr4p.html">assign_ScalR4P</a>
+      
+      <a class="list-group-item" href="../proc/assign_scalr8p.html">assign_ScalR8P</a>
+      
+      <a class="list-group-item" href="../proc/assign_self.html">assign_self</a>
+      
+      <a class="list-group-item" href="../proc/crossproduct.html">crossproduct</a>
+      
+      <a class="list-group-item" href="../proc/dotproduct.html">dotproduct</a>
+      
+      <a class="list-group-item" href="../proc/face_normal3.html">face_normal3</a>
+      
+      <a class="list-group-item" href="../proc/face_normal3_self.html">face_normal3_self</a>
+      
+      <a class="list-group-item" href="../proc/face_normal4.html">face_normal4</a>
+      
+      <a class="list-group-item" href="../proc/face_normal4_self.html">face_normal4_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_eq_self.html">I1P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_great_eq_self.html">I1P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_great_self.html">I1P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_low_eq_self.html">I1P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_low_self.html">I1P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/i1p_not_eq_self.html">I1P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_eq_self.html">I2P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_great_eq_self.html">I2P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_great_self.html">I2P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_low_eq_self.html">I2P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_low_self.html">I2P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/i2p_not_eq_self.html">I2P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_eq_self.html">I4P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_great_eq_self.html">I4P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_great_self.html">I4P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_low_eq_self.html">I4P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_low_self.html">I4P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/i4p_not_eq_self.html">I4P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_eq_self.html">I8P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_great_eq_self.html">I8P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_great_self.html">I8P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_low_eq_self.html">I8P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_low_self.html">I8P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/i8p_not_eq_self.html">I8P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/init_vector_self.html">init_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/iolen_vector_self.html">iolen_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/load_vector_self.html">load_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/negative_self.html">negative_self</a>
+      
+      <a class="list-group-item" href="../proc/normalize.html">normalize</a>
+      
+      <a class="list-group-item" href="../proc/normalize_self.html">normalize_self</a>
+      
+      <a class="list-group-item" href="../proc/normalized_self.html">normalized_self</a>
+      
+      <a class="list-group-item" href="../proc/norml2.html">normL2</a>
+      
+      <a class="list-group-item" href="../proc/norml2_self.html">normL2_self</a>
+      
+      <a class="list-group-item" href="../proc/orthogonal.html">orthogonal</a>
+      
+      <a class="list-group-item" href="../proc/parallel.html">parallel</a>
+      
+      <a class="list-group-item" href="../proc/positive_self.html">positive_self</a>
+      
+      <a class="list-group-item" href="../proc/print_vector_self.html">print_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_eq_self.html">R16P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_great_eq_self.html">R16P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_great_self.html">R16P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_low_eq_self.html">R16P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_low_self.html">R16P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/r16p_not_eq_self.html">R16P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_eq_self.html">R4P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_great_eq_self.html">R4P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_great_self.html">R4P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_low_eq_self.html">R4P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_low_self.html">R4P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/r4p_not_eq_self.html">R4P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_eq_self.html">R8P_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_great_eq_self.html">R8P_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_great_self.html">R8P_great_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_low_eq_self.html">R8P_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_low_self.html">R8P_low_self</a>
+      
+      <a class="list-group-item" href="../proc/r8p_not_eq_self.html">R8P_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/save_vector_self.html">save_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/scali1p_mul_self.html">ScalI1P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scali1p_sub_self.html">ScalI1P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scali1p_sum_self.html">ScalI1P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scali2p_mul_self.html">ScalI2P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scali2p_sub_self.html">ScalI2P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scali2p_sum_self.html">ScalI2P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scali4p_mul_self.html">ScalI4P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scali4p_sub_self.html">ScalI4P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scali4p_sum_self.html">ScalI4P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scali8p_mul_self.html">ScalI8P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scali8p_sub_self.html">ScalI8P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scali8p_sum_self.html">ScalI8P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr16p_mul_self.html">ScalR16P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr16p_sub_self.html">ScalR16P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr16p_sum_self.html">ScalR16P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr4p_mul_self.html">ScalR4P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr4p_sub_self.html">ScalR4P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr4p_sum_self.html">ScalR4P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr8p_mul_self.html">ScalR8P_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr8p_sub_self.html">ScalR8P_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/scalr8p_sum_self.html">ScalR8P_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scali1p.html">self_div_ScalI1P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scali2p.html">self_div_ScalI2P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scali4p.html">self_div_ScalI4P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scali8p.html">self_div_ScalI8P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scalr16p.html">self_div_ScalR16P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scalr4p.html">self_div_ScalR4P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_scalr8p.html">self_div_ScalR8P</a>
+      
+      <a class="list-group-item" href="../proc/self_div_self.html">self_div_self</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_i1p.html">self_eq_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_i2p.html">self_eq_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_i4p.html">self_eq_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_i8p.html">self_eq_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_r16p.html">self_eq_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_r4p.html">self_eq_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_r8p.html">self_eq_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_eq_self.html">self_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_i1p.html">self_great_eq_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_i2p.html">self_great_eq_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_i4p.html">self_great_eq_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_i8p.html">self_great_eq_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_r16p.html">self_great_eq_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_r4p.html">self_great_eq_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_r8p.html">self_great_eq_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_eq_self.html">self_great_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/self_great_i1p.html">self_great_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_i2p.html">self_great_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_i4p.html">self_great_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_i8p.html">self_great_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_r16p.html">self_great_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_r4p.html">self_great_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_r8p.html">self_great_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_great_self.html">self_great_self</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_i1p.html">self_low_eq_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_i2p.html">self_low_eq_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_i4p.html">self_low_eq_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_i8p.html">self_low_eq_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_r16p.html">self_low_eq_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_r4p.html">self_low_eq_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_r8p.html">self_low_eq_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_eq_self.html">self_low_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/self_low_i1p.html">self_low_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_i2p.html">self_low_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_i4p.html">self_low_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_i8p.html">self_low_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_r16p.html">self_low_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_r4p.html">self_low_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_r8p.html">self_low_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_low_self.html">self_low_self</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scali1p.html">self_mul_ScalI1P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scali2p.html">self_mul_ScalI2P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scali4p.html">self_mul_ScalI4P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scali8p.html">self_mul_ScalI8P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scalr16p.html">self_mul_ScalR16P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scalr4p.html">self_mul_ScalR4P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_scalr8p.html">self_mul_ScalR8P</a>
+      
+      <a class="list-group-item" href="../proc/self_mul_self.html">self_mul_self</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_i1p.html">self_not_eq_I1P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_i2p.html">self_not_eq_I2P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_i4p.html">self_not_eq_I4P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_i8p.html">self_not_eq_I8P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_r16p.html">self_not_eq_R16P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_r4p.html">self_not_eq_R4P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_r8p.html">self_not_eq_R8P</a>
+      
+      <a class="list-group-item" href="../proc/self_not_eq_self.html">self_not_eq_self</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scali1p.html">self_sub_ScalI1P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scali2p.html">self_sub_ScalI2P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scali4p.html">self_sub_ScalI4P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scali8p.html">self_sub_ScalI8P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scalr16p.html">self_sub_ScalR16P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scalr4p.html">self_sub_ScalR4P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_scalr8p.html">self_sub_ScalR8P</a>
+      
+      <a class="list-group-item" href="../proc/self_sub_self.html">self_sub_self</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scali1p.html">self_sum_ScalI1P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scali2p.html">self_sum_ScalI2P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scali4p.html">self_sum_ScalI4P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scali8p.html">self_sum_ScalI8P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scalr16p.html">self_sum_ScalR16P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scalr4p.html">self_sum_ScalR4P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_scalr8p.html">self_sum_ScalR8P</a>
+      
+      <a class="list-group-item" href="../proc/self_sum_self.html">self_sum_self</a>
+      
+      <a class="list-group-item" href="../proc/set_vector_self.html">set_vector_self</a>
+      
+      <a class="list-group-item" href="../proc/sq_norm.html">sq_norm</a>
+      
+      <a class="list-group-item" href="../proc/sq_norm_self.html">sq_norm_self</a>
+      
+    </div>
+  </div>
+  
+  
+    </div>
+    
+    <div class="col-lg-9" id='text'>
+    <h2>
+public elementalfunction normL2(vec) result(norm)
+    
+    
+    
+</h2>
+    
+  
+
+
+
+    <h3>Arguments</h3>
+    
+      
+<table class="table table-striped varlist">
+<thead><tr><th>Type</th>
+<th>Intent</th><th>Optional</th>
+<th>Attributes</th><th></th><th>Name</th><th></th></thead>
+
+
+
+<tbody>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-vec%7E2"></span>type(<a href='../type/vector.html'>Vector</a>),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>vec</strong></td><td><p>Vector.</p></td>
+  
+</tr>
+
+</tbody>
+</table>
+
+    
+    
+    
+    
+    
+    
+    
+	 <h3>Return Value <small><span class="anchor" id="variable-norm"></span>real(kind=R8P)
+  </small></h3>
+    <p>Norm L2.</p>
+    
+    
+    <h3>Description</h3>
+    <p>Compute the norm L2 of a vector.</p>
+<p>The norm L2 if defined as \( N = \sqrt {x^2  + y^2  + z^2 } \).</p>
+    
+    
+     
+     <h3>Called By</h3>
+     
+                <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.26.3 (20100126.1600)
+ -->
+<!-- Title: proc~~norml2~~CalledByGraph Pages: 1 -->
+<svg id="procnorml2CalledByGraph" width="434pt" height="4108pt"
+ viewBox="0.00 0.00 434.00 4108.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="proc~~norml2~~CalledByGraph" class="graph" transform="scale(1 1) rotate(0) translate(4 4104)">
+<title>proc~~norml2~~CalledByGraph</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-4104 431,-4104 431,5 -4,5"/>
+<!-- proc~norml2 -->
+<g id="node1" class="node"><title>proc~norml2</title>
+<polygon fill="none" stroke="black" points="426,-2060 372,-2060 372,-2034 426,-2034 426,-2060"/>
+<text text-anchor="middle" x="399" y="-2044.55" font-family="Helvetica,sans-Serif" font-size="10.50">normL2</text>
+</g>
+<!-- proc~self_eq_i4p -->
+<g id="node2" class="node"><title>proc~self_eq_i4p</title>
+<a xlink:href="../proc/self_eq_i4p.html" xlink:title="self_eq_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-4100 247,-4100 247,-4074 315,-4074 315,-4100"/>
+<text text-anchor="middle" x="281" y="-4084.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_I4P</text>
+</a>
+</g>
+<!-- proc~self_eq_i4p&#45;&gt;proc~norml2 -->
+<g id="edge20" class="edge"><title>proc~self_eq_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.698,-4080.02C323.602,-4076.76 331.105,-4071.99 336,-4065 366.1,-4022 395.04,-2291.99 398.627,-2070.3"/>
+<polygon fill="black" stroke="black" points="402.13,-2070.17 398.791,-2060.12 395.131,-2070.06 402.13,-2070.17"/>
+</g>
+<!-- proc~i4p_low_self -->
+<g id="node3" class="node"><title>proc~i4p_low_self</title>
+<a xlink:href="../proc/i4p_low_self.html" xlink:title="I4P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-4056 245,-4056 245,-4030 317,-4030 317,-4056"/>
+<text text-anchor="middle" x="281" y="-4040.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_low_self</text>
+</a>
+</g>
+<!-- proc~i4p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge22" class="edge"><title>proc~i4p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.685,-4035.16C324.846,-4031.94 331.515,-4027.4 336,-4021 394.828,-3937.03 398.724,-2286.29 398.982,-2070.25"/>
+<polygon fill="black" stroke="black" points="402.482,-2070.05 398.992,-2060.05 395.482,-2070.04 402.482,-2070.05"/>
+</g>
+<!-- proc~i2p_eq_self -->
+<g id="node4" class="node"><title>proc~i2p_eq_self</title>
+<a xlink:href="../proc/i2p_eq_self.html" xlink:title="I2P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-4012 247,-4012 247,-3986 315,-3986 315,-4012"/>
+<text text-anchor="middle" x="281" y="-3996.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_eq_self</text>
+</a>
+</g>
+<!-- proc~i2p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge24" class="edge"><title>proc~i2p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.691,-3992.01C323.596,-3988.76 331.1,-3983.99 336,-3977 393.519,-3894.96 398.551,-2282.62 398.965,-2070.06"/>
+<polygon fill="black" stroke="black" points="402.465,-2070.02 398.983,-2060.01 395.465,-2070 402.465,-2070.02"/>
+</g>
+<!-- proc~self_low_i4p -->
+<g id="node5" class="node"><title>proc~self_low_i4p</title>
+<a xlink:href="../proc/self_low_i4p.html" xlink:title="self_low_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-3968 245,-3968 245,-3942 317,-3942 317,-3968"/>
+<text text-anchor="middle" x="281" y="-3952.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_I4P</text>
+</a>
+</g>
+<!-- proc~self_low_i4p&#45;&gt;proc~norml2 -->
+<g id="edge26" class="edge"><title>proc~self_low_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.678,-3947.15C324.84,-3943.94 331.511,-3939.4 336,-3933 392.153,-3852.97 398.363,-2282.1 398.945,-2070.5"/>
+<polygon fill="black" stroke="black" points="402.445,-2070.48 398.971,-2060.47 395.445,-2070.46 402.445,-2070.48"/>
+</g>
+<!-- proc~self_eq_i2p -->
+<g id="node6" class="node"><title>proc~self_eq_i2p</title>
+<a xlink:href="../proc/self_eq_i2p.html" xlink:title="self_eq_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-3924 247,-3924 247,-3898 315,-3898 315,-3924"/>
+<text text-anchor="middle" x="281" y="-3908.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_I2P</text>
+</a>
+</g>
+<!-- proc~self_eq_i2p&#45;&gt;proc~norml2 -->
+<g id="edge28" class="edge"><title>proc~self_eq_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.684,-3904.01C323.588,-3900.75 331.094,-3895.99 336,-3889 390.848,-3810.9 398.183,-2278.14 398.927,-2070.26"/>
+<polygon fill="black" stroke="black" points="402.427,-2070.16 398.961,-2060.15 395.427,-2070.14 402.427,-2070.16"/>
+</g>
+<!-- proc~i2p_low_self -->
+<g id="node7" class="node"><title>proc~i2p_low_self</title>
+<a xlink:href="../proc/i2p_low_self.html" xlink:title="I2P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-3880 245,-3880 245,-3854 317,-3854 317,-3880"/>
+<text text-anchor="middle" x="281" y="-3864.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_low_self</text>
+</a>
+</g>
+<!-- proc~i2p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge30" class="edge"><title>proc~i2p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.67,-3859.15C324.832,-3855.93 331.505,-3851.39 336,-3845 389.516,-3768.86 397.992,-2275.7 398.906,-2070.34"/>
+<polygon fill="black" stroke="black" points="402.406,-2070.34 398.949,-2060.33 395.406,-2070.31 402.406,-2070.34"/>
+</g>
+<!-- proc~i1p_eq_self -->
+<g id="node8" class="node"><title>proc~i1p_eq_self</title>
+<a xlink:href="../proc/i1p_eq_self.html" xlink:title="I1P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-3836 247,-3836 247,-3810 315,-3810 315,-3836"/>
+<text text-anchor="middle" x="281" y="-3820.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_eq_self</text>
+</a>
+</g>
+<!-- proc~i1p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge32" class="edge"><title>proc~i1p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.675,-3816C323.58,-3812.75 331.088,-3807.98 336,-3801 388.215,-3726.78 397.807,-2271.56 398.886,-2070.07"/>
+<polygon fill="black" stroke="black" points="402.387,-2070.02 398.939,-2060 395.387,-2069.98 402.387,-2070.02"/>
+</g>
+<!-- proc~self_low_i2p -->
+<g id="node9" class="node"><title>proc~self_low_i2p</title>
+<a xlink:href="../proc/self_low_i2p.html" xlink:title="self_low_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-3792 245,-3792 245,-3766 317,-3766 317,-3792"/>
+<text text-anchor="middle" x="281" y="-3776.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_I2P</text>
+</a>
+</g>
+<!-- proc~self_low_i2p&#45;&gt;proc~norml2 -->
+<g id="edge34" class="edge"><title>proc~self_low_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.661,-3771.14C324.824,-3767.93 331.5,-3763.39 336,-3757 386.862,-3684.78 397.598,-2270.26 398.862,-2070.4"/>
+<polygon fill="black" stroke="black" points="402.364,-2070.17 398.925,-2060.15 395.364,-2070.13 402.364,-2070.17"/>
+</g>
+<!-- proc~self_eq_i1p -->
+<g id="node10" class="node"><title>proc~self_eq_i1p</title>
+<a xlink:href="../proc/self_eq_i1p.html" xlink:title="self_eq_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-3748 247,-3748 247,-3722 315,-3722 315,-3748"/>
+<text text-anchor="middle" x="281" y="-3732.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_I1P</text>
+</a>
+</g>
+<!-- proc~self_eq_i1p&#45;&gt;proc~norml2 -->
+<g id="edge36" class="edge"><title>proc~self_eq_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.666,-3728C323.571,-3724.74 331.082,-3719.98 336,-3713 385.538,-3642.73 397.393,-2267.35 398.839,-2070.4"/>
+<polygon fill="black" stroke="black" points="402.339,-2070.31 398.911,-2060.28 395.34,-2070.26 402.339,-2070.31"/>
+</g>
+<!-- proc~i1p_low_self -->
+<g id="node11" class="node"><title>proc~i1p_low_self</title>
+<a xlink:href="../proc/i1p_low_self.html" xlink:title="I1P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-3704 245,-3704 245,-3678 317,-3678 317,-3704"/>
+<text text-anchor="middle" x="281" y="-3688.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_low_self</text>
+</a>
+</g>
+<!-- proc~i1p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge38" class="edge"><title>proc~i1p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.652,-3683.14C324.815,-3679.92 331.493,-3675.39 336,-3669 384.193,-3600.71 397.171,-2265.63 398.812,-2070.67"/>
+<polygon fill="black" stroke="black" points="402.314,-2070.43 398.896,-2060.4 395.314,-2070.37 402.314,-2070.43"/>
+</g>
+<!-- proc~self_great_eq_self -->
+<g id="node12" class="node"><title>proc~self_great_eq_self</title>
+<a xlink:href="../proc/self_great_eq_self.html" xlink:title="self_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-3660 231,-3660 231,-3634 331,-3634 331,-3660"/>
+<text text-anchor="middle" x="281" y="-3644.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_self</text>
+</a>
+</g>
+<!-- proc~self_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge40" class="edge"><title>proc~self_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.819,-3633.98C330.353,-3631.49 333.508,-3628.53 336,-3625 382.9,-3558.62 396.971,-2261 398.789,-2070.31"/>
+<polygon fill="black" stroke="black" points="402.291,-2070.07 398.885,-2060.03 395.291,-2070 402.291,-2070.07"/>
+</g>
+<!-- proc~self_low_i1p -->
+<g id="node13" class="node"><title>proc~self_low_i1p</title>
+<a xlink:href="../proc/self_low_i1p.html" xlink:title="self_low_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-3616 245,-3616 245,-3590 317,-3590 317,-3616"/>
+<text text-anchor="middle" x="281" y="-3600.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_I1P</text>
+</a>
+</g>
+<!-- proc~self_low_i1p&#45;&gt;proc~norml2 -->
+<g id="edge42" class="edge"><title>proc~self_low_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.641,-3595.13C324.805,-3591.91 331.486,-3587.38 336,-3581 381.585,-3516.56 396.753,-2257.64 398.762,-2070.24"/>
+<polygon fill="black" stroke="black" points="402.263,-2070.16 398.869,-2060.12 395.263,-2070.08 402.263,-2070.16"/>
+</g>
+<!-- proc~r16p_great_eq_self -->
+<g id="node14" class="node"><title>proc~r16p_great_eq_self</title>
+<a xlink:href="../proc/r16p_great_eq_self.html" xlink:title="R16P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="336,-3572 226,-3572 226,-3546 336,-3546 336,-3572"/>
+<text text-anchor="middle" x="281" y="-3556.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~r16p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge44" class="edge"><title>proc~r16p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.811,-3545.97C330.346,-3543.49 333.503,-3540.52 336,-3537 380.249,-3474.53 396.514,-2255.34 398.73,-2070.42"/>
+<polygon fill="black" stroke="black" points="402.233,-2070.23 398.851,-2060.19 395.233,-2070.14 402.233,-2070.23"/>
+</g>
+<!-- proc~self_low_eq_self -->
+<g id="node15" class="node"><title>proc~self_low_eq_self</title>
+<a xlink:href="../proc/self_low_eq_self.html" xlink:title="self_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-3528 236,-3528 236,-3502 326,-3502 326,-3528"/>
+<text text-anchor="middle" x="281" y="-3512.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_self</text>
+</a>
+</g>
+<!-- proc~self_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge46" class="edge"><title>proc~self_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.553,-3502.14C330.191,-3499.62 333.442,-3496.61 336,-3493 378.939,-3432.46 396.286,-2251.64 398.701,-2070.29"/>
+<polygon fill="black" stroke="black" points="402.201,-2070.28 398.833,-2060.23 395.202,-2070.19 402.201,-2070.28"/>
+</g>
+<!-- proc~self_great_eq_r16p -->
+<g id="node16" class="node"><title>proc~self_great_eq_r16p</title>
+<a xlink:href="../proc/self_great_eq_r16p.html" xlink:title="self_great_eq_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="336,-3484 226,-3484 226,-3458 336,-3458 336,-3484"/>
+<text text-anchor="middle" x="281" y="-3468.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_R16P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_r16p&#45;&gt;proc~norml2 -->
+<g id="edge48" class="edge"><title>proc~self_great_eq_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.801,-3457.96C330.338,-3455.48 333.499,-3452.52 336,-3449 377.611,-3390.42 396.035,-2248.93 398.667,-2070.4"/>
+<polygon fill="black" stroke="black" points="402.168,-2070.31 398.814,-2060.26 395.169,-2070.21 402.168,-2070.31"/>
+</g>
+<!-- proc~r16p_low_eq_self -->
+<g id="node17" class="node"><title>proc~r16p_low_eq_self</title>
+<a xlink:href="../proc/r16p_low_eq_self.html" xlink:title="R16P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-3440 231,-3440 231,-3414 331,-3414 331,-3440"/>
+<text text-anchor="middle" x="281" y="-3424.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~r16p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge50" class="edge"><title>proc~r16p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.796,-3413.96C330.334,-3411.48 333.496,-3408.52 336,-3405 376.287,-3348.37 395.777,-2245.99 398.63,-2070.47"/>
+<polygon fill="black" stroke="black" points="402.133,-2070.32 398.794,-2060.27 395.134,-2070.21 402.133,-2070.32"/>
+</g>
+<!-- proc~r8p_great_eq_self -->
+<g id="node18" class="node"><title>proc~r8p_great_eq_self</title>
+<a xlink:href="../proc/r8p_great_eq_self.html" xlink:title="R8P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="333,-3396 229,-3396 229,-3370 333,-3370 333,-3396"/>
+<text text-anchor="middle" x="281" y="-3380.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~r8p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge52" class="edge"><title>proc~r8p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.79,-3369.96C330.329,-3367.47 333.493,-3364.52 336,-3361 374.967,-3306.31 395.513,-2242.82 398.592,-2070.5"/>
+<polygon fill="black" stroke="black" points="402.096,-2070.31 398.773,-2060.25 395.097,-2070.19 402.096,-2070.31"/>
+</g>
+<!-- proc~self_low_eq_r16p -->
+<g id="node19" class="node"><title>proc~self_low_eq_r16p</title>
+<a xlink:href="../proc/self_low_eq_r16p.html" xlink:title="self_low_eq_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-3352 231,-3352 231,-3326 331,-3326 331,-3352"/>
+<text text-anchor="middle" x="281" y="-3336.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_R16P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_r16p&#45;&gt;proc~norml2 -->
+<g id="edge54" class="edge"><title>proc~self_low_eq_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.784,-3325.95C330.324,-3323.47 333.491,-3320.52 336,-3317 373.67,-3264.23 395.264,-2238.41 398.557,-2070.23"/>
+<polygon fill="black" stroke="black" points="402.057,-2070.28 398.751,-2060.22 395.058,-2070.15 402.057,-2070.28"/>
+</g>
+<!-- proc~self_great_eq_r8p -->
+<g id="node20" class="node"><title>proc~self_great_eq_r8p</title>
+<a xlink:href="../proc/self_great_eq_r8p.html" xlink:title="self_great_eq_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="333,-3308 229,-3308 229,-3282 333,-3282 333,-3308"/>
+<text text-anchor="middle" x="281" y="-3292.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_R8P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_r8p&#45;&gt;proc~norml2 -->
+<g id="edge56" class="edge"><title>proc~self_great_eq_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.777,-3281.95C330.319,-3279.47 333.487,-3276.51 336,-3273 372.358,-3222.16 394.988,-2234.83 398.515,-2070.18"/>
+<polygon fill="black" stroke="black" points="402.015,-2070.23 398.728,-2060.16 395.017,-2070.08 402.015,-2070.23"/>
+</g>
+<!-- proc~r8p_low_eq_self -->
+<g id="node21" class="node"><title>proc~r8p_low_eq_self</title>
+<a xlink:href="../proc/r8p_low_eq_self.html" xlink:title="R8P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-3264 234,-3264 234,-3238 328,-3238 328,-3264"/>
+<text text-anchor="middle" x="281" y="-3248.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~r8p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge58" class="edge"><title>proc~r8p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.77,-3237.94C330.313,-3235.46 333.484,-3232.51 336,-3229 371.031,-3180.11 394.681,-2231.97 398.466,-2070.33"/>
+<polygon fill="black" stroke="black" points="401.971,-2070.16 398.704,-2060.08 394.973,-2069.99 401.971,-2070.16"/>
+</g>
+<!-- proc~r4p_great_eq_self -->
+<g id="node22" class="node"><title>proc~r4p_great_eq_self</title>
+<a xlink:href="../proc/r4p_great_eq_self.html" xlink:title="R4P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="333,-3220 229,-3220 229,-3194 333,-3194 333,-3220"/>
+<text text-anchor="middle" x="281" y="-3204.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~r4p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge60" class="edge"><title>proc~r4p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.763,-3193.94C330.307,-3191.46 333.48,-3188.51 336,-3185 369.709,-3138.06 394.364,-2228.89 398.414,-2070.45"/>
+<polygon fill="black" stroke="black" points="401.915,-2070.45 398.669,-2060.36 394.917,-2070.27 401.915,-2070.45"/>
+</g>
+<!-- proc~self_low_eq_r8p -->
+<g id="node23" class="node"><title>proc~self_low_eq_r8p</title>
+<a xlink:href="../proc/self_low_eq_r8p.html" xlink:title="self_low_eq_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-3176 234,-3176 234,-3150 328,-3150 328,-3176"/>
+<text text-anchor="middle" x="281" y="-3160.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_R8P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_r8p&#45;&gt;proc~norml2 -->
+<g id="edge62" class="edge"><title>proc~self_low_eq_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.755,-3149.93C330.301,-3147.45 333.477,-3144.51 336,-3141 368.393,-3096 394.041,-2225.43 398.359,-2070.49"/>
+<polygon fill="black" stroke="black" points="401.865,-2070.31 398.643,-2060.22 394.868,-2070.12 401.865,-2070.31"/>
+</g>
+<!-- proc~self_great_eq_r4p -->
+<g id="node24" class="node"><title>proc~self_great_eq_r4p</title>
+<a xlink:href="../proc/self_great_eq_r4p.html" xlink:title="self_great_eq_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="333,-3132 229,-3132 229,-3106 333,-3106 333,-3132"/>
+<text text-anchor="middle" x="281" y="-3116.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_R4P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_r4p&#45;&gt;proc~norml2 -->
+<g id="edge64" class="edge"><title>proc~self_great_eq_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.746,-3105.92C330.294,-3103.45 333.472,-3100.5 336,-3097 367.083,-3053.93 393.71,-2221.68 398.301,-2070.46"/>
+<polygon fill="black" stroke="black" points="401.812,-2070.16 398.615,-2060.06 394.815,-2069.95 401.812,-2070.16"/>
+</g>
+<!-- proc~self_not_eq_r8p -->
+<g id="node25" class="node"><title>proc~self_not_eq_r8p</title>
+<a xlink:href="../proc/self_not_eq_r8p.html" xlink:title="self_not_eq_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-3088 234,-3088 234,-3062 328,-3062 328,-3088"/>
+<text text-anchor="middle" x="281" y="-3072.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_R8P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_r8p&#45;&gt;proc~norml2 -->
+<g id="edge66" class="edge"><title>proc~self_not_eq_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.736,-3061.92C330.286,-3059.44 333.468,-3056.5 336,-3053 365.777,-3011.85 393.367,-2217.7 398.24,-2070.4"/>
+<polygon fill="black" stroke="black" points="401.744,-2070.34 398.574,-2060.23 394.747,-2070.11 401.744,-2070.34"/>
+</g>
+<!-- proc~r4p_low_eq_self -->
+<g id="node26" class="node"><title>proc~r4p_low_eq_self</title>
+<a xlink:href="../proc/r4p_low_eq_self.html" xlink:title="R4P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-3044 234,-3044 234,-3018 328,-3018 328,-3044"/>
+<text text-anchor="middle" x="281" y="-3028.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~r4p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge68" class="edge"><title>proc~r4p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.726,-3017.91C330.278,-3015.44 333.463,-3012.5 336,-3009 392.778,-2930.77 398.386,-2210.4 398.939,-2070.48"/>
+<polygon fill="black" stroke="black" points="402.441,-2070.1 398.975,-2060.09 395.441,-2070.07 402.441,-2070.1"/>
+</g>
+<!-- proc~i8p_great_eq_self -->
+<g id="node27" class="node"><title>proc~i8p_great_eq_self</title>
+<a xlink:href="../proc/i8p_great_eq_self.html" xlink:title="I8P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-3000 231,-3000 231,-2974 331,-2974 331,-3000"/>
+<text text-anchor="middle" x="281" y="-2984.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~i8p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge70" class="edge"><title>proc~i8p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.714,-2973.9C330.269,-2971.43 333.457,-2968.49 336,-2965 390.195,-2890.58 397.871,-2205.83 398.863,-2070.26"/>
+<polygon fill="black" stroke="black" points="402.363,-2070.18 398.931,-2060.16 395.363,-2070.13 402.363,-2070.18"/>
+</g>
+<!-- proc~self_low_eq_r4p -->
+<g id="node28" class="node"><title>proc~self_low_eq_r4p</title>
+<a xlink:href="../proc/self_low_eq_r4p.html" xlink:title="self_low_eq_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-2956 234,-2956 234,-2930 328,-2930 328,-2956"/>
+<text text-anchor="middle" x="281" y="-2940.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_R4P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_r4p&#45;&gt;proc~norml2 -->
+<g id="edge72" class="edge"><title>proc~self_low_eq_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.702,-2929.89C330.259,-2927.42 333.451,-2924.49 336,-2921 387.57,-2850.44 397.32,-2202.29 398.776,-2070.37"/>
+<polygon fill="black" stroke="black" points="402.278,-2070.21 398.883,-2060.18 395.278,-2070.14 402.278,-2070.21"/>
+</g>
+<!-- proc~self_great_eq_i8p -->
+<g id="node29" class="node"><title>proc~self_great_eq_i8p</title>
+<a xlink:href="../proc/self_great_eq_i8p.html" xlink:title="self_great_eq_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2912 231,-2912 231,-2886 331,-2886 331,-2912"/>
+<text text-anchor="middle" x="281" y="-2896.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_I8P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_i8p&#45;&gt;proc~norml2 -->
+<g id="edge74" class="edge"><title>proc~self_great_eq_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.688,-2885.88C330.248,-2883.41 333.445,-2880.48 336,-2877 384.962,-2810.27 396.745,-2198.32 398.681,-2070.38"/>
+<polygon fill="black" stroke="black" points="402.184,-2070.2 398.83,-2060.15 395.185,-2070.1 402.184,-2070.2"/>
+</g>
+<!-- proc~i8p_low_eq_self -->
+<g id="node30" class="node"><title>proc~i8p_low_eq_self</title>
+<a xlink:href="../proc/i8p_low_eq_self.html" xlink:title="I8P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2868 236,-2868 236,-2842 326,-2842 326,-2868"/>
+<text text-anchor="middle" x="281" y="-2852.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~i8p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge76" class="edge"><title>proc~i8p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.672,-2841.87C330.235,-2839.41 333.437,-2836.48 336,-2833 382.37,-2770.08 396.144,-2193.93 398.577,-2070.29"/>
+<polygon fill="black" stroke="black" points="402.081,-2070.13 398.773,-2060.07 395.082,-2070 402.081,-2070.13"/>
+</g>
+<!-- proc~i4p_great_eq_self -->
+<g id="node31" class="node"><title>proc~i4p_great_eq_self</title>
+<a xlink:href="../proc/i4p_great_eq_self.html" xlink:title="I4P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2824 231,-2824 231,-2798 331,-2798 331,-2824"/>
+<text text-anchor="middle" x="281" y="-2808.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~i4p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge78" class="edge"><title>proc~i4p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.655,-2797.86C330.222,-2795.4 333.429,-2792.47 336,-2789 379.747,-2729.93 395.486,-2190.27 398.455,-2070.48"/>
+<polygon fill="black" stroke="black" points="401.96,-2070.31 398.703,-2060.23 394.962,-2070.14 401.96,-2070.31"/>
+</g>
+<!-- proc~self_low_eq_i8p -->
+<g id="node32" class="node"><title>proc~self_low_eq_i8p</title>
+<a xlink:href="../proc/self_low_eq_i8p.html" xlink:title="self_low_eq_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2780 236,-2780 236,-2754 326,-2754 326,-2780"/>
+<text text-anchor="middle" x="281" y="-2764.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_I8P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_i8p&#45;&gt;proc~norml2 -->
+<g id="edge80" class="edge"><title>proc~self_low_eq_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.636,-2753.84C330.206,-2751.38 333.42,-2748.46 336,-2745 377.19,-2689.69 394.833,-2184.97 398.332,-2070.16"/>
+<polygon fill="black" stroke="black" points="401.835,-2070.12 398.635,-2060.02 394.838,-2069.91 401.835,-2070.12"/>
+</g>
+<!-- proc~self_great_eq_i4p -->
+<g id="node33" class="node"><title>proc~self_great_eq_i4p</title>
+<a xlink:href="../proc/self_great_eq_i4p.html" xlink:title="self_great_eq_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2736 231,-2736 231,-2710 331,-2710 331,-2736"/>
+<text text-anchor="middle" x="281" y="-2720.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_I4P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_i4p&#45;&gt;proc~norml2 -->
+<g id="edge82" class="edge"><title>proc~self_great_eq_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.614,-2709.83C330.189,-2707.37 333.41,-2704.46 336,-2701 374.608,-2649.49 394.115,-2180.26 398.186,-2070.08"/>
+<polygon fill="black" stroke="black" points="401.686,-2070.15 398.551,-2060.03 394.69,-2069.9 401.686,-2070.15"/>
+</g>
+<!-- proc~i4p_low_eq_self -->
+<g id="node34" class="node"><title>proc~i4p_low_eq_self</title>
+<a xlink:href="../proc/i4p_low_eq_self.html" xlink:title="I4P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2692 236,-2692 236,-2666 326,-2666 326,-2692"/>
+<text text-anchor="middle" x="281" y="-2676.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~i4p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge84" class="edge"><title>proc~i4p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.333,-2665.98C330.015,-2663.49 333.336,-2660.53 336,-2657 371.973,-2609.35 393.276,-2176.82 397.997,-2070.51"/>
+<polygon fill="black" stroke="black" points="401.507,-2070.37 398.447,-2060.23 394.514,-2070.07 401.507,-2070.37"/>
+</g>
+<!-- proc~i2p_great_eq_self -->
+<g id="node35" class="node"><title>proc~i2p_great_eq_self</title>
+<a xlink:href="../proc/i2p_great_eq_self.html" xlink:title="I2P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2648 231,-2648 231,-2622 331,-2622 331,-2648"/>
+<text text-anchor="middle" x="281" y="-2632.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~i2p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge86" class="edge"><title>proc~i2p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.304,-2621.96C329.991,-2619.48 333.322,-2616.52 336,-2613 369.439,-2569.06 392.489,-2170.87 397.821,-2070.09"/>
+<polygon fill="black" stroke="black" points="401.319,-2070.22 398.345,-2060.05 394.328,-2069.85 401.319,-2070.22"/>
+</g>
+<!-- proc~self_low_eq_i4p -->
+<g id="node36" class="node"><title>proc~self_low_eq_i4p</title>
+<a xlink:href="../proc/self_low_eq_i4p.html" xlink:title="self_low_eq_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2604 236,-2604 236,-2578 326,-2578 326,-2604"/>
+<text text-anchor="middle" x="281" y="-2588.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_I4P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_i4p&#45;&gt;proc~norml2 -->
+<g id="edge88" class="edge"><title>proc~self_low_eq_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.27,-2577.94C329.964,-2575.46 333.305,-2572.51 336,-2569 366.83,-2528.88 391.514,-2166.69 397.572,-2070.41"/>
+<polygon fill="black" stroke="black" points="401.076,-2070.46 398.203,-2060.26 394.089,-2070.03 401.076,-2070.46"/>
+</g>
+<!-- proc~self_great_eq_i2p -->
+<g id="node37" class="node"><title>proc~self_great_eq_i2p</title>
+<a xlink:href="../proc/self_great_eq_i2p.html" xlink:title="self_great_eq_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2560 231,-2560 231,-2534 331,-2534 331,-2560"/>
+<text text-anchor="middle" x="281" y="-2544.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_I2P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_i2p&#45;&gt;proc~norml2 -->
+<g id="edge90" class="edge"><title>proc~self_great_eq_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.23,-2533.91C329.933,-2531.43 333.286,-2528.49 336,-2525 364.29,-2488.6 390.547,-2160.84 397.318,-2070.16"/>
+<polygon fill="black" stroke="black" points="400.815,-2070.32 398.062,-2060.09 393.834,-2069.8 400.815,-2070.32"/>
+</g>
+<!-- proc~i2p_low_eq_self -->
+<g id="node38" class="node"><title>proc~i2p_low_eq_self</title>
+<a xlink:href="../proc/i2p_low_eq_self.html" xlink:title="I2P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2516 236,-2516 236,-2490 326,-2490 326,-2516"/>
+<text text-anchor="middle" x="281" y="-2500.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~i2p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge92" class="edge"><title>proc~i2p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.183,-2489.87C329.895,-2487.4 333.264,-2484.47 336,-2481 386.96,-2416.31 396.781,-2151.05 398.601,-2070.38"/>
+<polygon fill="black" stroke="black" points="402.103,-2070.33 398.809,-2060.26 395.105,-2070.19 402.103,-2070.33"/>
+</g>
+<!-- proc~i1p_great_eq_self -->
+<g id="node39" class="node"><title>proc~i1p_great_eq_self</title>
+<a xlink:href="../proc/i1p_great_eq_self.html" xlink:title="I1P_great_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2472 231,-2472 231,-2446 331,-2446 331,-2472"/>
+<text text-anchor="middle" x="281" y="-2456.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_great_eq_self</text>
+</a>
+</g>
+<!-- proc~i1p_great_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge94" class="edge"><title>proc~i1p_great_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M325.865,-2445.99C329.691,-2443.5 333.172,-2440.53 336,-2437 381.875,-2379.71 395.077,-2145.65 398.174,-2070.41"/>
+<polygon fill="black" stroke="black" points="401.683,-2070.25 398.574,-2060.12 394.688,-2069.98 401.683,-2070.25"/>
+</g>
+<!-- proc~self_low_eq_i2p -->
+<g id="node40" class="node"><title>proc~self_low_eq_i2p</title>
+<a xlink:href="../proc/self_low_eq_i2p.html" xlink:title="self_low_eq_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2428 236,-2428 236,-2402 326,-2402 326,-2428"/>
+<text text-anchor="middle" x="281" y="-2412.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_I2P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_i2p&#45;&gt;proc~norml2 -->
+<g id="edge96" class="edge"><title>proc~self_low_eq_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M325.793,-2401.93C329.632,-2399.45 333.136,-2396.5 336,-2393 376.81,-2343.07 393.166,-2139.95 397.638,-2070.45"/>
+<polygon fill="black" stroke="black" points="401.152,-2070.34 398.277,-2060.14 394.166,-2069.9 401.152,-2070.34"/>
+</g>
+<!-- proc~self_great_eq_i1p -->
+<g id="node41" class="node"><title>proc~self_great_eq_i1p</title>
+<a xlink:href="../proc/self_great_eq_i1p.html" xlink:title="self_great_eq_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-2384 231,-2384 231,-2358 331,-2358 331,-2384"/>
+<text text-anchor="middle" x="281" y="-2368.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_eq_I1P</text>
+</a>
+</g>
+<!-- proc~self_great_eq_i1p&#45;&gt;proc~norml2 -->
+<g id="edge98" class="edge"><title>proc~self_great_eq_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M325.701,-2357.86C329.559,-2355.39 333.092,-2352.47 336,-2349 371.799,-2306.32 391.016,-2133.61 396.962,-2070.36"/>
+<polygon fill="black" stroke="black" points="400.466,-2070.48 397.891,-2060.2 393.495,-2069.84 400.466,-2070.48"/>
+</g>
+<!-- proc~i1p_low_eq_self -->
+<g id="node42" class="node"><title>proc~i1p_low_eq_self</title>
+<a xlink:href="../proc/i1p_low_eq_self.html" xlink:title="I1P_low_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2340 236,-2340 236,-2314 326,-2314 326,-2340"/>
+<text text-anchor="middle" x="281" y="-2324.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_low_eq_self</text>
+</a>
+</g>
+<!-- proc~i1p_low_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge100" class="edge"><title>proc~i1p_low_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M325.316,-2313.92C329.3,-2311.44 332.966,-2308.49 336,-2305 366.816,-2269.5 388.51,-2126.87 396.064,-2070.29"/>
+<polygon fill="black" stroke="black" points="399.56,-2070.55 397.384,-2060.18 392.618,-2069.64 399.56,-2070.55"/>
+</g>
+<!-- proc~self_great_self -->
+<g id="node43" class="node"><title>proc~self_great_self</title>
+<a xlink:href="../proc/self_great_self.html" xlink:title="self_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-2296 240,-2296 240,-2270 322,-2270 322,-2296"/>
+<text text-anchor="middle" x="281" y="-2280.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_self</text>
+</a>
+</g>
+<!-- proc~self_great_self&#45;&gt;proc~norml2 -->
+<g id="edge102" class="edge"><title>proc~self_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.159,-2271.5C327.312,-2268.71 332.124,-2265.26 336,-2261 361.869,-2232.57 385.496,-2119.58 394.807,-2070.24"/>
+<polygon fill="black" stroke="black" points="398.286,-2070.68 396.668,-2060.21 391.403,-2069.4 398.286,-2070.68"/>
+</g>
+<!-- proc~self_low_eq_i1p -->
+<g id="node44" class="node"><title>proc~self_low_eq_i1p</title>
+<a xlink:href="../proc/self_low_eq_i1p.html" xlink:title="self_low_eq_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-2252 236,-2252 236,-2226 326,-2226 326,-2252"/>
+<text text-anchor="middle" x="281" y="-2236.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_eq_I1P</text>
+</a>
+</g>
+<!-- proc~self_low_eq_i1p&#45;&gt;proc~norml2 -->
+<g id="edge104" class="edge"><title>proc~self_low_eq_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M324.373,-2225.87C328.637,-2223.39 332.626,-2220.46 336,-2217 376.218,-2175.74 391.132,-2106.56 396.366,-2070.49"/>
+<polygon fill="black" stroke="black" points="399.856,-2070.8 397.697,-2060.42 392.916,-2069.88 399.856,-2070.8"/>
+</g>
+<!-- proc~r16p_great_self -->
+<g id="node45" class="node"><title>proc~r16p_great_self</title>
+<a xlink:href="../proc/r16p_great_self.html" xlink:title="R16P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="327,-2208 235,-2208 235,-2182 327,-2182 327,-2208"/>
+<text text-anchor="middle" x="281" y="-2192.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_great_self</text>
+</a>
+</g>
+<!-- proc~r16p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge106" class="edge"><title>proc~r16p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M316.044,-2181.95C323.208,-2178.2 330.292,-2173.57 336,-2168 364.571,-2140.1 382.836,-2096.46 391.977,-2069.92"/>
+<polygon fill="black" stroke="black" points="395.331,-2070.92 395.137,-2060.33 388.683,-2068.73 395.331,-2070.92"/>
+</g>
+<!-- proc~self_eq_self -->
+<g id="node46" class="node"><title>proc~self_eq_self</title>
+<a xlink:href="../proc/self_eq_self.html" xlink:title="self_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="175,-1860 105,-1860 105,-1834 175,-1834 175,-1860"/>
+<text text-anchor="middle" x="140" y="-1844.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_self</text>
+</a>
+</g>
+<!-- proc~self_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge108" class="edge"><title>proc~self_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M141.841,-1860.1C149.403,-1911.8 179.866,-2100.63 226,-2135 265.205,-2164.21 292.518,-2157.35 336,-2135 362.545,-2121.36 380.404,-2090.76 390.135,-2069.51"/>
+<polygon fill="black" stroke="black" points="393.397,-2070.79 394.15,-2060.22 386.971,-2068.01 393.397,-2070.79"/>
+</g>
+<!-- proc~normalize -->
+<g id="node63" class="node"><title>proc~normalize</title>
+<a xlink:href="../proc/normalize.html" xlink:title="normalize">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-1422 252,-1422 252,-1396 310,-1396 310,-1422"/>
+<text text-anchor="middle" x="281" y="-1406.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">normalize</text>
+</a>
+</g>
+<!-- proc~self_eq_self&#45;&gt;proc~normalize -->
+<g id="edge10" class="edge"><title>proc~self_eq_self&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M141.062,-1833.83C146.436,-1770.19 172.5,-1494.9 226,-1431 230.246,-1425.93 235.83,-1422.02 241.811,-1419"/>
+<polygon fill="black" stroke="black" points="243.544,-1422.07 251.403,-1414.97 240.828,-1415.62 243.544,-1422.07"/>
+</g>
+<!-- proc~self_great_r16p -->
+<g id="node47" class="node"><title>proc~self_great_r16p</title>
+<a xlink:href="../proc/self_great_r16p.html" xlink:title="self_great_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="327,-2126 235,-2126 235,-2100 327,-2100 327,-2126"/>
+<text text-anchor="middle" x="281" y="-2110.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_R16P</text>
+</a>
+</g>
+<!-- proc~self_great_r16p&#45;&gt;proc~norml2 -->
+<g id="edge110" class="edge"><title>proc~self_great_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.048,-2099.96C323.479,-2097.25 330.027,-2094.22 336,-2091 349.284,-2083.83 363.133,-2074.4 374.452,-2066.11"/>
+<polygon fill="black" stroke="black" points="376.648,-2068.84 382.564,-2060.05 372.458,-2063.23 376.648,-2068.84"/>
+</g>
+<!-- proc~r16p_eq_self -->
+<g id="node48" class="node"><title>proc~r16p_eq_self</title>
+<a xlink:href="../proc/r16p_eq_self.html" xlink:title="R16P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="320,-2082 242,-2082 242,-2056 320,-2056 320,-2082"/>
+<text text-anchor="middle" x="281" y="-2066.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_eq_self</text>
+</a>
+</g>
+<!-- proc~r16p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge112" class="edge"><title>proc~r16p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M320.621,-2061.61C333.934,-2059.13 348.728,-2056.37 361.845,-2053.93"/>
+<polygon fill="black" stroke="black" points="362.756,-2057.32 371.945,-2052.04 361.472,-2050.44 362.756,-2057.32"/>
+</g>
+<!-- proc~r8p_great_self -->
+<g id="node49" class="node"><title>proc~r8p_great_self</title>
+<a xlink:href="../proc/r8p_great_self.html" xlink:title="R8P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-2038 238,-2038 238,-2012 324,-2012 324,-2038"/>
+<text text-anchor="middle" x="281" y="-2022.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_great_self</text>
+</a>
+</g>
+<!-- proc~r8p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge114" class="edge"><title>proc~r8p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M324.269,-2033.07C336.58,-2035.36 349.877,-2037.84 361.794,-2040.06"/>
+<polygon fill="black" stroke="black" points="361.38,-2043.55 371.852,-2041.94 362.663,-2036.66 361.38,-2043.55"/>
+</g>
+<!-- proc~self_eq_r16p -->
+<g id="node50" class="node"><title>proc~self_eq_r16p</title>
+<a xlink:href="../proc/self_eq_r16p.html" xlink:title="self_eq_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="320,-1994 242,-1994 242,-1968 320,-1968 320,-1994"/>
+<text text-anchor="middle" x="281" y="-1978.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_R16P</text>
+</a>
+</g>
+<!-- proc~self_eq_r16p&#45;&gt;proc~norml2 -->
+<g id="edge116" class="edge"><title>proc~self_eq_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.048,-1994.04C323.479,-1996.75 330.027,-1999.78 336,-2003 349.284,-2010.17 363.133,-2019.6 374.452,-2027.89"/>
+<polygon fill="black" stroke="black" points="372.458,-2030.77 382.564,-2033.95 376.648,-2025.16 372.458,-2030.77"/>
+</g>
+<!-- proc~self_great_r8p -->
+<g id="node51" class="node"><title>proc~self_great_r8p</title>
+<a xlink:href="../proc/self_great_r8p.html" xlink:title="self_great_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-1950 238,-1950 238,-1924 324,-1924 324,-1950"/>
+<text text-anchor="middle" x="281" y="-1934.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_R8P</text>
+</a>
+</g>
+<!-- proc~self_great_r8p&#45;&gt;proc~norml2 -->
+<g id="edge118" class="edge"><title>proc~self_great_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M321.528,-1950.08C326.656,-1952.61 331.63,-1955.57 336,-1959 358.872,-1976.93 377.105,-2005.33 387.955,-2024.99"/>
+<polygon fill="black" stroke="black" points="384.887,-2026.67 392.676,-2033.86 391.066,-2023.38 384.887,-2026.67"/>
+</g>
+<!-- proc~r8p_eq_self -->
+<g id="node52" class="node"><title>proc~r8p_eq_self</title>
+<a xlink:href="../proc/r8p_eq_self.html" xlink:title="R8P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-1906 245,-1906 245,-1880 317,-1880 317,-1906"/>
+<text text-anchor="middle" x="281" y="-1890.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_eq_self</text>
+</a>
+</g>
+<!-- proc~r8p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge120" class="edge"><title>proc~r8p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.594,-1903.17C324.255,-1906.2 330.747,-1910.08 336,-1915 368.036,-1945.02 385.537,-1994.71 393.523,-2023.8"/>
+<polygon fill="black" stroke="black" points="390.232,-2025.05 396.128,-2033.86 397.008,-2023.3 390.232,-2025.05"/>
+</g>
+<!-- proc~r4p_great_self -->
+<g id="node53" class="node"><title>proc~r4p_great_self</title>
+<a xlink:href="../proc/r4p_great_self.html" xlink:title="R4P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-1862 238,-1862 238,-1836 324,-1836 324,-1862"/>
+<text text-anchor="middle" x="281" y="-1846.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_great_self</text>
+</a>
+</g>
+<!-- proc~r4p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge122" class="edge"><title>proc~r4p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M324.14,-1861.93C328.499,-1864.45 332.574,-1867.45 336,-1871 377.435,-1913.99 391.852,-1986.08 396.685,-2023.25"/>
+<polygon fill="black" stroke="black" points="393.257,-2024.07 397.896,-2033.59 400.209,-2023.25 393.257,-2024.07"/>
+</g>
+<!-- proc~self_eq_r8p -->
+<g id="node54" class="node"><title>proc~self_eq_r8p</title>
+<a xlink:href="../proc/self_eq_r8p.html" xlink:title="self_eq_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-1818 245,-1818 245,-1792 317,-1792 317,-1818"/>
+<text text-anchor="middle" x="281" y="-1802.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_R8P</text>
+</a>
+</g>
+<!-- proc~self_eq_r8p&#45;&gt;proc~norml2 -->
+<g id="edge124" class="edge"><title>proc~self_eq_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.703,-1814.24C324.515,-1817.36 331.037,-1821.51 336,-1827 362.547,-1856.39 385.955,-1973.44 395.013,-2023.78"/>
+<polygon fill="black" stroke="black" points="391.583,-2024.49 396.77,-2033.73 398.476,-2023.27 391.583,-2024.49"/>
+</g>
+<!-- proc~self_great_r4p -->
+<g id="node55" class="node"><title>proc~self_great_r4p</title>
+<a xlink:href="../proc/self_great_r4p.html" xlink:title="self_great_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="324,-1774 238,-1774 238,-1748 324,-1748 324,-1774"/>
+<text text-anchor="middle" x="281" y="-1758.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_R4P</text>
+</a>
+</g>
+<!-- proc~self_great_r4p&#45;&gt;proc~norml2 -->
+<g id="edge126" class="edge"><title>proc~self_great_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M324.266,-1773.41C328.659,-1776.03 332.707,-1779.19 336,-1783 367.469,-1819.44 388.845,-1965.96 396.187,-2023.57"/>
+<polygon fill="black" stroke="black" points="392.757,-2024.36 397.467,-2033.85 399.704,-2023.49 392.757,-2024.36"/>
+</g>
+<!-- proc~r4p_eq_self -->
+<g id="node56" class="node"><title>proc~r4p_eq_self</title>
+<a xlink:href="../proc/r4p_eq_self.html" xlink:title="R4P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-1730 245,-1730 245,-1704 317,-1704 317,-1730"/>
+<text text-anchor="middle" x="281" y="-1714.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_eq_self</text>
+</a>
+</g>
+<!-- proc~r4p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge128" class="edge"><title>proc~r4p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.755,-1725.82C324.646,-1728.97 331.186,-1733.24 336,-1739 372.479,-1782.66 391.325,-1959.48 397.065,-2023.62"/>
+<polygon fill="black" stroke="black" points="393.605,-2024.24 397.958,-2033.9 400.579,-2023.63 393.605,-2024.24"/>
+</g>
+<!-- proc~i8p_great_self -->
+<g id="node57" class="node"><title>proc~i8p_great_self</title>
+<a xlink:href="../proc/i8p_great_self.html" xlink:title="I8P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1686 240,-1686 240,-1660 322,-1660 322,-1686"/>
+<text text-anchor="middle" x="281" y="-1670.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_great_self</text>
+</a>
+</g>
+<!-- proc~i8p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge130" class="edge"><title>proc~i8p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.048,-1683.83C327.349,-1686.72 332.232,-1690.38 336,-1695 377.504,-1745.94 393.445,-1953.3 397.721,-2023.58"/>
+<polygon fill="black" stroke="black" points="394.231,-2023.86 398.309,-2033.64 401.219,-2023.45 394.231,-2023.86"/>
+</g>
+<!-- proc~self_eq_r4p -->
+<g id="node58" class="node"><title>proc~self_eq_r4p</title>
+<a xlink:href="../proc/self_eq_r4p.html" xlink:title="self_eq_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-1642 245,-1642 245,-1616 317,-1616 317,-1642"/>
+<text text-anchor="middle" x="281" y="-1626.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_R4P</text>
+</a>
+</g>
+<!-- proc~self_eq_r4p&#45;&gt;proc~norml2 -->
+<g id="edge132" class="edge"><title>proc~self_eq_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.668,-1637.53C324.651,-1640.71 331.25,-1645.05 336,-1651 382.494,-1709.2 395.28,-1946.85 398.224,-2023.23"/>
+<polygon fill="black" stroke="black" points="394.742,-2023.81 398.603,-2033.68 401.738,-2023.56 394.742,-2023.81"/>
+</g>
+<!-- proc~self_great_i8p -->
+<g id="node59" class="node"><title>proc~self_great_i8p</title>
+<a xlink:href="../proc/self_great_i8p.html" xlink:title="self_great_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1598 240,-1598 240,-1572 322,-1572 322,-1598"/>
+<text text-anchor="middle" x="281" y="-1582.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_I8P</text>
+</a>
+</g>
+<!-- proc~self_great_i8p&#45;&gt;proc~norml2 -->
+<g id="edge134" class="edge"><title>proc~self_great_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.194,-1595.71C327.474,-1598.62 332.313,-1602.31 336,-1607 387.7,-1672.76 397.017,-1942.71 398.658,-2023.84"/>
+<polygon fill="black" stroke="black" points="395.161,-2024.06 398.842,-2033.99 402.16,-2023.93 395.161,-2024.06"/>
+</g>
+<!-- proc~i8p_eq_self -->
+<g id="node60" class="node"><title>proc~i8p_eq_self</title>
+<a xlink:href="../proc/i8p_eq_self.html" xlink:title="I8P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-1554 247,-1554 247,-1528 315,-1528 315,-1554"/>
+<text text-anchor="middle" x="281" y="-1538.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_eq_self</text>
+</a>
+</g>
+<!-- proc~i8p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge136" class="edge"><title>proc~i8p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.521,-1548.44C323.33,-1551.69 330.83,-1556.34 336,-1563 364.61,-1599.87 390.636,-1931.74 397.336,-2023.55"/>
+<polygon fill="black" stroke="black" points="393.861,-2024.03 398.073,-2033.75 400.843,-2023.52 393.861,-2024.03"/>
+</g>
+<!-- proc~i4p_great_self -->
+<g id="node61" class="node"><title>proc~i4p_great_self</title>
+<a xlink:href="../proc/i4p_great_self.html" xlink:title="I4P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1510 240,-1510 240,-1484 322,-1484 322,-1510"/>
+<text text-anchor="middle" x="281" y="-1494.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_great_self</text>
+</a>
+</g>
+<!-- proc~i4p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge138" class="edge"><title>proc~i4p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.02,-1507.48C327.394,-1510.42 332.306,-1514.19 336,-1519 367.186,-1559.64 391.654,-1926.73 397.609,-2023.63"/>
+<polygon fill="black" stroke="black" points="394.129,-2024.07 398.228,-2033.84 401.116,-2023.64 394.129,-2024.07"/>
+</g>
+<!-- proc~self_eq_i8p -->
+<g id="node62" class="node"><title>proc~self_eq_i8p</title>
+<a xlink:href="../proc/self_eq_i8p.html" xlink:title="self_eq_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-1466 247,-1466 247,-1440 315,-1440 315,-1466"/>
+<text text-anchor="middle" x="281" y="-1450.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_eq_I8P</text>
+</a>
+</g>
+<!-- proc~self_eq_i8p&#45;&gt;proc~norml2 -->
+<g id="edge140" class="edge"><title>proc~self_eq_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.613,-1460.37C323.419,-1463.62 330.896,-1468.29 336,-1475 369.764,-1519.41 392.572,-1921.82 397.836,-2023.66"/>
+<polygon fill="black" stroke="black" points="394.349,-2024.01 398.354,-2033.81 401.34,-2023.65 394.349,-2024.01"/>
+</g>
+<!-- proc~normalize&#45;&gt;proc~norml2 -->
+<g id="edge142" class="edge"><title>proc~normalize&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M310.769,-1414.5C320.256,-1417.74 329.87,-1422.87 336,-1431 372.375,-1479.24 393.445,-1917.74 398.041,-2023.92"/>
+<polygon fill="black" stroke="black" points="394.545,-2024.07 398.467,-2033.92 401.538,-2023.78 394.545,-2024.07"/>
+</g>
+<!-- proc~i4p_eq_self -->
+<g id="node64" class="node"><title>proc~i4p_eq_self</title>
+<a xlink:href="../proc/i4p_eq_self.html" xlink:title="I4P_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="315,-1378 247,-1378 247,-1352 315,-1352 315,-1378"/>
+<text text-anchor="middle" x="281" y="-1362.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_eq_self</text>
+</a>
+</g>
+<!-- proc~i4p_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge144" class="edge"><title>proc~i4p_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M315.681,-1372.32C323.486,-1375.57 330.945,-1380.25 336,-1387 374.936,-1439 394.192,-1912.52 398.2,-2023.71"/>
+<polygon fill="black" stroke="black" points="394.707,-2023.98 398.559,-2033.85 401.703,-2023.73 394.707,-2023.98"/>
+</g>
+<!-- proc~i2p_great_self -->
+<g id="node65" class="node"><title>proc~i2p_great_self</title>
+<a xlink:href="../proc/i2p_great_self.html" xlink:title="I2P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1334 240,-1334 240,-1308 322,-1308 322,-1334"/>
+<text text-anchor="middle" x="281" y="-1318.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_great_self</text>
+</a>
+</g>
+<!-- proc~i2p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge146" class="edge"><title>proc~i2p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.147,-1331.39C327.503,-1334.34 332.378,-1338.13 336,-1343 377.52,-1398.79 394.908,-1907.85 398.345,-2023.64"/>
+<polygon fill="black" stroke="black" points="394.853,-2023.97 398.642,-2033.87 401.85,-2023.77 394.853,-2023.97"/>
+</g>
+<!-- proc~self_great_i2p -->
+<g id="node66" class="node"><title>proc~self_great_i2p</title>
+<a xlink:href="../proc/self_great_i2p.html" xlink:title="self_great_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1290 240,-1290 240,-1264 322,-1264 322,-1290"/>
+<text text-anchor="middle" x="281" y="-1274.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_I2P</text>
+</a>
+</g>
+<!-- proc~self_great_i2p&#45;&gt;proc~norml2 -->
+<g id="edge148" class="edge"><title>proc~self_great_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.17,-1287.37C327.523,-1290.33 332.39,-1294.12 336,-1299 380.125,-1358.62 395.593,-1903.74 398.477,-2023.71"/>
+<polygon fill="black" stroke="black" points="394.984,-2024.05 398.717,-2033.97 401.982,-2023.89 394.984,-2024.05"/>
+</g>
+<!-- proc~i1p_great_self -->
+<g id="node67" class="node"><title>proc~i1p_great_self</title>
+<a xlink:href="../proc/i1p_great_self.html" xlink:title="I1P_great_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1246 240,-1246 240,-1220 322,-1220 322,-1246"/>
+<text text-anchor="middle" x="281" y="-1230.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_great_self</text>
+</a>
+</g>
+<!-- proc~i1p_great_self&#45;&gt;proc~norml2 -->
+<g id="edge150" class="edge"><title>proc~i1p_great_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.19,-1243.35C327.54,-1246.31 332.402,-1250.11 336,-1255 382.702,-1318.41 396.216,-1898.96 398.589,-2023.53"/>
+<polygon fill="black" stroke="black" points="395.095,-2023.9 398.779,-2033.84 402.094,-2023.77 395.095,-2023.9"/>
+</g>
+<!-- proc~self_great_i1p -->
+<g id="node68" class="node"><title>proc~self_great_i1p</title>
+<a xlink:href="../proc/self_great_i1p.html" xlink:title="self_great_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-1202 240,-1202 240,-1176 322,-1176 322,-1202"/>
+<text text-anchor="middle" x="281" y="-1186.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_I1P</text>
+</a>
+</g>
+<!-- proc~self_great_i1p&#45;&gt;proc~norml2 -->
+<g id="edge152" class="edge"><title>proc~self_great_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.208,-1199.34C327.556,-1202.3 332.412,-1206.11 336,-1211 385.296,-1278.22 396.815,-1894.59 398.692,-2023.45"/>
+<polygon fill="black" stroke="black" points="395.197,-2023.81 398.836,-2033.76 402.196,-2023.71 395.197,-2023.81"/>
+</g>
+<!-- proc~self_not_eq_self -->
+<g id="node69" class="node"><title>proc~self_not_eq_self</title>
+<a xlink:href="../proc/self_not_eq_self.html" xlink:title="self_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="185,-1236 95,-1236 95,-1210 185,-1210 185,-1236"/>
+<text text-anchor="middle" x="140" y="-1220.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_self</text>
+</a>
+</g>
+<!-- proc~self_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge154" class="edge"><title>proc~self_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M155.771,-1209.86C192.347,-1181.01 283.807,-1118.41 336,-1167 368.304,-1197.07 393.514,-1886.53 398.212,-2023.48"/>
+<polygon fill="black" stroke="black" points="394.721,-2023.81 398.559,-2033.69 401.717,-2023.58 394.721,-2023.81"/>
+</g>
+<!-- proc~self_not_eq_self&#45;&gt;proc~normalize -->
+<g id="edge18" class="edge"><title>proc~self_not_eq_self&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M146.746,-1236.16C166.471,-1274.59 222.852,-1384.16 226,-1387 230.71,-1391.25 236.343,-1394.73 242.182,-1397.56"/>
+<polygon fill="black" stroke="black" points="240.851,-1400.8 251.423,-1401.5 243.595,-1394.36 240.851,-1400.8"/>
+</g>
+<!-- proc~normalize_self -->
+<g id="node70" class="node"><title>proc~normalize_self</title>
+<a xlink:href="../proc/normalize_self.html" xlink:title="normalize_self">
+<polygon fill="#d9534f" stroke="#d9534f" points="322,-1120 240,-1120 240,-1094 322,-1094 322,-1120"/>
+<text text-anchor="middle" x="281" y="-1104.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">normalize_self</text>
+</a>
+</g>
+<!-- proc~normalize_self&#45;&gt;proc~norml2 -->
+<g id="edge156" class="edge"><title>proc~normalize_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M320.723,-1120.08C326.7,-1123.7 332.144,-1128.26 336,-1134 387.07,-1210 397.249,-1889.43 398.77,-2023.92"/>
+<polygon fill="black" stroke="black" points="395.27,-2023.99 398.878,-2033.95 402.27,-2023.91 395.27,-2023.99"/>
+</g>
+<!-- proc~r16p_not_eq_self -->
+<g id="node71" class="node"><title>proc~r16p_not_eq_self</title>
+<a xlink:href="../proc/r16p_not_eq_self.html" xlink:title="R16P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-1076 231,-1076 231,-1050 331,-1050 331,-1076"/>
+<text text-anchor="middle" x="281" y="-1060.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~r16p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge158" class="edge"><title>proc~r16p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.726,-1076.09C330.278,-1078.56 333.463,-1081.5 336,-1085 392.778,-1163.23 398.386,-1883.6 398.939,-2023.52"/>
+<polygon fill="black" stroke="black" points="395.441,-2023.93 398.975,-2033.91 402.441,-2023.9 395.441,-2023.93"/>
+</g>
+<!-- proc~self_not_eq_r16p -->
+<g id="node72" class="node"><title>proc~self_not_eq_r16p</title>
+<a xlink:href="../proc/self_not_eq_r16p.html" xlink:title="self_not_eq_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="331,-1032 231,-1032 231,-1006 331,-1006 331,-1032"/>
+<text text-anchor="middle" x="281" y="-1016.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_R16P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_r16p&#45;&gt;proc~norml2 -->
+<g id="edge160" class="edge"><title>proc~self_not_eq_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.736,-1032.08C330.286,-1034.56 333.468,-1037.5 336,-1041 365.777,-1082.15 393.367,-1876.3 398.24,-2023.6"/>
+<polygon fill="black" stroke="black" points="394.747,-2023.89 398.574,-2033.77 401.744,-2023.66 394.747,-2023.89"/>
+</g>
+<!-- proc~parallel -->
+<g id="node73" class="node"><title>proc~parallel</title>
+<a xlink:href="../proc/parallel.html" xlink:title="parallel">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="167,-1129 113,-1129 113,-1103 167,-1103 167,-1129"/>
+<text text-anchor="middle" x="140" y="-1113.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">parallel</text>
+</a>
+</g>
+<!-- proc~parallel&#45;&gt;proc~norml2 -->
+<g id="edge162" class="edge"><title>proc~parallel&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M144.783,-1102.8C155.009,-1076.83 181.74,-1019.62 226,-997 269.532,-974.75 300.41,-963.482 336,-997 374.706,-1033.45 395.132,-1872.79 398.5,-2023.83"/>
+<polygon fill="black" stroke="black" points="395.001,-2023.93 398.721,-2033.85 402,-2023.77 395.001,-2023.93"/>
+</g>
+<!-- proc~parallel&#45;&gt;proc~normalize -->
+<g id="edge14" class="edge"><title>proc~parallel&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M149.652,-1129.12C161.036,-1145.23 179.707,-1173.78 190,-1201 219.776,-1279.76 172.355,-1322.1 226,-1387 230.214,-1392.1 235.782,-1396.02 241.757,-1399.04"/>
+<polygon fill="black" stroke="black" points="240.772,-1402.43 251.347,-1403.08 243.489,-1395.97 240.772,-1402.43"/>
+</g>
+<!-- proc~r8p_not_eq_self -->
+<g id="node74" class="node"><title>proc~r8p_not_eq_self</title>
+<a xlink:href="../proc/r8p_not_eq_self.html" xlink:title="R8P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-950 234,-950 234,-924 328,-924 328,-950"/>
+<text text-anchor="middle" x="281" y="-934.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~r8p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge164" class="edge"><title>proc~r8p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M320.775,-950.044C326.746,-953.665 332.175,-958.24 336,-964 366.37,-1009.73 393.68,-1870.57 398.311,-2023.78"/>
+<polygon fill="black" stroke="black" points="394.817,-2024.04 398.615,-2033.93 401.813,-2023.83 394.817,-2024.04"/>
+</g>
+<!-- proc~normalized_self -->
+<g id="node75" class="node"><title>proc~normalized_self</title>
+<a xlink:href="../proc/normalized_self.html" xlink:title="normalized_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="325,-906 237,-906 237,-880 325,-880 325,-906"/>
+<text text-anchor="middle" x="281" y="-890.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">normalized_self</text>
+</a>
+</g>
+<!-- proc~normalized_self&#45;&gt;proc~norml2 -->
+<g id="edge166" class="edge"><title>proc~normalized_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M325.22,-905.03C329.386,-907.712 333.12,-910.991 336,-915 369.539,-961.688 394.335,-1866.07 398.41,-2023.67"/>
+<polygon fill="black" stroke="black" points="394.912,-2023.8 398.667,-2033.71 401.91,-2023.62 394.912,-2023.8"/>
+</g>
+<!-- proc~r4p_not_eq_self -->
+<g id="node76" class="node"><title>proc~r4p_not_eq_self</title>
+<a xlink:href="../proc/r4p_not_eq_self.html" xlink:title="R4P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-862 234,-862 234,-836 328,-836 328,-862"/>
+<text text-anchor="middle" x="281" y="-846.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~r4p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge168" class="edge"><title>proc~r4p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.769,-862.058C330.313,-864.538 333.484,-867.489 336,-871 370.861,-919.634 394.652,-1862.97 398.462,-2023.78"/>
+<polygon fill="black" stroke="black" points="394.968,-2024.07 398.702,-2033.99 401.966,-2023.91 394.968,-2024.07"/>
+</g>
+<!-- proc~self_not_eq_r4p -->
+<g id="node77" class="node"><title>proc~self_not_eq_r4p</title>
+<a xlink:href="../proc/self_not_eq_r4p.html" xlink:title="self_not_eq_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="328,-818 234,-818 234,-792 328,-792 328,-818"/>
+<text text-anchor="middle" x="281" y="-802.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_R4P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_r4p&#45;&gt;proc~norml2 -->
+<g id="edge170" class="edge"><title>proc~self_not_eq_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.776,-818.053C330.318,-820.534 333.487,-823.487 336,-827 372.15,-877.536 394.913,-1858.13 398.501,-2023.44"/>
+<polygon fill="black" stroke="black" points="395.012,-2023.98 398.726,-2033.91 402.01,-2023.83 395.012,-2023.98"/>
+</g>
+<!-- proc~i8p_not_eq_self -->
+<g id="node78" class="node"><title>proc~i8p_not_eq_self</title>
+<a xlink:href="../proc/i8p_not_eq_self.html" xlink:title="I8P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-774 236,-774 236,-748 326,-748 326,-774"/>
+<text text-anchor="middle" x="281" y="-758.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~i8p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge172" class="edge"><title>proc~i8p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.019,-773.524C329.868,-776.112 333.311,-779.234 336,-783 373.48,-835.495 395.214,-1855.48 398.549,-2023.63"/>
+<polygon fill="black" stroke="black" points="395.054,-2023.92 398.749,-2033.85 402.052,-2023.78 395.054,-2023.92"/>
+</g>
+<!-- proc~self_not_eq_i8p -->
+<g id="node79" class="node"><title>proc~self_not_eq_i8p</title>
+<a xlink:href="../proc/self_not_eq_i8p.html" xlink:title="self_not_eq_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-730 236,-730 236,-704 326,-704 326,-730"/>
+<text text-anchor="middle" x="281" y="-714.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_I8P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_i8p&#45;&gt;proc~norml2 -->
+<g id="edge174" class="edge"><title>proc~self_not_eq_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.025,-729.519C329.873,-732.108 333.314,-735.231 336,-739 374.796,-793.434 395.485,-1852.07 398.589,-2023.61"/>
+<polygon fill="black" stroke="black" points="395.093,-2023.87 398.771,-2033.81 402.092,-2023.75 395.093,-2023.87"/>
+</g>
+<!-- proc~i4p_not_eq_self -->
+<g id="node80" class="node"><title>proc~i4p_not_eq_self</title>
+<a xlink:href="../proc/i4p_not_eq_self.html" xlink:title="I4P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-686 236,-686 236,-660 326,-660 326,-686"/>
+<text text-anchor="middle" x="281" y="-670.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I4P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~i4p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge176" class="edge"><title>proc~i4p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.031,-685.515C329.878,-688.104 333.317,-691.229 336,-695 376.116,-751.379 395.75,-1848.89 398.627,-2023.64"/>
+<polygon fill="black" stroke="black" points="395.13,-2023.85 398.792,-2033.79 402.129,-2023.74 395.13,-2023.85"/>
+</g>
+<!-- proc~self_not_eq_i4p -->
+<g id="node81" class="node"><title>proc~self_not_eq_i4p</title>
+<a xlink:href="../proc/self_not_eq_i4p.html" xlink:title="self_not_eq_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-642 236,-642 236,-616 326,-616 326,-642"/>
+<text text-anchor="middle" x="281" y="-626.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_I4P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_i4p&#45;&gt;proc~norml2 -->
+<g id="edge178" class="edge"><title>proc~self_not_eq_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.037,-641.511C329.882,-644.101 333.32,-647.227 336,-651 377.439,-709.33 396.008,-1845.93 398.663,-2023.7"/>
+<polygon fill="black" stroke="black" points="395.165,-2023.85 398.812,-2033.8 402.164,-2023.75 395.165,-2023.85"/>
+</g>
+<!-- proc~i2p_not_eq_self -->
+<g id="node82" class="node"><title>proc~i2p_not_eq_self</title>
+<a xlink:href="../proc/i2p_not_eq_self.html" xlink:title="I2P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-598 236,-598 236,-572 326,-572 326,-598"/>
+<text text-anchor="middle" x="281" y="-582.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I2P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~i2p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge180" class="edge"><title>proc~i2p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.042,-597.507C329.887,-600.098 333.322,-603.225 336,-607 378.767,-667.286 396.259,-1843.21 398.698,-2023.81"/>
+<polygon fill="black" stroke="black" points="395.198,-2023.87 398.832,-2033.82 402.198,-2023.78 395.198,-2023.87"/>
+</g>
+<!-- proc~self_not_eq_i2p -->
+<g id="node83" class="node"><title>proc~self_not_eq_i2p</title>
+<a xlink:href="../proc/self_not_eq_i2p.html" xlink:title="self_not_eq_I2P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-554 236,-554 236,-528 326,-528 326,-554"/>
+<text text-anchor="middle" x="281" y="-538.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_I2P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_i2p&#45;&gt;proc~norml2 -->
+<g id="edge182" class="edge"><title>proc~self_not_eq_i2p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.047,-553.504C329.891,-556.095 333.325,-559.224 336,-563 380.077,-625.218 396.488,-1839.5 398.727,-2023.67"/>
+<polygon fill="black" stroke="black" points="395.23,-2023.91 398.85,-2033.87 402.229,-2023.83 395.23,-2023.91"/>
+</g>
+<!-- proc~i1p_not_eq_self -->
+<g id="node84" class="node"><title>proc~i1p_not_eq_self</title>
+<a xlink:href="../proc/i1p_not_eq_self.html" xlink:title="I1P_not_eq_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-510 236,-510 236,-484 326,-484 326,-510"/>
+<text text-anchor="middle" x="281" y="-494.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I1P_not_eq_self</text>
+</a>
+</g>
+<!-- proc~i1p_not_eq_self&#45;&gt;proc~norml2 -->
+<g id="edge184" class="edge"><title>proc~i1p_not_eq_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.052,-509.5C329.894,-512.093 333.327,-515.222 336,-519 381.412,-583.185 396.727,-1837.19 398.759,-2023.85"/>
+<polygon fill="black" stroke="black" points="395.26,-2023.97 398.867,-2033.93 402.259,-2023.9 395.26,-2023.97"/>
+</g>
+<!-- proc~self_not_eq_i1p -->
+<g id="node85" class="node"><title>proc~self_not_eq_i1p</title>
+<a xlink:href="../proc/self_not_eq_i1p.html" xlink:title="self_not_eq_I1P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="326,-466 236,-466 236,-440 326,-440 326,-466"/>
+<text text-anchor="middle" x="281" y="-450.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_not_eq_I1P</text>
+</a>
+</g>
+<!-- proc~self_not_eq_i1p&#45;&gt;proc~norml2 -->
+<g id="edge186" class="edge"><title>proc~self_not_eq_i1p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M326.056,-465.497C329.898,-468.09 333.329,-471.221 336,-475 382.702,-541.09 396.93,-1832.43 398.783,-2023.47"/>
+<polygon fill="black" stroke="black" points="395.284,-2023.59 398.879,-2033.56 402.283,-2023.52 395.284,-2023.59"/>
+</g>
+<!-- proc~self_low_self -->
+<g id="node86" class="node"><title>proc~self_low_self</title>
+<a xlink:href="../proc/self_low_self.html" xlink:title="self_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-422 245,-422 245,-396 317,-396 317,-422"/>
+<text text-anchor="middle" x="281" y="-406.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_self</text>
+</a>
+</g>
+<!-- proc~self_low_self&#45;&gt;proc~norml2 -->
+<g id="edge188" class="edge"><title>proc~self_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.651,-416.864C324.814,-420.081 331.493,-424.614 336,-431 384.02,-499.034 397.146,-1829.18 398.809,-2023.42"/>
+<polygon fill="black" stroke="black" points="395.311,-2023.68 398.895,-2033.65 402.311,-2023.62 395.311,-2023.68"/>
+</g>
+<!-- proc~self_great_i4p -->
+<g id="node87" class="node"><title>proc~self_great_i4p</title>
+<a xlink:href="../proc/self_great_i4p.html" xlink:title="self_great_I4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-378 240,-378 240,-352 322,-352 322,-378"/>
+<text text-anchor="middle" x="281" y="-362.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_great_I4P</text>
+</a>
+</g>
+<!-- proc~self_great_i4p&#45;&gt;proc~norml2 -->
+<g id="edge190" class="edge"><title>proc~self_great_i4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.1,-375.073C327.534,-378.069 332.444,-381.957 336,-387 385.365,-457.016 397.368,-1827.44 398.836,-2023.68"/>
+<polygon fill="black" stroke="black" points="395.337,-2023.79 398.91,-2033.77 402.336,-2023.74 395.337,-2023.79"/>
+</g>
+<!-- proc~r16p_low_self -->
+<g id="node88" class="node"><title>proc~r16p_low_self</title>
+<a xlink:href="../proc/r16p_low_self.html" xlink:title="R16P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-334 240,-334 240,-308 322,-308 322,-334"/>
+<text text-anchor="middle" x="281" y="-318.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R16P_low_self</text>
+</a>
+</g>
+<!-- proc~r16p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge192" class="edge"><title>proc~r16p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.646,-331.372C327.864,-334.327 332.565,-338.123 336,-343 386.689,-414.968 397.573,-1824.53 398.86,-2023.68"/>
+<polygon fill="black" stroke="black" points="395.361,-2023.92 398.924,-2033.9 402.361,-2023.87 395.361,-2023.92"/>
+</g>
+<!-- proc~self_low_r16p -->
+<g id="node89" class="node"><title>proc~self_low_r16p</title>
+<a xlink:href="../proc/self_low_r16p.html" xlink:title="self_low_R16P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="322,-290 240,-290 240,-264 322,-264 322,-290"/>
+<text text-anchor="middle" x="281" y="-274.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_R16P</text>
+</a>
+</g>
+<!-- proc~self_low_r16p&#45;&gt;proc~norml2 -->
+<g id="edge194" class="edge"><title>proc~self_low_r16p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M322.65,-287.369C327.867,-290.325 332.568,-294.122 336,-299 387.987,-372.885 397.763,-1820.23 398.88,-2023.39"/>
+<polygon fill="black" stroke="black" points="395.381,-2023.58 398.935,-2033.56 402.381,-2023.54 395.381,-2023.58"/>
+</g>
+<!-- proc~r8p_low_self -->
+<g id="node90" class="node"><title>proc~r8p_low_self</title>
+<a xlink:href="../proc/r8p_low_self.html" xlink:title="R8P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="319,-246 243,-246 243,-220 319,-220 319,-246"/>
+<text text-anchor="middle" x="281" y="-230.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R8P_low_self</text>
+</a>
+</g>
+<!-- proc~r8p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge196" class="edge"><title>proc~r8p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M319.635,-241.774C326.042,-244.921 331.919,-249.195 336,-255 389.316,-330.844 397.96,-1817.58 398.902,-2023.43"/>
+<polygon fill="black" stroke="black" points="395.403,-2023.73 398.948,-2033.72 402.403,-2023.7 395.403,-2023.73"/>
+</g>
+<!-- proc~self_low_r8p -->
+<g id="node91" class="node"><title>proc~self_low_r8p</title>
+<a xlink:href="../proc/self_low_r8p.html" xlink:title="self_low_R8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="319,-202 243,-202 243,-176 319,-176 319,-202"/>
+<text text-anchor="middle" x="281" y="-186.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_R8P</text>
+</a>
+</g>
+<!-- proc~self_low_r8p&#45;&gt;proc~norml2 -->
+<g id="edge198" class="edge"><title>proc~self_low_r8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M319.639,-197.771C326.046,-200.918 331.922,-205.193 336,-211 390.674,-288.845 398.16,-1816.61 398.924,-2023.81"/>
+<polygon fill="black" stroke="black" points="395.424,-2023.9 398.96,-2033.89 402.424,-2023.88 395.424,-2023.9"/>
+</g>
+<!-- proc~r4p_low_self -->
+<g id="node92" class="node"><title>proc~r4p_low_self</title>
+<a xlink:href="../proc/r4p_low_self.html" xlink:title="R4P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="319,-158 243,-158 243,-132 319,-132 319,-158"/>
+<text text-anchor="middle" x="281" y="-142.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">R4P_low_self</text>
+</a>
+</g>
+<!-- proc~r4p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge200" class="edge"><title>proc~r4p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M319.642,-153.769C326.049,-156.916 331.924,-161.191 336,-167 391.979,-246.771 398.339,-1812.65 398.943,-2023.57"/>
+<polygon fill="black" stroke="black" points="395.443,-2023.59 398.97,-2033.58 402.443,-2023.57 395.443,-2023.59"/>
+</g>
+<!-- proc~self_low_r4p -->
+<g id="node93" class="node"><title>proc~self_low_r4p</title>
+<a xlink:href="../proc/self_low_r4p.html" xlink:title="self_low_R4P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="319,-114 243,-114 243,-88 319,-88 319,-114"/>
+<text text-anchor="middle" x="281" y="-98.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_R4P</text>
+</a>
+</g>
+<!-- proc~self_low_r4p&#45;&gt;proc~norml2 -->
+<g id="edge202" class="edge"><title>proc~self_low_r4p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M319.646,-109.766C326.053,-112.914 331.926,-117.19 336,-123 393.315,-204.742 398.522,-1810.46 398.962,-2023.69"/>
+<polygon fill="black" stroke="black" points="395.462,-2023.78 398.981,-2033.78 402.462,-2023.77 395.462,-2023.78"/>
+</g>
+<!-- proc~i8p_low_self -->
+<g id="node94" class="node"><title>proc~i8p_low_self</title>
+<a xlink:href="../proc/i8p_low_self.html" xlink:title="I8P_low_self">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-70 245,-70 245,-44 317,-44 317,-70"/>
+<text text-anchor="middle" x="281" y="-54.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">I8P_low_self</text>
+</a>
+</g>
+<!-- proc~i8p_low_self&#45;&gt;proc~norml2 -->
+<g id="edge204" class="edge"><title>proc~i8p_low_self&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.684,-64.8404C324.846,-68.0593 331.515,-72.5988 336,-79 394.654,-162.717 398.701,-1808.43 398.979,-2023.82"/>
+<polygon fill="black" stroke="black" points="395.48,-2024 398.991,-2033.99 402.48,-2023.99 395.48,-2024"/>
+</g>
+<!-- proc~self_low_i8p -->
+<g id="node95" class="node"><title>proc~self_low_i8p</title>
+<a xlink:href="../proc/self_low_i8p.html" xlink:title="self_low_I8P">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="317,-26 245,-26 245,-1.24345e-14 317,-3.55271e-15 317,-26"/>
+<text text-anchor="middle" x="281" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">self_low_I8P</text>
+</a>
+</g>
+<!-- proc~self_low_i8p&#45;&gt;proc~norml2 -->
+<g id="edge206" class="edge"><title>proc~self_low_i8p&#45;&gt;proc~norml2</title>
+<path fill="none" stroke="black" d="M317.688,-20.8381C324.849,-24.0571 331.517,-28.5972 336,-35 366.013,-77.8689 395.029,-1802.74 398.626,-2023.77"/>
+<polygon fill="black" stroke="black" points="395.129,-2023.98 398.791,-2033.92 402.128,-2023.86 395.129,-2023.98"/>
+</g>
+<!-- proc~face_normal3 -->
+<g id="node96" class="node"><title>proc~face_normal3</title>
+<a xlink:href="../proc/face_normal3.html" xlink:title="face_normal3">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="179,-1400 101,-1400 101,-1374 179,-1374 179,-1400"/>
+<text text-anchor="middle" x="140" y="-1384.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">face_normal3</text>
+</a>
+</g>
+<!-- proc~face_normal3&#45;&gt;proc~normalize -->
+<g id="edge6" class="edge"><title>proc~face_normal3&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M179.276,-1393.13C198.617,-1396.15 221.885,-1399.78 241.284,-1402.8"/>
+<polygon fill="black" stroke="black" points="240.904,-1406.29 251.324,-1404.37 241.983,-1399.37 240.904,-1406.29"/>
+</g>
+<!-- proc~face_normal4 -->
+<g id="node97" class="node"><title>proc~face_normal4</title>
+<a xlink:href="../proc/face_normal4.html" xlink:title="face_normal4">
+<polygon fill="#d94e8f" stroke="#d94e8f" points="179,-1444 101,-1444 101,-1418 179,-1418 179,-1444"/>
+<text text-anchor="middle" x="140" y="-1428.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">face_normal4</text>
+</a>
+</g>
+<!-- proc~face_normal4&#45;&gt;proc~normalize -->
+<g id="edge8" class="edge"><title>proc~face_normal4&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M179.276,-1424.87C198.617,-1421.85 221.885,-1418.22 241.284,-1415.2"/>
+<polygon fill="black" stroke="black" points="241.983,-1418.63 251.324,-1413.63 240.904,-1411.71 241.983,-1418.63"/>
+</g>
+<!-- proc~face_normal4_self -->
+<g id="node98" class="node"><title>proc~face_normal4_self</title>
+<a xlink:href="../proc/face_normal4_self.html" xlink:title="face_normal4_self">
+<polygon fill="#d9534f" stroke="#d9534f" points="190,-1356 90,-1356 90,-1330 190,-1330 190,-1356"/>
+<text text-anchor="middle" x="140" y="-1340.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">face_normal4_self</text>
+</a>
+</g>
+<!-- proc~face_normal4_self&#45;&gt;proc~normalize -->
+<g id="edge12" class="edge"><title>proc~face_normal4_self&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M171.511,-1356.1C177.712,-1358.89 184.116,-1361.93 190,-1365 206.619,-1373.68 209.236,-1378.6 226,-1387 231.057,-1389.53 236.48,-1391.99 241.878,-1394.3"/>
+<polygon fill="black" stroke="black" points="240.903,-1397.68 251.483,-1398.25 243.567,-1391.21 240.903,-1397.68"/>
+</g>
+<!-- proc~face_normal3_self -->
+<g id="node99" class="node"><title>proc~face_normal3_self</title>
+<a xlink:href="../proc/face_normal3_self.html" xlink:title="face_normal3_self">
+<polygon fill="#d9534f" stroke="#d9534f" points="190,-1488 90,-1488 90,-1462 190,-1462 190,-1488"/>
+<text text-anchor="middle" x="140" y="-1472.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">face_normal3_self</text>
+</a>
+</g>
+<!-- proc~face_normal3_self&#45;&gt;proc~normalize -->
+<g id="edge16" class="edge"><title>proc~face_normal3_self&#45;&gt;proc~normalize</title>
+<path fill="none" stroke="black" d="M171.511,-1461.9C177.712,-1459.11 184.116,-1456.07 190,-1453 206.619,-1444.32 209.236,-1439.4 226,-1431 231.057,-1428.47 236.48,-1426.01 241.878,-1423.7"/>
+<polygon fill="black" stroke="black" points="243.567,-1426.79 251.483,-1419.75 240.903,-1420.32 243.567,-1426.79"/>
+</g>
+<!-- program~simple -->
+<g id="node100" class="node"><title>program~simple</title>
+<a xlink:href="../program/simple.html" xlink:title="simple">
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="54,-1422 2.13163e-14,-1422 0,-1396 54,-1396 54,-1422"/>
+<text text-anchor="middle" x="27" y="-1406.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">simple</text>
+</a>
+</g>
+<!-- program~simple&#45;&gt;proc~face_normal3 -->
+<g id="edge2" class="edge"><title>program~simple&#45;&gt;proc~face_normal3</title>
+<path fill="none" stroke="black" d="M54.0663,-1403.73C65.0917,-1401.58 78.1916,-1399.03 90.7986,-1396.58"/>
+<polygon fill="black" stroke="black" points="91.6075,-1399.99 100.754,-1394.64 90.2698,-1393.12 91.6075,-1399.99"/>
+</g>
+<!-- program~simple&#45;&gt;proc~face_normal4 -->
+<g id="edge4" class="edge"><title>program~simple&#45;&gt;proc~face_normal4</title>
+<path fill="none" stroke="black" d="M54.0663,-1414.27C65.0917,-1416.42 78.1916,-1418.97 90.7986,-1421.42"/>
+<polygon fill="black" stroke="black" points="90.2698,-1424.88 100.754,-1423.36 91.6075,-1418.01 90.2698,-1424.88"/>
+</g>
+</g>
+</svg>
+</div>
+                <div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div>
+                <div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog">
+                  <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="-graph-help-label">Graph Key</h4>
+                      </div>
+                      <div class="modal-body">
+                        
+Nodes of different colours represent the following:
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.26.3 (20100126.1600)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="641pt" height="28pt"
+ viewBox="0.00 0.00 641.00 27.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph1" class="graph" transform="scale(0.817602 0.817602) rotate(0) translate(4 30)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="white" points="-4,5 -4,-30 781,-30 781,5 -4,5"/>
+<!-- Module -->
+<g id="node1" class="node"><title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-26 2.13163e-14,-26 0,-1.24345e-14 54,-3.55271e-15 54,-26"/>
+<text text-anchor="middle" x="27" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node"><title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="138,-26 72,-26 72,-1.24345e-14 138,-3.55271e-15 138,-26"/>
+<text text-anchor="middle" x="105" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Type -->
+<g id="node3" class="node"><title>Type</title>
+<polygon fill="#5cb85c" stroke="#5cb85c" points="210,-26 156,-26 156,-1.24345e-14 210,-3.55271e-15 210,-26"/>
+<text text-anchor="middle" x="183" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Type</text>
+</g>
+<!-- Subroutine -->
+<g id="node4" class="node"><title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="292,-26 228,-26 228,-1.24345e-14 292,-3.55271e-15 292,-26"/>
+<text text-anchor="middle" x="260" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node5" class="node"><title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="364,-26 310,-26 310,-1.24345e-14 364,-3.55271e-15 364,-26"/>
+<text text-anchor="middle" x="337" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Interface -->
+<g id="node6" class="node"><title>Interface</title>
+<polygon fill="#a7506f" stroke="#a7506f" points="436,-26 382,-26 382,-1.24345e-14 436,-3.55271e-15 436,-26"/>
+<text text-anchor="middle" x="409" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Interface</text>
+</g>
+<!-- Unknown Procedure Type -->
+<g id="node7" class="node"><title>Unknown Procedure Type</title>
+<polygon fill="#777777" stroke="#777777" points="590,-26 454,-26 454,-1.24345e-14 590,-3.55271e-15 590,-26"/>
+<text text-anchor="middle" x="522" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Unknown Procedure Type</text>
+</g>
+<!-- Program -->
+<g id="node8" class="node"><title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="662,-26 608,-26 608,-1.24345e-14 662,-3.55271e-15 662,-26"/>
+<text text-anchor="middle" x="635" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node9" class="node"><title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="776,-26 680,-26 680,-1.24345e-14 776,-3.55271e-15 776,-26"/>
+<text text-anchor="middle" x="728" y="-10.55" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+<h5>Module Graph</h5>
+<p>Solid arrows point from a parent (sub)module to the submodule which is
+descended from it. Dashed arrows point from a module being used to the
+module using it.</p>
+<h5>Type Graph</h5>
+<p>Solid arrows point from one derived type to another which extends
+(inherits from) it. Dashed arrows point from a derived type to another
+type containing it as a components, with a label listing the name(s) of
+said component(s).</p>
+<h5>Call Graph</h5>
+<p>Solid arrows point from a procedure to one which it calls. Dashed 
+arrows point from an interface to procedures which implement that interface.
+This could include the module procedures in a generic interface or the
+implementation in a submodule of an interface in a parent module.</p>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+     
+    <br>
+    
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="highlight"><pre>  <span class="k">elemental function </span><span class="n">normL2</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span> <span class="k">result</span><span class="p">(</span><span class="n">norm</span><span class="p">)</span>
+  <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+  <span class="c">!&lt; Compute the norm L2 of a vector.</span>
+  <span class="c">!&lt;</span>
+  <span class="c">!&lt; The norm L2 if defined as \( N = \sqrt {x^2  + y^2  + z^2 } \).</span>
+  <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+  <span class="k">type</span><span class="p">(</span><span class="n">Vector</span><span class="p">),</span> <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span> <span class="kd">::</span> <span class="n">vec</span>  <span class="c">!&lt; Vector.</span>
+  <span class="kt">real</span><span class="p">(</span><span class="n">R8P</span><span class="p">)</span>                <span class="kd">::</span> <span class="n">norm</span> <span class="c">!&lt; Norm L2.</span>
+  <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+
+  <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+  <span class="n">norm</span> <span class="o">=</span> <span class="nb">sqrt</span><span class="p">((</span><span class="n">vec</span><span class="p">%</span><span class="n">x</span><span class="o">*</span><span class="n">vec</span><span class="p">%</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">vec</span><span class="p">%</span><span class="n">y</span><span class="o">*</span><span class="n">vec</span><span class="p">%</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">vec</span><span class="p">%</span><span class="n">z</span><span class="o">*</span><span class="n">vec</span><span class="p">%</span><span class="n">z</span><span class="p">))</span>
+  <span class="k">return</span>
+  <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+  <span class="n">endfunction</span> <span class="n">normL2</span>
+</pre></div>
+
+    </section>
+    <br>
+    
+    
+    </div>
+  </div>
+
+    <hr>
+    <footer>
+        <div class="row">
+        <div class="col-md-6">&copy; 2015 VecFor was written by Stefano Zaghi. </div>
+        <div class="col-md-6"><span class="pull-right">Documentation generated by <a href="https://github.com/cmacmackin/ford">FORD</a>.</span></div>
+        </div>
+        <br>
+    </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],
+        'HTML-CSS': { 
+           styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: '#000000 ! important'} }
+        }
+      });
+    </script>
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  </body>
+</html>
