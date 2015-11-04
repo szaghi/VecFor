@@ -2,7 +2,7 @@
 program simple
 !< Simple regression test for VecFor library.
 use vecfor
-USE, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
+use, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
 implicit none
 type(vector) :: vector1 !< Vector dummy variable.
 type(vector) :: vector2 !< Vector dummy variable.

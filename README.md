@@ -46,13 +46,29 @@ A KISS pure Fortran OOD class for computing Vectorial (3D) algebra
 
 ## What is VecFor?
 
-To be written.
+VecFor is a user-friendly and Object-Oriented designed API for handling *vectors* in a (3D) three dimensional frame of reference. It exposes (among others) the *object* **Vector** that posses a far complete set of overloaded operators for performing vectorial calculus algebra.
+
+VecFor adheres to the [KISS](https://en.wikipedia.org/wiki/KISS_principle) concept: it is a pure Fortran (2003+) library coded into a single module file, `vecfor.F90`.
 
 Go to [Top](#top)
 
 ## Main features
 
-To be written.
++ [x] Pure Fortran implementation;
++ [x] KISS and user-friendly:
+    + [x] simple API (one main *object* plus few other *helpers*);
+    + [x] easy building and porting on heterogeneous architectures:
+        + [x] the vector components are defined as real with parametrized kind; the default kind parameter is set to be 64-bit-like finite precision (defined by means of the portable `select_real_kind` intrinsic function), but it can be easily changed at compile time;
++ [x] comprehensive (almost complete set of operators for vectorial calculus algebra);
+    + [x] all operators accept mixed type/kind arguments: vectors can be mixed with integers and reals of any kinds by means of generic interfaces with dynamic dispatch resolved at compile time;
++ [x] efficient and *non intrusive* (all object methods and operators are *pure* or *elemental*):
+    + [x] threads/processes safe;
++ [x] Tests-Driven Developed ([TDD](https://en.wikipedia.org/wiki/Test-driven_development));
++ [x] well documented:
+    + [x] complete [API](http://szaghi.github.io/VecFor/index.html) reference;
+    + [x] comprehensive [wiki](https://github.com/szaghi/VecFor/wiki):
++ [x] collaborative developed on [GitHub](https://github.com/szaghi/VecFor);
++ [x] [FOSS licensed](https://github.com/szaghi/VecFor/wiki/Copyrights);
 
 Any feature request is welcome.
 
@@ -81,6 +97,31 @@ Besides this README file the VecFor documentation is contained into its own [wik
 
 ### A Taste of VecFor
 
-To be written.
+VecFor allows a very simple, high-level implementation of vectorial calculus algebra:
+
+```fortran
+use vecfor ! load vector type and all helpers
+use, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
+type(vector) :: point1
+type(vector) :: point2
+type(vector) :: distance
+
+point1 = 1 * ex ! ex is the versor along x direction exposed by VecFor
+point2 = 1 * ex + 2 * ey ! ey is the versor along y direction exposed by VecFor
+distance = point2 - ponint1
+print "(A)", " Vectorial distance"
+call distance%print(unit=stdout)
+print "(A)", " Distance module"
+print*, distance%normL2()
+! expected output
+!   Vectorial distance
+!   Component x  0.000000000000000E+000
+!   Component y +0.200000000000000E+001
+!   Component z  0.000000000000000E+000
+!   Distance module
+!   +0.200000000000000E+001
+```
+
+As you can see from the above example, defining and using a *vector* become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a `type(vector)` variable instead of an hard coded `real, dimension(3)` array variable (or even more verbose and less clear `real :: x, y, z` variables for each vector...).
 
 Go to [Top](#top)
