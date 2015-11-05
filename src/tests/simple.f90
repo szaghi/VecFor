@@ -16,9 +16,15 @@ print "(A)", ' Assign vector2 = [-1, -2, -3]'
 vector2 = -1 * ex - 2 * ey - 3 * ez
 print "(A)", ' Verify auxiliary methods'
 print "(A,F5.1)", ' vector1%sq_norm() = ', vector1%sq_norm()
+print "(A,F5.1)", ' sq_norm(vector1) = ', sq_norm(vector1)
 print "(A,F5.1)", ' vector1%normL2() = ', vector1%normL2()
+print "(A,F5.1)", ' normL2(vector1) = ', normL2(vector1)
 print "(A)", ' normalized(vector1):'
 vector3 = vector1%normalized()
+call vector3%print(unit=stdout)
+print "(A)", 'call vector1%normalize():'
+vector3 = vector1
+call vector3%normalize()
 call vector3%print(unit=stdout)
 print "(A)", ' Verify dot product'
 print "(A,F5.1)", ' vector1.dot.ex = ', vector1.dot.ex
@@ -57,12 +63,19 @@ print "(A)", ' Assign vector3 = [0, -1, 0]'
 vector3 = -ey
 print "(A)", ' Assign vector4 = [-1, -1, 0]'
 vector4 = -ex - ey
-print "(A)", ' Face 1-2-3 normal:'
+print "(A)", ' Face 1-2-3 normal (stand alone procedure):'
 vector5 = face_normal3(pt1=vector1, pt2=vector2, pt3=vector3)
 call vector5%print(unit=stdout)
-print "(A)", ' Face 1-2-3-4 normal: '
+print "(A)", ' Face 1-2-3 normal (type bound method):'
+call vector5%face_normal3(pt1=vector1, pt2=vector2, pt3=vector3)
+call vector5%print(unit=stdout)
+print "(A)", ' Face 1-2-3-4 normal (stand alone procedure): '
 vector5 = face_normal4(pt1=vector1, pt2=vector2, pt3=vector3, pt4=vector4)
 call vector5%print(unit=stdout)
+print "(A)", ' Face 1-2-3-4 normal (type bound method):'
+call vector5%face_normal4(pt1=vector1, pt2=vector2, pt3=vector3, pt4=vector4)
+call vector5%print(unit=stdout)
+print "(A,I3)", ' IO length of vector1 = ', vector1%iolen()
 
 stop
 endprogram simple

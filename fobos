@@ -163,6 +163,7 @@ help            = Build VecFor library in static release coverage mode with GNU 
 compiler        = gnu
 cflags          = $CSTATIC_GNU $OPTIMIZE
 lflags          = $OPTIMIZE
+preproc         = -Dr16p
 coverage        = True
 cflags_heritage = True
 build_dir       = ./build/lib/
@@ -188,14 +189,16 @@ rule_3 = cp -r doc/html/publish/* doc/html/
 help   = Rule for performing coverage analysis
 rule_1 = FoBiS.py build -f src/tests/fobos -mode gnu-coverage
 rule_2 = ./build/tests/simple
+rule_3 = ./build/tests/kinds
 
 [rule-coverage-analysis]
 help   = Rule for performing coverage analysis and saving reports in markdown
 rule_1 = FoBiS.py build -f src/tests/fobos -mode gnu-coverage
 rule_2 = ./build/tests/simple
-rule_3 = gcov -o ./build/lib/obj/ src/lib/vecfor.f90
-rule_4 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
-rule_5 = rm -f *.gcov
+rule_3 = ./build/tests/kinds
+rule_4 = gcov -o ./build/lib/obj/ src/lib/vecfor.f90
+rule_5 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
+rule_6 = rm -f *.gcov
 
 [rule-deldoc]
 help = Rule for deleting documentation

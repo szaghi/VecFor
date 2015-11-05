@@ -85,6 +85,7 @@ help            = Build test in release coverage mode with GNU gfortran
 compiler        = gnu
 cflags          = $CSTATIC_GNU $OPTIMIZE
 lflags          = $OPTIMIZE
+preproc         = -Dr16p
 coverage        = True
 cflags_heritage = True
 build_dir       = build/tests/
