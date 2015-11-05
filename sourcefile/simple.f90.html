@@ -66,7 +66,7 @@
             <li><a href="../lists/types.html">Derived Types</a></li>
 				
 				
-            <li><a href="../program/simple.html">Program</a></li>
+            <li><a href="../lists/programs.html">Programs</a></li>
 				
           </ul>
         
@@ -160,6 +160,8 @@
     <div class="panel-heading text-left"><h3 class="panel-title">All Source Files</h3></div>
     <div class="list-group">
       
+      <a class="list-group-item" href="../sourcefile/kinds.f90.html">kinds.f90</a>
+      
       <a class="list-group-item" href="../sourcefile/simple.f90.html">simple.f90</a>
       
       <a class="list-group-item" href="../sourcefile/vecfor.f90.html">vecfor.F90</a>
@@ -192,9 +194,15 @@
 <span class="n">vector2</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ey</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">ez</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify auxiliary methods&#39;</span>
 <span class="k">print</span> <span class="s2">&quot;(A,F5.1)&quot;</span><span class="p">,</span> <span class="s1">&#39; vector1%sq_norm() = &#39;</span><span class="p">,</span> <span class="n">vector1</span><span class="p">%</span><span class="n">sq_norm</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">&quot;(A,F5.1)&quot;</span><span class="p">,</span> <span class="s1">&#39; sq_norm(vector1) = &#39;</span><span class="p">,</span> <span class="n">sq_norm</span><span class="p">(</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,F5.1)&quot;</span><span class="p">,</span> <span class="s1">&#39; vector1%normL2() = &#39;</span><span class="p">,</span> <span class="n">vector1</span><span class="p">%</span><span class="n">normL2</span><span class="p">()</span>
+<span class="k">print</span> <span class="s2">&quot;(A,F5.1)&quot;</span><span class="p">,</span> <span class="s1">&#39; normL2(vector1) = &#39;</span><span class="p">,</span> <span class="n">normL2</span><span class="p">(</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; normalized(vector1):&#39;</span>
 <span class="n">vector3</span> <span class="o">=</span> <span class="n">vector1</span><span class="p">%</span><span class="n">normalized</span><span class="p">()</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39;call vector1%normalize():&#39;</span>
+<span class="n">vector3</span> <span class="o">=</span> <span class="n">vector1</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="n">normalize</span><span class="p">()</span>
 <span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify dot product&#39;</span>
 <span class="k">print</span> <span class="s2">&quot;(A,F5.1)&quot;</span><span class="p">,</span> <span class="s1">&#39; vector1.dot.ex = &#39;</span><span class="p">,</span> <span class="n">vector1</span><span class="p">.</span><span class="n">dot</span><span class="p">.</span><span class="n">ex</span>
@@ -233,12 +241,19 @@
 <span class="n">vector3</span> <span class="o">=</span> <span class="o">-</span><span class="n">ey</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Assign vector4 = [-1, -1, 0]&#39;</span>
 <span class="n">vector4</span> <span class="o">=</span> <span class="o">-</span><span class="n">ex</span> <span class="o">-</span> <span class="n">ey</span>
-<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3 normal:&#39;</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3 normal (stand alone procedure):&#39;</span>
 <span class="n">vector5</span> <span class="o">=</span> <span class="n">face_normal3</span><span class="p">(</span><span class="n">pt1</span><span class="o">=</span><span class="n">vector1</span><span class="p">,</span> <span class="n">pt2</span><span class="o">=</span><span class="n">vector2</span><span class="p">,</span> <span class="n">pt3</span><span class="o">=</span><span class="n">vector3</span><span class="p">)</span>
 <span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
-<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3-4 normal: &#39;</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3 normal (type bound method):&#39;</span>
+<span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="n">face_normal3</span><span class="p">(</span><span class="n">pt1</span><span class="o">=</span><span class="n">vector1</span><span class="p">,</span> <span class="n">pt2</span><span class="o">=</span><span class="n">vector2</span><span class="p">,</span> <span class="n">pt3</span><span class="o">=</span><span class="n">vector3</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3-4 normal (stand alone procedure): &#39;</span>
 <span class="n">vector5</span> <span class="o">=</span> <span class="n">face_normal4</span><span class="p">(</span><span class="n">pt1</span><span class="o">=</span><span class="n">vector1</span><span class="p">,</span> <span class="n">pt2</span><span class="o">=</span><span class="n">vector2</span><span class="p">,</span> <span class="n">pt3</span><span class="o">=</span><span class="n">vector3</span><span class="p">,</span> <span class="n">pt4</span><span class="o">=</span><span class="n">vector4</span><span class="p">)</span>
 <span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Face 1-2-3-4 normal (type bound method):&#39;</span>
+<span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="n">face_normal4</span><span class="p">(</span><span class="n">pt1</span><span class="o">=</span><span class="n">vector1</span><span class="p">,</span> <span class="n">pt2</span><span class="o">=</span><span class="n">vector2</span><span class="p">,</span> <span class="n">pt3</span><span class="o">=</span><span class="n">vector3</span><span class="p">,</span> <span class="n">pt4</span><span class="o">=</span><span class="n">vector4</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector5</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A,I3)&quot;</span><span class="p">,</span> <span class="s1">&#39; IO length of vector1 = &#39;</span><span class="p">,</span> <span class="n">vector1</span><span class="p">%</span><span class="n">iolen</span><span class="p">()</span>
 
 <span class="k">stop</span>
 <span class="n">endprogram</span> <span class="n">simple</span>
