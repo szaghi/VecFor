@@ -182,7 +182,6 @@
 <span class="c">!&lt;</span>
 <span class="c">!&lt; Try to test the algebra of mixed vector/numbers for all supported kinds.</span>
 <span class="k">use </span><span class="n">vecfor</span>
-<span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span><span class="kd">::</span> <span class="n">ISO_FORTRAN_ENV</span><span class="p">,</span> <span class="n">only</span><span class="p">:</span> <span class="n">stdout</span> <span class="o">=&gt;</span> <span class="n">OUTPUT_UNIT</span>
 <span class="k">implicit none</span>
 <span class="cp">#ifdef r16p</span>
 <span class="kt">integer</span><span class="p">,</span>       <span class="k">parameter</span> <span class="kd">::</span> <span class="n">R16P</span>     <span class="o">=</span> <span class="nb">selected_real_kind</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span><span class="mi">4931</span><span class="p">)</span> <span class="c">!&lt; 33  digits, range \([10^{-4931}, 10^{+4931} - 1]\); 128 bits.</span>
@@ -197,6 +196,7 @@
 <span class="kt">integer</span><span class="p">,</span>       <span class="k">parameter</span> <span class="kd">::</span> <span class="n">I1P</span>      <span class="o">=</span> <span class="nb">selected_int_kind</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>        <span class="c">!&lt; Range \([-2^{7} ,+2^{7}  - 1]\), 3  digits plus sign; 8  bits.</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>             <span class="kd">::</span> <span class="n">vector1</span>                                <span class="c">!&lt; Vector dummy variable.</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>             <span class="kd">::</span> <span class="n">vector2</span>                                <span class="c">!&lt; Vector dummy variable.</span>
+<span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>             <span class="kd">::</span> <span class="n">vector3</span>                                <span class="c">!&lt; Vector dummy variable.</span>
 
 <span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="n">set</span><span class="p">(</span><span class="n">x</span><span class="o">=-</span><span class="mf">1._R8P</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mf">1._R8P</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="mf">1._R8P</span><span class="p">)</span>
 <span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="n">init</span><span class="p">()</span>
@@ -225,10 +225,10 @@
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">*</span> <span class="mi">1_I4P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">*</span> <span class="mi">1_I2P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">*</span> <span class="mi">1_I1P</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify * operator between vectors, vector1 * vector2&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">*</span> <span class="n">vector2</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify / operator, diveded by 1 defined in any supported number formats&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="mf">1._R16P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="mf">1._R8P</span>
@@ -237,10 +237,10 @@
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="mi">1_I4P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="mi">1_I2P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="mi">1_I1P</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify / operator between vectors, vector1 / vector2&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">/</span> <span class="n">vector2</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify + operator, add 1 (14 times) defined in any supported number formats&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="mf">1._R16P</span> <span class="o">+</span> <span class="n">vector1</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="mf">1._R8P</span> <span class="o">+</span> <span class="n">vector1</span>
@@ -257,10 +257,10 @@
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">+</span> <span class="mi">1_I4P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">+</span> <span class="mi">1_I2P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">+</span> <span class="mi">1_I1P</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify + operator between vectors, vector1 + vector2&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">+</span> <span class="n">vector2</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify - operator, subtract 1 (14 times) defined in any supported number formats&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="mf">1._R16P</span> <span class="o">-</span> <span class="n">vector1</span>
 <span class="n">vector1</span> <span class="o">=-</span><span class="mf">1._R8P</span> <span class="o">-</span> <span class="n">vector1</span>
@@ -277,16 +277,25 @@
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">-</span> <span class="mi">1_I4P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">-</span> <span class="mi">1_I2P</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">-</span> <span class="mi">1_I1P</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify - operator between vectors, vector1 - vector2&#39;</span>
 <span class="n">vector1</span> <span class="o">=</span> <span class="n">vector1</span> <span class="o">-</span> <span class="n">vector2</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify save/load methods&#39;</span>
 <span class="k">open</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;UNFORMATTED&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;SCRATCH&#39;</span><span class="p">)</span>
 <span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">save</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="n">load</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">rewind</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="n">load</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="k">close</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="k">print</span>
+<span class="n">vector3</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify save/load methods with stream-accessed file&#39;</span>
+<span class="k">open</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;UNFORMATTED&#39;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s1">&#39;SCRATCH&#39;</span><span class="p">,</span> <span class="nb">access</span><span class="o">=</span><span class="s1">&#39;STREAM&#39;</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector1</span><span class="p">%</span><span class="k">save</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1_I8P</span><span class="p">)</span>
+<span class="k">rewind</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="n">load</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="mi">1_I8P</span><span class="p">)</span>
+<span class="k">close</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">call </span><span class="n">vector3</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify &lt; operator, compare with 1 (and vector2) defined in any supported number formats&#39;</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1&lt;1._R16P =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">&lt;</span><span class="mf">1._R16P</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1&lt;1._R8P  =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">&lt;</span><span class="mf">1._R8P</span> <span class="p">)</span>
@@ -335,6 +344,7 @@
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;1_I2P  ==vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1_I2P</span>  <span class="o">==</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;1_I1P  ==vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1_I1P</span>  <span class="o">==</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1==vector2 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">==</span><span class="n">vector2</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1==-vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">==-</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify /= operator, compare with 1 (and vector2) defined in any supported number formats&#39;</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1/=1._R16P =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">/=</span><span class="mf">1._R16P</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1/=1._R8P  =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">/=</span><span class="mf">1._R8P</span> <span class="p">)</span>
@@ -351,6 +361,7 @@
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;1_I2P  /=vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1_I2P</span>  <span class="o">/=</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;1_I1P  /=vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1_I1P</span>  <span class="o">/=</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1/=vector2 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">/=</span><span class="n">vector2</span><span class="p">)</span>
+<span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1/=-vector1 =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">/=-</span><span class="n">vector1</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s1">&#39; Verify &gt;= operator, compare with 1 (and vector2) defined in any supported number formats&#39;</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1&gt;=1._R16P =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">&gt;=</span><span class="mf">1._R16P</span><span class="p">)</span>
 <span class="k">print</span> <span class="s2">&quot;(A,L1)&quot;</span><span class="p">,</span> <span class="s1">&#39;vector1&gt;=1._R8P  =&gt; &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">vector1</span><span class="o">&gt;=</span><span class="mf">1._R8P</span> <span class="p">)</span>

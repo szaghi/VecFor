@@ -993,7 +993,7 @@ private function <a href='../proc/iolen_vector_self.html'>iolen_vector_self</a>(
          
     
     <h3>
-private subroutine <a href='../proc/load_vector_self.html'>load_vector_self</a>(vec, pos, iostat, iomsg, unit)
+private subroutine <a href='../proc/load_vector_self.html'>load_vector_self</a>(vec, unit, pos, iostat, iomsg)
     
     
     
@@ -1033,6 +1033,21 @@ private subroutine <a href='../proc/load_vector_self.html'>load_vector_self</a>(
   
 <tr>
   
+  <td><span class="anchor" ></span>integer(kind=I4P),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
   <td><span class="anchor" ></span>integer(kind=I8P),</td>
   <td>intent(in),</td>
   <td>optional</td>
@@ -1069,21 +1084,6 @@ private subroutine <a href='../proc/load_vector_self.html'>load_vector_self</a>(
   
   <td></td><td>::</td>
   <td><strong>iomsg</strong></td><td><p>IO error message.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer(kind=I4P),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -1123,7 +1123,7 @@ private subroutine <a href='../proc/load_vector_self.html'>load_vector_self</a>(
          
     
     <h3>
-private subroutine <a href='../proc/save_vector_self.html'>save_vector_self</a>(vec, pos, iostat, iomsg, unit)
+private subroutine <a href='../proc/save_vector_self.html'>save_vector_self</a>(vec, unit, pos, iostat, iomsg)
     
     
     
@@ -1154,6 +1154,21 @@ private subroutine <a href='../proc/save_vector_self.html'>save_vector_self</a>(
   
   <td></td><td>::</td>
   <td><strong>vec</strong></td><td><p>Vector data.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=I4P),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -1202,21 +1217,6 @@ private subroutine <a href='../proc/save_vector_self.html'>save_vector_self</a>(
   
 </tr>
 
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer(kind=I4P),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
-  
-</tr>
-
 </tbody>
 </table>
 
@@ -1253,7 +1253,7 @@ private subroutine <a href='../proc/save_vector_self.html'>save_vector_self</a>(
          
     
     <h3>
-private subroutine <a href='../proc/print_vector_self.html'>print_vector_self</a>(vec, pref, iostat, iomsg, unit)
+private subroutine <a href='../proc/print_vector_self.html'>print_vector_self</a>(vec, unit, pref, iostat, iomsg)
     
     
     
@@ -1284,6 +1284,21 @@ private subroutine <a href='../proc/print_vector_self.html'>print_vector_self</a
   
   <td></td><td>::</td>
   <td><strong>vec</strong></td><td><p>Vector.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>integer(kind=I4P),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -1329,21 +1344,6 @@ private subroutine <a href='../proc/print_vector_self.html'>print_vector_self</a
   
   <td></td><td>::</td>
   <td><strong>iomsg</strong></td><td><p>IO error message.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>integer(kind=I4P),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -1690,7 +1690,7 @@ private elementalfunction <a href='../proc/normalized_self.html'>normalized_self
          
     
     <h3>
-private elementalsubroutine <a href='../proc/face_normal4_self.html'>face_normal4_self</a>(fnormal, norm, pt1, pt2, pt3, pt4)
+private elementalsubroutine <a href='../proc/face_normal4_self.html'>face_normal4_self</a>(fnormal, pt1, pt2, pt3, pt4, norm)
     
     
     
@@ -1721,21 +1721,6 @@ private elementalsubroutine <a href='../proc/face_normal4_self.html'>face_normal
   
   <td></td><td>::</td>
   <td><strong>fnormal</strong></td><td><p>Face normal.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>character(len=1),</td>
-  <td>intent(in),</td>
-  <td>optional</td>
-  
-  <td></td><td>::</td>
-  <td><strong>norm</strong></td><td><p>If 'norm' is passed as argument the normal is normalized.</p></td>
   
 </tr>
 
@@ -1799,6 +1784,21 @@ private elementalsubroutine <a href='../proc/face_normal4_self.html'>face_normal
   
 </tr>
 
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=1),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>norm</strong></td><td><p>If 'norm' is passed as argument the normal is normalized.</p></td>
+  
+</tr>
+
 </tbody>
 </table>
 
@@ -1835,7 +1835,7 @@ private elementalsubroutine <a href='../proc/face_normal4_self.html'>face_normal
          
     
     <h3>
-private elementalsubroutine <a href='../proc/face_normal3_self.html'>face_normal3_self</a>(fnormal, norm, pt1, pt2, pt3)
+private elementalsubroutine <a href='../proc/face_normal3_self.html'>face_normal3_self</a>(fnormal, pt1, pt2, pt3, norm)
     
     
     
@@ -1866,21 +1866,6 @@ private elementalsubroutine <a href='../proc/face_normal3_self.html'>face_normal
   
   <td></td><td>::</td>
   <td><strong>fnormal</strong></td><td><p>Face normal.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" ></span>character(len=1),</td>
-  <td>intent(in),</td>
-  <td>optional</td>
-  
-  <td></td><td>::</td>
-  <td><strong>norm</strong></td><td><p>If 'norm' is passed as argument the normal is normalized.</p></td>
   
 </tr>
 
@@ -1926,6 +1911,21 @@ private elementalsubroutine <a href='../proc/face_normal3_self.html'>face_normal
   
   <td></td><td>::</td>
   <td><strong>pt3</strong></td><td><p>Third face point.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" ></span>character(len=1),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>norm</strong></td><td><p>If 'norm' is passed as argument the normal is normalized.</p></td>
   
 </tr>
 

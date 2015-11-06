@@ -4,7 +4,6 @@ program kinds
 !<
 !< Try to test the algebra of mixed vector/numbers for all supported kinds.
 use vecfor
-use, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
 implicit none
 #ifdef r16p
 integer,       parameter :: R16P     = selected_real_kind(33,4931) !< 33  digits, range \([10^{-4931}, 10^{+4931} - 1]\); 128 bits.
@@ -19,6 +18,7 @@ integer,       parameter :: I2P      = selected_int_kind(4)        !< Range \([-
 integer,       parameter :: I1P      = selected_int_kind(2)        !< Range \([-2^{7} ,+2^{7}  - 1]\), 3  digits plus sign; 8  bits.
 type(vector)             :: vector1                                !< Vector dummy variable.
 type(vector)             :: vector2                                !< Vector dummy variable.
+type(vector)             :: vector3                                !< Vector dummy variable.
 
 call vector1%set(x=-1._R8P, y=-1._R8P, z=-1._R8P)
 call vector1%init()
@@ -47,10 +47,10 @@ vector1 = vector1 * 1_I8P
 vector1 = vector1 * 1_I4P
 vector1 = vector1 * 1_I2P
 vector1 = vector1 * 1_I1P
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify * operator between vectors, vector1 * vector2'
 vector1 = vector1 * vector2
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify / operator, diveded by 1 defined in any supported number formats'
 vector1 = vector1 / 1._R16P
 vector1 = vector1 / 1._R8P
@@ -59,10 +59,10 @@ vector1 = vector1 / 1_I8P
 vector1 = vector1 / 1_I4P
 vector1 = vector1 / 1_I2P
 vector1 = vector1 / 1_I1P
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify / operator between vectors, vector1 / vector2'
 vector1 = vector1 / vector2
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify + operator, add 1 (14 times) defined in any supported number formats'
 vector1 = 1._R16P + vector1
 vector1 = 1._R8P + vector1
@@ -79,10 +79,10 @@ vector1 = vector1 + 1_I8P
 vector1 = vector1 + 1_I4P
 vector1 = vector1 + 1_I2P
 vector1 = vector1 + 1_I1P
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify + operator between vectors, vector1 + vector2'
 vector1 = vector1 + vector2
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify - operator, subtract 1 (14 times) defined in any supported number formats'
 vector1 = 1._R16P - vector1
 vector1 =-1._R8P - vector1
@@ -99,16 +99,25 @@ vector1 = vector1 - 1_I8P
 vector1 = vector1 - 1_I4P
 vector1 = vector1 - 1_I2P
 vector1 = vector1 - 1_I1P
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify - operator between vectors, vector1 - vector2'
 vector1 = vector1 - vector2
-call vector1%print(unit=stdout)
+call vector1%print
 print "(A)", ' Verify save/load methods'
 open(unit=2, form='UNFORMATTED', status='SCRATCH')
 call vector1%save(unit=2)
-call vector1%load(unit=2)
+rewind(unit=2)
+call vector3%load(unit=2)
 close(unit=2)
-call vector1%print(unit=stdout)
+call vector3%print
+vector3 = 0
+print "(A)", ' Verify save/load methods with stream-accessed file'
+open(unit=2, form='UNFORMATTED', status='SCRATCH', access='STREAM')
+call vector1%save(unit=2, pos=1_I8P)
+rewind(unit=2)
+call vector3%load(unit=2, pos=1_I8P)
+close(unit=2)
+call vector3%print
 print "(A)", ' Verify < operator, compare with 1 (and vector2) defined in any supported number formats'
 print "(A,L1)", 'vector1<1._R16P => ', (vector1<1._R16P)
 print "(A,L1)", 'vector1<1._R8P  => ', (vector1<1._R8P )
@@ -157,6 +166,7 @@ print "(A,L1)", '1_I4P  ==vector1 => ', (1_I4P  ==vector1)
 print "(A,L1)", '1_I2P  ==vector1 => ', (1_I2P  ==vector1)
 print "(A,L1)", '1_I1P  ==vector1 => ', (1_I1P  ==vector1)
 print "(A,L1)", 'vector1==vector2 => ', (vector1==vector2)
+print "(A,L1)", 'vector1==-vector1 => ', (vector1==-vector1)
 print "(A)", ' Verify /= operator, compare with 1 (and vector2) defined in any supported number formats'
 print "(A,L1)", 'vector1/=1._R16P => ', (vector1/=1._R16P)
 print "(A,L1)", 'vector1/=1._R8P  => ', (vector1/=1._R8P )
@@ -173,6 +183,7 @@ print "(A,L1)", '1_I4P  /=vector1 => ', (1_I4P  /=vector1)
 print "(A,L1)", '1_I2P  /=vector1 => ', (1_I2P  /=vector1)
 print "(A,L1)", '1_I1P  /=vector1 => ', (1_I1P  /=vector1)
 print "(A,L1)", 'vector1/=vector2 => ', (vector1/=vector2)
+print "(A,L1)", 'vector1/=-vector1 => ', (vector1/=-vector1)
 print "(A)", ' Verify >= operator, compare with 1 (and vector2) defined in any supported number formats'
 print "(A,L1)", 'vector1>=1._R16P => ', (vector1>=1._R16P)
 print "(A,L1)", 'vector1>=1._R8P  => ', (vector1>=1._R8P )

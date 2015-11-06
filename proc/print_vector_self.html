@@ -131,6 +131,8 @@
       
       <a class="list-group-item" href="../proc/print_vector_self.html#variable-prefd">prefd</a>
       
+      <a class="list-group-item" href="../proc/print_vector_self.html#variable-unitd">unitd</a>
+      
       <a class="list-group-item" href="../proc/print_vector_self.html#variable-iostatd%7E3">iostatd</a>
       
       <a class="list-group-item" href="../proc/print_vector_self.html#variable-iomsgd%7E3">iomsgd</a>
@@ -535,7 +537,7 @@
     
     <div class="col-lg-9" id='text'>
     <h2>
-private subroutine print_vector_self(vec, pref, iostat, iomsg, unit)
+private subroutine print_vector_self(vec, unit, pref, iostat, iomsg)
     
     
     
@@ -569,6 +571,21 @@ private subroutine print_vector_self(vec, pref, iostat, iomsg, unit)
   
   <td></td><td>::</td>
   <td><strong>vec</strong></td><td><p>Vector.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-unit%7E3"></span>integer(kind=I4P),</td>
+  <td>intent(in),</td>
+  <td>optional</td>
+  
+  <td></td><td>::</td>
+  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -614,21 +631,6 @@ private subroutine print_vector_self(vec, pref, iostat, iomsg, unit)
   
   <td></td><td>::</td>
   <td><strong>iomsg</strong></td><td><p>IO error message.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" id="variable-unit%7E3"></span>integer(kind=I4P),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -799,6 +801,20 @@ implementation in a submodule of an interface in a parent module.</p>
   
 <tr>
   
+  <td><span class="anchor" id="variable-unitd"></span>integer(kind=I4P),</td>
+  
+  <td>public</td>
+  <td></td><td>::</td>
+  <td><strong>unitd</strong></td><td></td><td></td><td><p>Logic unit.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
   <td><span class="anchor" id="variable-iostatd%7E3"></span>integer(kind=I4P),</td>
   
   <td>public</td>
@@ -918,25 +934,27 @@ elementalfunction str(n) result(str_)
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre>  <span class="k">subroutine </span><span class="n">print_vector_self</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">iostat</span><span class="p">,</span> <span class="n">iomsg</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <div class="highlight"><pre>  <span class="k">subroutine </span><span class="n">print_vector_self</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">iostat</span><span class="p">,</span> <span class="n">iomsg</span><span class="p">)</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
   <span class="c">!&lt; Print in a pretty ascii format the components of type Vector.</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
   <span class="k">class</span><span class="p">(</span><span class="n">Vector</span><span class="p">),</span>          <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">vec</span>     <span class="c">!&lt; Vector.</span>
+  <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">unit</span>    <span class="c">!&lt; Logic unit.</span>
   <span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">pref</span>    <span class="c">!&lt; Prefixing string for outputs.</span>
   <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span> <span class="kd">::</span> <span class="n">iostat</span>  <span class="c">!&lt; IO error.</span>
   <span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span> <span class="kd">::</span> <span class="n">iomsg</span>   <span class="c">!&lt; IO error message.</span>
-  <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span>           <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>  <span class="kd">::</span> <span class="n">unit</span>    <span class="c">!&lt; Logic unit.</span>
   <span class="kt">character</span><span class="p">(</span><span class="nb">len</span><span class="o">=</span><span class="p">:),</span> <span class="k">allocatable</span>       <span class="kd">::</span> <span class="n">prefd</span>   <span class="c">!&lt; Prefixing string.</span>
+  <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">)</span>                        <span class="kd">::</span> <span class="n">unitd</span>   <span class="c">!&lt; Logic unit.</span>
   <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">)</span>                        <span class="kd">::</span> <span class="n">iostatd</span> <span class="c">!&lt; IO error.</span>
   <span class="kt">character</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>                      <span class="kd">::</span> <span class="n">iomsgd</span>  <span class="c">!&lt; Temporary variable for IO error message.</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
 
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
+  <span class="n">unitd</span> <span class="o">=</span> <span class="n">stdout</span> <span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">unit</span><span class="p">))</span> <span class="n">unitd</span> <span class="o">=</span> <span class="n">unit</span>
   <span class="n">prefd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">pref</span><span class="p">))</span> <span class="n">prefd</span> <span class="o">=</span> <span class="n">pref</span>
-  <span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component x &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">x</span><span class="p">)</span>
-  <span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component y &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">y</span><span class="p">)</span>
-  <span class="k">write</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span><span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component z &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">z</span><span class="p">)</span>
+  <span class="k">write</span><span class="p">(</span><span class="n">unitd</span><span class="p">,</span> <span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component x &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">x</span><span class="p">)</span>
+  <span class="k">write</span><span class="p">(</span><span class="n">unitd</span><span class="p">,</span> <span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component y &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">y</span><span class="p">)</span>
+  <span class="k">write</span><span class="p">(</span><span class="n">unitd</span><span class="p">,</span> <span class="s1">&#39;(A)&#39;</span><span class="p">,</span> <span class="n">iostat</span><span class="o">=</span><span class="n">iostatd</span><span class="p">,</span> <span class="n">iomsg</span><span class="o">=</span><span class="n">iomsgd</span><span class="p">)</span><span class="n">pref</span><span class="o">//</span><span class="s1">&#39; Component z &#39;</span><span class="o">//</span><span class="n">str</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">vec</span><span class="p">%</span><span class="n">z</span><span class="p">)</span>
   <span class="k">if</span> <span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">iostat</span><span class="p">))</span> <span class="n">iostat</span> <span class="o">=</span> <span class="n">iostatd</span>
   <span class="k">if</span> <span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">iomsg</span><span class="p">))</span>  <span class="n">iomsg</span>  <span class="o">=</span> <span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">iomsgd</span><span class="p">))</span>
   <span class="k">return</span>

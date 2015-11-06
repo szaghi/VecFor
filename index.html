@@ -194,18 +194,34 @@
 <h2 id="documentation"><a class="toclink" href="#documentation">Documentation</a></h2>
 <p>Besides this README file the VecFor documentation is contained into its own <a href="https://github.com/szaghi/VecFor/wiki">wiki</a>. Detailed documentation of the API is contained into the <a href="http://szaghi.github.io/VecFor/index.html">GitHub Pages</a> that can also be created locally by means of <a href="https://github.com/cmacmackin/ford">ford tool</a>.</p>
 <h3 id="a-taste-of-vecfor"><a class="toclink" href="#a-taste-of-vecfor">A Taste of VecFor</a></h3>
-<p>VecFor allows a very simple, high-level implementation of vectorial calculus algebra:</p>
+<p>VecFor allows a very simple, high-level implementation of vectorial calculus algebra.</p>
+<h4 id="import-vecfor"><a class="toclink" href="#import-vecfor">Import VecFor</a></h4>
 <div class="codehilite"><pre><span class="k">use </span><span class="n">vecfor</span> <span class="c">! load vector type and all helpers</span>
-<span class="k">use</span><span class="p">,</span> <span class="k">intrinsic</span><span class="kd">::</span> <span class="n">ISO_FORTRAN_ENV</span><span class="p">,</span> <span class="n">only</span><span class="p">:</span> <span class="n">stdout</span> <span class="o">=&gt;</span> <span class="n">OUTPUT_UNIT</span>
-<span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point1</span>
+</pre></div>
+
+
+<h4 id="define-some-vector-variables"><a class="toclink" href="#define-some-vector-variables">Define some vector variables</a></h4>
+<div class="codehilite"><pre><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point1</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point2</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">distance</span>
+</pre></div>
 
-<span class="n">point1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="c">! ex is the versor along x direction exposed by VecFor</span>
+
+<h4 id="initialize-vectors-by-high-level-math-like-syntax"><a class="toclink" href="#initialize-vectors-by-high-level-math-like-syntax">Initialize vectors by high-level math-like syntax</a></h4>
+<div class="codehilite"><pre><span class="n">point1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="c">! ex is the versor along x direction exposed by VecFor</span>
 <span class="n">point2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ey</span> <span class="c">! ey is the versor along y direction exposed by VecFor</span>
-<span class="n">distance</span> <span class="o">=</span> <span class="n">point2</span> <span class="o">-</span> <span class="n">ponint1</span>
-<span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Vectorial distance&quot;</span>
-<span class="k">call </span><span class="n">distance</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">unit</span><span class="o">=</span><span class="n">stdout</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Note that <em>ex</em>, <em>ey</em> and <em>ez</em> are the Cartesian versors exposed by VecFor.</p>
+<h4 id="perform-vectorial-calculus-algebra"><a class="toclink" href="#perform-vectorial-calculus-algebra">Perform vectorial calculus algebra</a></h4>
+<div class="codehilite"><pre><span class="n">distance</span> <span class="o">=</span> <span class="n">point2</span> <span class="o">-</span> <span class="n">ponint1</span>
+</pre></div>
+
+
+<h4 id="use-helper-methods-to-simplify-your-life"><a class="toclink" href="#use-helper-methods-to-simplify-your-life">Use helper methods to simplify your life</a></h4>
+<div class="codehilite"><pre><span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Vectorial distance&quot;</span>
+<span class="k">call </span><span class="n">distance</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Distance module&quot;</span>
 <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="n">distance</span><span class="p">%</span><span class="n">normL2</span><span class="p">()</span>
 <span class="c">! expected output</span>
@@ -218,7 +234,7 @@
 </pre></div>
 
 
-<p>As you can see from the above example, defining and using a <em>vector</em> become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a <code>type(vector)</code> variable instead of an hard coded <code>real, dimension(3)</code> array variable (or even more verbose and less clear <code>real :: x, y, z</code> variables for each vector&hellip;).</p>
+<p>As you can see from the above example, defining and using a <em>vector</em> become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a <code>type(vector)</code> variable instead of an <em>hard-coded</em> <code>real, dimension(3)</code> array variable (or even more verbose and less clear <code>real :: x, y, z</code> variables for each vector&hellip;).</p>
 <p>Go to <a href="#top">Top</a></p>
         </div>
 		  

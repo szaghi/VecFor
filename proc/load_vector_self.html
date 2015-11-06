@@ -523,7 +523,7 @@
     
     <div class="col-lg-9" id='text'>
     <h2>
-private subroutine load_vector_self(vec, pos, iostat, iomsg, unit)
+private subroutine load_vector_self(vec, unit, pos, iostat, iomsg)
     
     
     
@@ -557,6 +557,21 @@ private subroutine load_vector_self(vec, pos, iostat, iomsg, unit)
   
   <td></td><td>::</td>
   <td><strong>vec</strong></td><td><p>Vector data.</p></td>
+  
+</tr>
+
+  
+  
+  
+  
+<tr>
+  
+  <td><span class="anchor" id="variable-unit"></span>integer(kind=I4P),</td>
+  <td>intent(in)</td>
+  <td></td>
+  
+  <td></td><td>::</td>
+  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -602,21 +617,6 @@ private subroutine load_vector_self(vec, pos, iostat, iomsg, unit)
   
   <td></td><td>::</td>
   <td><strong>iomsg</strong></td><td><p>IO error message.</p></td>
-  
-</tr>
-
-  
-  
-  
-  
-<tr>
-  
-  <td><span class="anchor" id="variable-unit"></span>integer(kind=I4P),</td>
-  <td>intent(in)</td>
-  <td></td>
-  
-  <td></td><td>::</td>
-  <td><strong>unit</strong></td><td><p>Logic unit.</p></td>
   
 </tr>
 
@@ -696,15 +696,15 @@ private subroutine load_vector_self(vec, pos, iostat, iomsg, unit)
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="highlight"><pre>  <span class="k">subroutine </span><span class="n">load_vector_self</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">iostat</span><span class="p">,</span> <span class="n">iomsg</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+    <div class="highlight"><pre>  <span class="k">subroutine </span><span class="n">load_vector_self</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">iostat</span><span class="p">,</span> <span class="n">iomsg</span><span class="p">)</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
   <span class="c">!&lt; Load Vector data.</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
   <span class="k">class</span><span class="p">(</span><span class="n">Vector</span><span class="p">),</span>          <span class="k">intent</span><span class="p">(</span><span class="n">INOUT</span><span class="p">)</span> <span class="kd">::</span> <span class="n">vec</span>     <span class="c">!&lt; Vector data.</span>
+  <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span>           <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>    <span class="kd">::</span> <span class="n">unit</span>    <span class="c">!&lt; Logic unit.</span>
   <span class="kt">integer</span><span class="p">(</span><span class="n">I8P</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>    <span class="kd">::</span> <span class="n">pos</span>     <span class="c">!&lt; Position specifier.</span>
   <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span>   <span class="kd">::</span> <span class="n">iostat</span>  <span class="c">!&lt; IO error.</span>
   <span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span> <span class="k">optional</span><span class="p">,</span> <span class="k">intent</span><span class="p">(</span><span class="n">OUT</span><span class="p">)</span>   <span class="kd">::</span> <span class="n">iomsg</span>   <span class="c">!&lt; IO error message.</span>
-  <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">),</span>           <span class="k">intent</span><span class="p">(</span><span class="n">IN</span><span class="p">)</span>    <span class="kd">::</span> <span class="n">unit</span>    <span class="c">!&lt; Logic unit.</span>
   <span class="kt">integer</span><span class="p">(</span><span class="n">I4P</span><span class="p">)</span>                          <span class="kd">::</span> <span class="n">iostatd</span> <span class="c">!&lt; IO error.</span>
   <span class="kt">character</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>                        <span class="kd">::</span> <span class="n">iomsgd</span>  <span class="c">!&lt; Temporary variable for IO error message.</span>
   <span class="c">!---------------------------------------------------------------------------------------------------------------------------------</span>
