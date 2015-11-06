@@ -97,20 +97,38 @@ Besides this README file the VecFor documentation is contained into its own [wik
 
 ### A Taste of VecFor
 
-VecFor allows a very simple, high-level implementation of vectorial calculus algebra:
+VecFor allows a very simple, high-level implementation of vectorial calculus algebra.
+
+#### Import VecFor
 
 ```fortran
 use vecfor ! load vector type and all helpers
-use, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
+```
+
+#### Define some vector variables
+
+```fortran
 type(vector) :: point1
 type(vector) :: point2
 type(vector) :: distance
+```
 
+#### Initialize vectors by high-level math-like syntax
+```fortran
 point1 = 1 * ex ! ex is the versor along x direction exposed by VecFor
 point2 = 1 * ex + 2 * ey ! ey is the versor along y direction exposed by VecFor
+```
+Note that *ex*, *ey* and *ez* are the Cartesian versors exposed by VecFor.
+
+#### Perform vectorial calculus algebra
+```fortran
 distance = point2 - ponint1
+```
+
+#### Use helper methods to simplify your life
+```fortran
 print "(A)", " Vectorial distance"
-call distance%print(unit=stdout)
+call distance%print
 print "(A)", " Distance module"
 print*, distance%normL2()
 ! expected output
@@ -122,6 +140,6 @@ print*, distance%normL2()
 !   +0.200000000000000E+001
 ```
 
-As you can see from the above example, defining and using a *vector* become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a `type(vector)` variable instead of an hard coded `real, dimension(3)` array variable (or even more verbose and less clear `real :: x, y, z` variables for each vector...).
+As you can see from the above example, defining and using a *vector* become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a `type(vector)` variable instead of an *hard-coded* `real, dimension(3)` array variable (or even more verbose and less clear `real :: x, y, z` variables for each vector...).
 
 Go to [Top](#top)

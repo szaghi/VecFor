@@ -6,10 +6,11 @@ module VecFor
 !< parametrized kind as defined by the library module. The components are defined in a three-dimensional cartesian frame of
 !< reference.
 !< All the vectorial math procedures (cross, dot products, parallel...) assume a three-dimensional cartesian frame of reference.
-!< The operators of assignment (=), multiplication (*), division (/), sum (+) and subtraction (-) have been overloaded.
+!< The operators of assignment (`=`), multiplication (`*`), division (`/`), sum (`+`) and subtraction (`-`) have been overloaded.
 !< Furthermore the *dot* and *cross* products have been defined.
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 !-----------------------------------------------------------------------------------------------------------------------------------
+use, intrinsic:: ISO_FORTRAN_ENV, only: stdout => OUTPUT_UNIT
 !-----------------------------------------------------------------------------------------------------------------------------------
 
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -364,7 +365,7 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endfunction normalize
 
-  elemental function face_normal4(norm, pt1, pt2, pt3, pt4) result(fnormal)
+  elemental function face_normal4(pt1, pt2, pt3, pt4, norm) result(fnormal)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Calculate the normal of the face defined by 4 points vector pt1, pt2, pt3 and pt4.
   !<
@@ -380,11 +381,11 @@ contains
   !< The normal is calculated by the cross product of the diagonal d13 for the diagonal d24: d13 x d24.
   !< The normal is normalized if the variable *norm* is passed (with any value).
   !---------------------------------------------------------------------------------------------------------------------------------
-  character(1), intent(IN), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector), intent(IN)           :: pt1     !< First face point.
   type(Vector), intent(IN)           :: pt2     !< Second face point.
   type(Vector), intent(IN)           :: pt3     !< Third face point.
   type(Vector), intent(IN)           :: pt4     !< Fourth face point.
+  character(1), intent(IN), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector)                       :: fnormal !< Face normal.
   type(Vector)                       :: d13     !< Face 1-3 diagonal.
   type(Vector)                       :: d24     !< Face 2-4 diagonal.
@@ -402,7 +403,7 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endfunction face_normal4
 
-  elemental function face_normal3(norm, pt1, pt2, pt3) result(fnormal)
+  elemental function face_normal3(pt1, pt2, pt3, norm) result(fnormal)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Calculate the normal of the face defined by the 3 points vector pt1, pt2 and pt3.
   !<
@@ -418,10 +419,10 @@ contains
   !< The normal is calculated by the cross product of the side s12 for the side s13: s12 x s13.
   !< The normal is normalized if the variable 'norm' is passed (with any value).
   !---------------------------------------------------------------------------------------------------------------------------------
-  character(1), intent(IN), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector), intent(IN)           :: pt1     !< First face point.
   type(Vector), intent(IN)           :: pt2     !< Second face point.
   type(Vector), intent(IN)           :: pt3     !< Third face point.
+  character(1), intent(IN), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector)                       :: fnormal !< Face normal.
   type(Vector)                       :: s12     !< Face 1-2 diagonals.
   type(Vector)                       :: s13     !< Face 1-3 diagonals.
@@ -486,15 +487,15 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endfunction iolen_vector_self
 
-  subroutine load_vector_self(vec, pos, iostat, iomsg, unit)
+  subroutine load_vector_self(vec, unit, pos, iostat, iomsg)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Load Vector data.
   !---------------------------------------------------------------------------------------------------------------------------------
   class(Vector),          intent(INOUT) :: vec     !< Vector data.
+  integer(I4P),           intent(IN)    :: unit    !< Logic unit.
   integer(I8P), optional, intent(IN)    :: pos     !< Position specifier.
   integer(I4P), optional, intent(OUT)   :: iostat  !< IO error.
   character(*), optional, intent(OUT)   :: iomsg   !< IO error message.
-  integer(I4P),           intent(IN)    :: unit    !< Logic unit.
   integer(I4P)                          :: iostatd !< IO error.
   character(500)                        :: iomsgd  !< Temporary variable for IO error message.
   !---------------------------------------------------------------------------------------------------------------------------------
@@ -511,15 +512,15 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endsubroutine load_vector_self
 
-  subroutine save_vector_self(vec, pos, iostat, iomsg, unit)
+  subroutine save_vector_self(vec, unit, pos, iostat, iomsg)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Save Vector data.
   !---------------------------------------------------------------------------------------------------------------------------------
   class(Vector),          intent(IN)  :: vec     !< Vector data.
+  integer(I4P),           intent(IN)  :: unit    !< Logic unit.
   integer(I8P), optional, intent(IN)  :: pos     !< Position specifier.
   integer(I4P), optional, intent(OUT) :: iostat  !< IO error.
   character(*), optional, intent(OUT) :: iomsg   !< IO error message.
-  integer(I4P),           intent(IN)  :: unit    !< Logic unit.
   integer(I4P)                        :: iostatd !< IO error.
   character(500)                      :: iomsgd  !< Temporary variable for IO error message.
   !---------------------------------------------------------------------------------------------------------------------------------
@@ -536,25 +537,27 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endsubroutine save_vector_self
 
-  subroutine print_vector_self(vec, pref, iostat, iomsg, unit)
+  subroutine print_vector_self(vec, unit, pref, iostat, iomsg)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Print in a pretty ascii format the components of type Vector.
   !---------------------------------------------------------------------------------------------------------------------------------
   class(Vector),          intent(IN)  :: vec     !< Vector.
+  integer(I4P), optional, intent(IN)  :: unit    !< Logic unit.
   character(*), optional, intent(IN)  :: pref    !< Prefixing string for outputs.
   integer(I4P), optional, intent(OUT) :: iostat  !< IO error.
   character(*), optional, intent(OUT) :: iomsg   !< IO error message.
-  integer(I4P),           intent(IN)  :: unit    !< Logic unit.
   character(len=:), allocatable       :: prefd   !< Prefixing string.
+  integer(I4P)                        :: unitd   !< Logic unit.
   integer(I4P)                        :: iostatd !< IO error.
   character(500)                      :: iomsgd  !< Temporary variable for IO error message.
   !---------------------------------------------------------------------------------------------------------------------------------
 
   !---------------------------------------------------------------------------------------------------------------------------------
+  unitd = stdout ; if (present(unit)) unitd = unit
   prefd = '' ; if (present(pref)) prefd = pref
-  write(unit,'(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component x '//str(n=vec%x)
-  write(unit,'(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component y '//str(n=vec%y)
-  write(unit,'(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component z '//str(n=vec%z)
+  write(unitd, '(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component x '//str(n=vec%x)
+  write(unitd, '(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component y '//str(n=vec%y)
+  write(unitd, '(A)', iostat=iostatd, iomsg=iomsgd)pref//' Component z '//str(n=vec%z)
   if (present(iostat)) iostat = iostatd
   if (present(iomsg))  iomsg  = trim(adjustl(iomsgd))
   return
@@ -655,7 +658,7 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endfunction normL2_self
 
-  elemental subroutine face_normal4_self(fnormal, norm, pt1, pt2, pt3, pt4)
+  elemental subroutine face_normal4_self(fnormal, pt1, pt2, pt3, pt4, norm)
   !< Calculate the normal of the face defined by 4 points vector pt1, pt2, pt3 and pt4.
   !<
   !< The convention for the points numeration is the following:
@@ -671,11 +674,11 @@ contains
   !< The normal is normalized if the variable *norm* is passed (with any value).
   !---------------------------------------------------------------------------------------------------------------------------------
   class(Vector),          intent(INOUT) :: fnormal !< Face normal.
-  character(1), optional, intent(IN)    :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector),           intent(IN)    :: pt1     !< First face point.
   type(Vector),           intent(IN)    :: pt2     !< Second face point.
   type(Vector),           intent(IN)    :: pt3     !< Third face point.
   type(Vector),           intent(IN)    :: pt4     !< Fourth face point.
+  character(1), optional, intent(IN)    :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector)                          :: d13     !< Face 1-3 diagonals.
   type(Vector)                          :: d24     !< Face 2-4 diagonals.
   !---------------------------------------------------------------------------------------------------------------------------------
@@ -692,7 +695,7 @@ contains
   !---------------------------------------------------------------------------------------------------------------------------------
   endsubroutine face_normal4_self
 
-  elemental subroutine face_normal3_self(fnormal, norm, pt1, pt2, pt3)
+  elemental subroutine face_normal3_self(fnormal, pt1, pt2, pt3, norm)
   !---------------------------------------------------------------------------------------------------------------------------------
   !< Calculate the normal of the face defined by the 3 points vector pt1, pt2 and pt3.
   !<
@@ -709,10 +712,10 @@ contains
   !< The normal is normalized if the variable *norm* is passed (with any value).
   !---------------------------------------------------------------------------------------------------------------------------------
   class(Vector),          intent(INOUT) :: fnormal !< Face normal.
-  character(1), optional, intent(IN)    :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector),           intent(IN)    :: pt1     !< First face point.
   type(Vector),           intent(IN)    :: pt2     !< Second face point.
   type(Vector),           intent(IN)    :: pt3     !< Third face point.
+  character(1), optional, intent(IN)    :: norm    !< If 'norm' is passed as argument the normal is normalized.
   type(Vector)                          :: s12     !< Face 1-2 diagonals.
   type(Vector)                          :: s13     !< Face 1-3 diagonals.
   !---------------------------------------------------------------------------------------------------------------------------------
