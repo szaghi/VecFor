@@ -108,7 +108,7 @@
 		  
           <h1>VecFor</h1>
           <p><a name="top"></a></p>
-<h1 id="vecfor"><a href="https://gitter.im/szaghi/VecFor?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/szaghi/VecFor" src="https://badges.gitter.im/Join%20Chat.svg"></a><a class="toclink" href="#vecfor">VecFor <a href=""><img alt="GitHub tag" src="https://img.shields.io/github/tag/szaghi/VecFor.svg"></a> </a></h1>
+<h1 id="vecfor"><a class="toclink" href="#vecfor">VecFor <a href=""><img alt="GitHub tag" src="https://img.shields.io/github/tag/szaghi/VecFor.svg"></a> <a href="https://gitter.im/szaghi/VecFor?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/szaghi/VecFor" src="https://badges.gitter.im/Join%20Chat.svg"></a></a></h1>
 <p><a href=""><img alt="License" src="https://img.shields.io/badge/license-GNU%20GeneraL%20Public%20License%20v3,%20GPLv3-blue.svg"></a>
 <a href=""><img alt="License" src="https://img.shields.io/badge/license-BSD2-red.svg"></a>
 <a href=""><img alt="License" src="https://img.shields.io/badge/license-BSD3-red.svg"></a>
@@ -196,31 +196,31 @@
 <h3 id="a-taste-of-vecfor"><a class="toclink" href="#a-taste-of-vecfor">A Taste of VecFor</a></h3>
 <p>VecFor allows a very simple, high-level implementation of vectorial calculus algebra.</p>
 <h4 id="import-vecfor"><a class="toclink" href="#import-vecfor">Import VecFor</a></h4>
-<div class="codehilite"><pre><span class="k">use </span><span class="n">vecfor</span> <span class="c">! load vector type and all helpers</span>
+<div class="codehilite"><pre><span></span><span class="k">use </span><span class="n">vecfor</span> <span class="c">! load vector type and all helpers</span>
 </pre></div>
 
 
 <h4 id="define-some-vector-variables"><a class="toclink" href="#define-some-vector-variables">Define some vector variables</a></h4>
-<div class="codehilite"><pre><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point1</span>
+<div class="codehilite"><pre><span></span><span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point1</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">point2</span>
 <span class="k">type</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="kd">::</span> <span class="n">distance</span>
 </pre></div>
 
 
 <h4 id="initialize-vectors-by-high-level-math-like-syntax"><a class="toclink" href="#initialize-vectors-by-high-level-math-like-syntax">Initialize vectors by high-level math-like syntax</a></h4>
-<div class="codehilite"><pre><span class="n">point1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="c">! ex is the versor along x direction exposed by VecFor</span>
+<div class="codehilite"><pre><span></span><span class="n">point1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="c">! ex is the versor along x direction exposed by VecFor</span>
 <span class="n">point2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">ex</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ey</span> <span class="c">! ey is the versor along y direction exposed by VecFor</span>
 </pre></div>
 
 
 <p>Note that <em>ex</em>, <em>ey</em> and <em>ez</em> are the Cartesian versors exposed by VecFor.</p>
 <h4 id="perform-vectorial-calculus-algebra"><a class="toclink" href="#perform-vectorial-calculus-algebra">Perform vectorial calculus algebra</a></h4>
-<div class="codehilite"><pre><span class="n">distance</span> <span class="o">=</span> <span class="n">point2</span> <span class="o">-</span> <span class="n">ponint1</span>
+<div class="codehilite"><pre><span></span><span class="n">distance</span> <span class="o">=</span> <span class="n">point2</span> <span class="o">-</span> <span class="n">ponint1</span>
 </pre></div>
 
 
 <h4 id="use-helper-methods-to-simplify-your-life"><a class="toclink" href="#use-helper-methods-to-simplify-your-life">Use helper methods to simplify your life</a></h4>
-<div class="codehilite"><pre><span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Vectorial distance&quot;</span>
+<div class="codehilite"><pre><span></span><span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Vectorial distance&quot;</span>
 <span class="k">call </span><span class="n">distance</span><span class="p">%</span><span class="k">print</span>
 <span class="k">print</span> <span class="s2">&quot;(A)&quot;</span><span class="p">,</span> <span class="s2">&quot; Distance module&quot;</span>
 <span class="k">print</span><span class="o">*</span><span class="p">,</span> <span class="n">distance</span><span class="p">%</span><span class="n">normL2</span><span class="p">()</span>
@@ -698,11 +698,18 @@
 
     <hr>
     <footer>
-        <div class="row">
-        <div class="col-md-6">&copy; 2015 VecFor was written by Stefano Zaghi. </div>
-        <div class="col-md-6"><span class="pull-right">Documentation generated by <a href="https://github.com/cmacmackin/ford">FORD</a>.</span></div>
+      <div class="row">
+        <div class="col-md-4">&copy; 2016 </div>
+        <div class="col-md-4"><span class="text-center"> VecFor was developed by Stefano Zaghi</span></div>
+        <div class="col-md-4">
+          <span class="pull-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+            
+          </span>
         </div>
-        <br>
+      </div>
+      <br>
     </footer>
     </div> <!-- /container -->
 
@@ -730,6 +737,6 @@
         }
       });
     </script>
-    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   </body>
 </html>

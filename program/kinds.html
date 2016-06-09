@@ -120,35 +120,38 @@
   <div class="row">
     <div class="col-lg-3">
     
+<div id="sidebar">
   
   
   
   <div class="panel panel-primary">
-    <div class="panel-heading text-left"><h3 class="panel-title">Variables</h3></div>
-    <div class="list-group">
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-r16p%7E2">R16P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-r16p%7E3">R16P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-r8p%7E2">R8P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-r4p%7E2">R4P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-i8p%7E2">I8P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-i4p%7E2">I4P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-i2p%7E2">I2P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-i1p%7E2">I1P</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-vector1">vector1</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-vector2">vector2</a>
-      
-      <a class="list-group-item" href="../program/kinds.html#variable-vector3">vector3</a>
-      
+    <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#vars">Variables</a></h3></div>
+    <div id="vars" class="panel-collapse collapse">
+      <div class="list-group">
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-r16p%7E2">R16P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-r16p%7E3">R16P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-r8p%7E2">R8P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-r4p%7E2">R4P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-i8p%7E2">I8P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-i4p%7E2">I4P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-i2p%7E2">I2P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-i1p%7E2">I1P</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-vector1">vector1</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-vector2">vector2</a>
+        
+        <a class="list-group-item" href="../program/kinds.html#variable-vector3">vector3</a>
+        
+      </div>
     </div>
   </div>
   
@@ -180,17 +183,20 @@
   <hr>
   
   <div class="panel panel-default">
-    <div class="panel-heading text-left"><h3 class="panel-title">All Programs</h3></div>
-    <div class="list-group">
-      
-      <a class="list-group-item" href="../program/kinds.html">kinds</a>
-      
-      <a class="list-group-item" href="../program/simple.html">simple</a>
-      
+    <div class="panel-heading text-left"><h3 class="panel-title"><a data-toggle="collapse" href="#allprogs">All Programs</a></h3></div>
+    <div id="allprogs" class="panel-collapse collapse">
+        <div class="list-group">
+          
+          <a class="list-group-item" href="../program/kinds.html">kinds</a>
+          
+          <a class="list-group-item" href="../program/simple.html">simple</a>
+          
+        </div>
     </div>
   </div>
   
-  
+</div>
+
     </div>
     
     <div class="col-lg-9" id='text'>
@@ -230,8 +236,8 @@
 </g>
 <!-- module~vecfor&#45;&gt;program~kinds -->
 <g id="edge4" class="edge"><title>module~vecfor&#45;&gt;program~kinds</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M178.003,-13C186.028,-13 194.967,-13 203.531,-13"/>
-<polygon fill="black" stroke="black" points="203.705,-16.5001 213.705,-13 203.705,-9.5001 203.705,-16.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M178.003,-13C186.028,-13 194.967,-13 203.531,-13"/>
+<polygon fill="#000000" stroke="#000000" points="203.705,-16.5001 213.705,-13 203.705,-9.5001 203.705,-16.5001"/>
 </g>
 <!-- iso_fortran_env -->
 <g id="node3" class="node"><title>iso_fortran_env</title>
@@ -242,8 +248,8 @@
 </g>
 <!-- iso_fortran_env&#45;&gt;module~vecfor -->
 <g id="edge2" class="edge"><title>iso_fortran_env&#45;&gt;module~vecfor</title>
-<path fill="none" stroke="black" stroke-dasharray="5,2" d="M87.521,-13C96.1455,-13 105.129,-13 113.531,-13"/>
-<polygon fill="black" stroke="black" points="113.792,-16.5001 123.792,-13 113.792,-9.5001 113.792,-16.5001"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M87.521,-13C96.1455,-13 105.129,-13 113.531,-13"/>
+<polygon fill="#000000" stroke="#000000" points="113.792,-16.5001 123.792,-13 113.792,-9.5001 113.792,-16.5001"/>
 </g>
 </g>
 </svg>
@@ -318,6 +324,8 @@ Nodes of different colours represent the following:
 </g>
 </svg>
 
+Where possible, edges connecting nodes are given different colours to make them
+easier to distinguish in large graphs.
 <h5>Module Graph</h5>
 <p>Solid arrows point from a parent (sub)module to the submodule which is
 descended from it. Dashed arrows point from a module being used to the
@@ -367,7 +375,7 @@ implementation in a submodule of an interface in a parent module.</p>
   
   
   <td>parameter</td><td>::</td>
-  <td><strong>R16P</strong></td><td> =</td><td>selected_real_kind(33,4931)</td><td><p>33  digits, range \([10^{-4931}, 10^{+4931} - 1]\); 128 bits.</p></td>
+  <td><strong>R16P</strong></td><td> =</td><td>selected_real_kind(33, 4931)</td><td><p>33  digits, range \([10^{-4931}, 10^{+4931} - 1]\); 128 bits.</p></td>
   
 </tr>
 
@@ -381,7 +389,7 @@ implementation in a submodule of an interface in a parent module.</p>
   
   
   <td>parameter</td><td>::</td>
-  <td><strong>R16P</strong></td><td> =</td><td>selected_real_kind(15,307)</td><td><p>Defined as R8P; 64 bits.</p></td>
+  <td><strong>R16P</strong></td><td> =</td><td>selected_real_kind(15, 307)</td><td><p>Defined as R8P; 64 bits.</p></td>
   
 </tr>
 
@@ -395,7 +403,7 @@ implementation in a submodule of an interface in a parent module.</p>
   
   
   <td>parameter</td><td>::</td>
-  <td><strong>R8P</strong></td><td> =</td><td>selected_real_kind(15,307)</td><td><p>15  digits, range \([10^{-307} , 10^{+307}  - 1]\); 64 bits.</p></td>
+  <td><strong>R8P</strong></td><td> =</td><td>selected_real_kind(15, 307)</td><td><p>15  digits, range \([10^{-307} , 10^{+307}  - 1]\); 64 bits.</p></td>
   
 </tr>
 
@@ -409,7 +417,7 @@ implementation in a submodule of an interface in a parent module.</p>
   
   
   <td>parameter</td><td>::</td>
-  <td><strong>R4P</strong></td><td> =</td><td>selected_real_kind(6,37)</td><td><p>6   digits, range \([10^{-37}  , 10^{+37}   - 1]\); 32 bits.</p></td>
+  <td><strong>R4P</strong></td><td> =</td><td>selected_real_kind(6, 37)</td><td><p>6   digits, range \([10^{-37}  , 10^{+37}   - 1]\); 32 bits.</p></td>
   
 </tr>
 
@@ -534,7 +542,7 @@ implementation in a submodule of an interface in a parent module.</p>
     
     <section>
     <h2 id="src">Source Code</h2>
-    <div class="highlight"><pre><span class="k">program </span><span class="n">kinds</span>
+    <div class="highlight"><pre><span></span><span class="k">program </span><span class="n">kinds</span>
 <span class="c">!&lt; Kinds regression test for VecFor library.</span>
 <span class="c">!&lt;</span>
 <span class="c">!&lt; Try to test the algebra of mixed vector/numbers for all supported kinds.</span>
@@ -764,11 +772,18 @@ implementation in a submodule of an interface in a parent module.</p>
 
     <hr>
     <footer>
-        <div class="row">
-        <div class="col-md-6">&copy; 2015 VecFor was written by Stefano Zaghi. </div>
-        <div class="col-md-6"><span class="pull-right">Documentation generated by <a href="https://github.com/cmacmackin/ford">FORD</a>.</span></div>
+      <div class="row">
+        <div class="col-md-4">&copy; 2016 </div>
+        <div class="col-md-4"><span class="text-center"> VecFor was developed by Stefano Zaghi</span></div>
+        <div class="col-md-4">
+          <span class="pull-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+            
+          </span>
         </div>
-        <br>
+      </div>
+      <br>
     </footer>
     </div> <!-- /container -->
 
@@ -796,6 +811,6 @@ implementation in a submodule of an interface in a parent module.</p>
         }
       });
     </script>
-    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
   </body>
 </html>
