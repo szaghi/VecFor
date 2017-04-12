@@ -38,8 +38,6 @@
 
 # special directories and files
 doc/html/
-external/lib/
-references/
-wiki/
+exe/
 get_automatic_changelog.sh
-papers/announcement/errors_analysis/results-oscillation/*lay
+wiki/
