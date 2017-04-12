@@ -22,7 +22,9 @@ addons:
 env:
   global:
     - MAKECOVERAGE="FoBiS.py rule -ex makecoverage"
-    - MAKEDOC="./makedoc.sh szaghi/VecFor"
+    - MAKEDOC="./scripts/makedoc.sh szaghi/VecFor"
+    - CLEAN="FoBiS.py rule -ex clean"
+    - MAKETAR="FoBiS.py rule -ex maketar"
 
 before_install:
   - git submodule update --init
@@ -50,3 +52,20 @@ after_success:
   - find . -name '*.gcno' -print
   - bash <(curl -s https://codecov.io/bash)
   - $MAKEDOC
+
+before_deploy:
+  - $CLEAN
+  - $MAKETAR
+  - mv VecFor.tar.gz VecFor-$TRAVIS_TAG.tar.gz
+
+deploy:
+  provider: releases
+  api_key:
+    secure: ap3lAk6Bx+GqINVsHlbONIZbeqo0IjVPQ5zMYST5f2Gc+WzzI6WUKmtFtjjNprYVT6yrWE/aHVhtMRPanierW97E5jt4WMZyIY8LOKJ4Fb6PRFVqVYK/RHOiyulOj4llJ0bv7o8qd6n9gbDr/RCzJC13osdCDdpIOjcH3kGiZdffl+nENCwTtZs4qm5WagijH67jPhfWe27sSwNiGVA/xHEDMLcYJUWoND921Np0qA0/YGSjy5YQvvpsDRBJ8IWPuYZVdGYT33VyD2Uv8YhkUzozsTi8Tbxi8yz5TV1PyD7Ds8TliyCSySZjJ0pQLQ/McGUSxZJWDTCGj+buI3CBdsV3vCjTqWZg745wIIsNyytizPXOsCBGs4LVr3f5tDvsKI3YAyRTYcaTMALyOPpO7+StGX422sU0W+8291FUDK47I8eBmFORq5PuuwT9IIh2sLGd81f14uPIYCIA4IE7197KhNw3FFFWGEG6SrbJWpudABe502q0jZU84BOueyDmEc0Syo7ida8ipc0Xo46iUfnlHLGGmtyAfkHSDs82btOT3/Wwyo2lVJml/SSR8LL/BD5E5+W4Nx/OX46JflGEBpbANamY7ZszE60TCH/OFLHsI5b7qw7zOhTuYdpV0XURW4PpougF3fbsng7x8zOsW+mRaiQAtVqwripqWL2VSD0=
+  file: 
+    - VecFor-$TRAVIS_TAG.tar.gz
+    - ./scripts/install.sh
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tags: true
