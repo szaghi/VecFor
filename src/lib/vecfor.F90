@@ -20,6 +20,7 @@ public :: sq_norm
 public :: normL2
 public :: normalize
 public :: face_normal3, face_normal4
+public :: distance_to_plane
 public :: vector
 
 type :: vector
@@ -28,33 +29,34 @@ type :: vector
   real(R_P) :: y = 0._R_P !< Cartesian component in y direction.
   real(R_P) :: z = 0._R_P !< Cartesian component in z direction.
   contains
-    procedure :: init            => init_vector_self  ! Procedure for initializing vector components.
-    procedure :: set             => set_vector_self   ! Procedure for setting vector components.
-    procedure :: iolen           => iolen_vector_self ! Procedure for computing IO length.
-    procedure :: load            => load_vector_self  ! Procedure for loading Vector data.
-    procedure :: save            => save_vector_self  ! Procedure for saving Vector data.
-    procedure :: print           => print_vector_self ! Procedure for printing vector components with a "pretty" format.
-    procedure :: sq_norm         => sq_norm_self      ! Procedure for computing the square of the norm of a vector.
-    procedure :: normL2          => normL2_self       ! Procedure for computing the norm L2 of a vector.
-    procedure :: normalize       => normalize_self    ! Procedure for normalizing a vector.
-    procedure :: normalized      => normalized_self   ! Procedure for obtaining a normalized copy of a vector.
-    procedure :: face_normal4    => face_normal4_self ! Procedure for calculating the normal of the face defined by 4 points vector.
-    procedure :: face_normal3    => face_normal3_self ! Procedure for calculating the normal of the face defined by 3 points vector.
-    generic :: operator(.cross.) => crossproduct      ! Procedure for computing the cross product of 2 vectors.
-    generic :: operator(.dot.)   => dotproduct        ! Procedure for computing the scalar (dot) product of 2 vectors.
-    generic :: operator(.paral.) => parallel          ! Procedure for computing the component of vec1 parallel to vec2.
-    generic :: operator(.ortho.) => orthogonal        ! Procedure for computign the component of vec1 orthogonal to vec2.
+    procedure :: init              => init_vector_self       ! Initialize vector components.
+    procedure :: set               => set_vector_self        ! Set vector components.
+    procedure :: iolen             => iolen_vector_self      ! Compute IO length.
+    procedure :: load              => load_vector_self       ! Load vector data.
+    procedure :: save              => save_vector_self       ! Save vector data.
+    procedure :: print             => print_vector_self      ! Print vector components with a "pretty" format.
+    procedure :: sq_norm           => sq_norm_self           ! Compute the square of the norm of a vector.
+    procedure :: normL2            => normL2_self            ! Compute the norm L2 of a vector.
+    procedure :: normalize         => normalize_self         ! Normalize a vector.
+    procedure :: normalized        => normalized_self        ! Return a normalized copy of a vector.
+    procedure :: face_normal4      => face_normal4_self      ! Calculate the normal of the face defined by 4 points vector.
+    procedure :: face_normal3      => face_normal3_self      ! Calculate the normal of the face defined by 3 points vector.
+    procedure :: distance_to_plane => distance_to_plane_self ! Calculate the normal of the face defined by 3 points vector.
+    generic :: operator(.cross.)   => crossproduct           ! Compute the cross product of 2 vectors.
+    generic :: operator(.dot.)     => dotproduct             ! Compute the scalar (dot) product of 2 vectors.
+    generic :: operator(.paral.)   => parallel               ! Compute the component of vec1 parallel to vec2.
+    generic :: operator(.ortho.)   => orthogonal             ! Compute the component of vec1 orthogonal to vec2.
     procedure, pass(vec1), private :: crossproduct
     procedure, pass(vec1), private :: dotproduct
     procedure, pass(vec1), private :: parallel
     procedure, pass(vec1), private :: orthogonal
     ! operators overloading
     generic :: assignment(=) => assign_self,    &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                                 assign_ScalR16P,&
 #endif
                                 assign_ScalR8P,assign_ScalR4P,assign_ScalI8P,assign_ScalI4P,assign_ScalI2P,assign_ScalI1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: assign_ScalR16P
 #endif
     procedure, pass(self1), private :: assign_self
@@ -65,12 +67,12 @@ type :: vector
     procedure, pass(self ), private :: assign_ScalI2P
     procedure, pass(self ), private :: assign_ScalI1P
     generic                         :: operator(*) => self_mul_self,                                                               &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              ScalR16P_mul_self,self_mul_ScalR16P,                                                                  &
 #endif
                              ScalR8P_mul_self,self_mul_ScalR8P,ScalR4P_mul_self,self_mul_ScalR4P,ScalI8P_mul_self,self_mul_ScalI8P,&
                              ScalI4P_mul_self,self_mul_ScalI4P,ScalI2P_mul_self,self_mul_ScalI2P,ScalI1P_mul_self,self_mul_ScalI1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: ScalR16P_mul_self
     procedure, pass(self ), private :: self_mul_ScalR16P
 #endif
@@ -88,11 +90,11 @@ type :: vector
     procedure, pass(self ), private :: self_mul_ScalI2P
     procedure, pass(self ), private :: self_mul_ScalI1P
     generic :: operator(/) => self_div_self,    &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              self_div_ScalR16P,&
 #endif
                              self_div_ScalR8P,self_div_ScalR4P,self_div_ScalI8P,self_div_ScalI4P,self_div_ScalI2P,self_div_ScalI1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: self_div_ScalR16P
 #endif
     procedure, pass(self1), private :: self_div_self
@@ -103,12 +105,12 @@ type :: vector
     procedure, pass(self ), private :: self_div_ScalI2P
     procedure, pass(self ), private :: self_div_ScalI1P
     generic :: operator(+) => positive_self,self_sum_self,                                                                         &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              ScalR16P_sum_self,self_sum_ScalR16P,                                                                  &
 #endif
                              ScalR8P_sum_self,self_sum_ScalR8P,ScalR4P_sum_self,self_sum_ScalR4P,ScalI8P_sum_self,self_sum_ScalI8P,&
                              ScalI4P_sum_self,self_sum_ScalI4P,ScalI2P_sum_self,self_sum_ScalI2P,ScalI1P_sum_self,self_sum_ScalI1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: ScalR16P_sum_self
     procedure, pass(self ), private :: self_sum_ScalR16P
 #endif
@@ -127,12 +129,12 @@ type :: vector
     procedure, pass(self ), private :: self_sum_ScalI2P
     procedure, pass(self ), private :: self_sum_ScalI1P
     generic :: operator(-) => negative_self,self_sub_self,                                                                         &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              ScalR16P_sub_self,self_sub_ScalR16P,                                                                  &
 #endif
                              ScalR8P_sub_self,self_sub_ScalR8P,ScalR4P_sub_self,self_sub_ScalR4P,ScalI8P_sub_self,self_sub_ScalI8P,&
                              ScalI4P_sub_self,self_sub_ScalI4P,ScalI2P_sub_self,self_sub_ScalI2P,ScalI1P_sub_self,self_sub_ScalI1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: ScalR16P_sub_self
     procedure, pass(self ), private :: self_sub_ScalR16P
 #endif
@@ -151,44 +153,44 @@ type :: vector
     procedure, pass(self ), private :: self_sub_ScalI2P
     procedure, pass(self ), private :: self_sub_ScalI1P
     generic :: operator(/=) => self_not_eq_self,                                                                              &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                               R16P_not_eq_self,self_not_eq_R16P,                                                              &
 #endif
                               R8P_not_eq_self,self_not_eq_R8P,R4P_not_eq_self,self_not_eq_R4P,I8P_not_eq_self,self_not_eq_I8P,&
                               I4P_not_eq_self,self_not_eq_I4P,I2P_not_eq_self,self_not_eq_I2P,I1P_not_eq_self,self_not_eq_I1P
     generic :: operator(<) => self_low_self,                                                               &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              R16P_low_self,self_low_R16P,                                                  &
 #endif
                              R8P_low_self,self_low_R8P,R4P_low_self,self_low_R4P,I8P_low_self,self_low_I8P,&
                              I4P_low_self,self_low_I4P,I2P_low_self,self_low_I2P,I1P_low_self,self_low_I1P
 
     generic :: operator(<=) => self_low_eq_self,                                                                              &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                               R16P_low_eq_self,self_low_eq_R16P,                                                              &
 #endif
                               R8P_low_eq_self,self_low_eq_R8P,R4P_low_eq_self,self_low_eq_R4P,I8P_low_eq_self,self_low_eq_I8P,&
                               I4P_low_eq_self,self_low_eq_I4P,I2P_low_eq_self,self_low_eq_I2P,I1P_low_eq_self,self_low_eq_I1P
     generic :: operator(==) => self_eq_self,                                                          &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                               R16P_eq_self,self_eq_R16P,                                              &
 #endif
                               R8P_eq_self,self_eq_R8P,R4P_eq_self,self_eq_R4P,I8P_eq_self,self_eq_I8P,&
                               I4P_eq_self,self_eq_I4P,I2P_eq_self,self_eq_I2P,I1P_eq_self,self_eq_I1P
     generic:: operator(>=) => self_great_eq_self,                                                                       &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                               R16P_great_eq_self,self_great_eq_R16P,                                                    &
 #endif
                               R8P_great_eq_self,self_great_eq_R8P,R4P_great_eq_self,self_great_eq_R4P,I8P_great_eq_self,&
                               self_great_eq_I8P,I4P_great_eq_self,self_great_eq_I4P,I2P_great_eq_self,self_great_eq_I2P,&
                               I1P_great_eq_self,self_great_eq_I1P
     generic :: operator(>) => self_great_self,                                                                         &
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
                              R16P_great_self,self_great_R16P,                                                          &
 #endif
                              R8P_great_self,self_great_R8P,R4P_great_self,self_great_R4P,I8P_great_self,self_great_I8P,&
                              I4P_great_self,self_great_I4P,I2P_great_self,self_great_I2P,I1P_great_self,self_great_I1P
-#ifdef r16p
+#ifdef _R16P_SUPPORTED
     procedure, pass(self ), private :: R16P_not_eq_self
     procedure, pass(self ), private :: self_not_eq_R16P
     procedure, pass(self ), private :: R16P_low_self
@@ -392,6 +394,29 @@ contains
     fnormal = 0.5_R_P * (s12.cross.s13)
   endif
   endfunction face_normal3
+
+   elemental function distance_to_plane(point, pt1, pt2, pt3) result(distance)
+   !< Calculate the (signed) distance to a plane defined by the 3 points vector pt1, pt2 and pt3.
+   !<
+   !< The convention for the points numeration is the following:
+   !<```
+   !< 1.----.2
+   !<   \   |
+   !<    \ *---------> . point
+   !<     \ |
+   !<      \|
+   !<       .3
+   !<```
+   class(vector), intent(in) :: point    !< The point from which computing the distance.
+   type(vector),  intent(in) :: pt1      !< First plane point.
+   type(vector),  intent(in) :: pt2      !< Second plane point.
+   type(vector),  intent(in) :: pt3      !< Third plane point.
+   type(vector)              :: distance !< Face normal.
+   type(vector)              :: normal   !< Normal (versor) of plane.
+
+   normal = normalize((pt2 - pt1).cross.(pt3 - pt1))
+   distance = normal.dot.(point - pt1)
+   endfunction distance_to_plane
 
   elemental subroutine init_vector_self(vec)
   !< Initialize components of Vector variable.
@@ -598,6 +623,29 @@ contains
     fnormal = 0.5_R_P * (s12.cross.s13)
   endif
   endsubroutine face_normal3_self
+
+   elemental subroutine distance_to_plane_self(self, pt1, pt2, pt3)
+   !< Calculate the (signed) distance to a plane defined by the 3 points vector pt1, pt2 and pt3.
+   !<
+   !< The convention for the points numeration is the following:
+   !<```
+   !< 1.----.2
+   !<   \   |
+   !<    \ *---------> . self
+   !<     \ |
+   !<      \|
+   !<       .3
+   !<```
+   !< The distance is stored into self.
+   class(vector), intent(inout) :: self   !< The point from which computing the distance.
+   type(vector),  intent(in)    :: pt1    !< First plane point.
+   type(vector),  intent(in)    :: pt2    !< Second plane point.
+   type(vector),  intent(in)    :: pt3    !< Third plane point.
+   type(vector)                 :: normal !< Normal (versor) of plane.
+
+   normal = normalize((pt2 - pt1).cross.(pt3 - pt1))
+   self = normal.dot.(self - pt1)
+   endsubroutine distance_to_plane_self
 
   elemental function crossproduct(vec1, vec2) result(cross)
   !< Compute the cross product of 2 vectors.
