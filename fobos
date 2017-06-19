@@ -1,8 +1,8 @@
 [modes]
-modes = shared-gnu static-gnu shared-gnu-debug static-gnu-debug
-        shared-intel static-intel shared-intel-debug static-intel-debug
-        tests-gnu tests-gnu-debug
-        tests-intel tests-intel-debug
+modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
+        static-intel-debug shared-intel shared-intel-debug static-intel
+        tests-gnu-debug tests-gnu
+        tests-intel-debug tests-intel
 
 [common-variables]
 $CSHARED_GNU = -cpp -c -fPIC -frealloc-lhs
@@ -233,17 +233,19 @@ rule = tar --xform="s%^%VecFor/%" -czf VecFor.tar.gz *
 help   = Perform coverage analysis
 rule_1 = FoBiS.py clean -mode tests-gnu-debug
 rule_2 = FoBiS.py build -mode tests-gnu-debug -coverage
-rule_3 = ./scripts/run_tests.sh
-rule_4 = rm -f exe/obj/penf*
-rule_5 = gcov -o exe/obj/ src/lib/vecfor*
-rule_6 = rm -f *.gcov
+; rule_3 = ./scripts/run_tests.sh
+rule_4 = FoBiS.py doctests -mode tests-gnu-debug -coverage
+rule_5 = rm -f exe/obj/penf*
+rule_6 = gcov -o exe/obj/ src/lib/vecfor*
+rule_7 = rm -f *.gcov
 
 [rule-makecoverage-analysis]
 help   = Perform coverage analysis and saving reports in markdown
 rule_1 = FoBiS.py clean -mode tests-gnu-debug
 rule_2 = FoBiS.py build -mode tests-gnu-debug -coverage
-rule_3 = ./scripts/run_tests.sh
-rule_4 = rm -f exe/obj/penf*
-rule_5 = gcov -o exe/obj/ src/lib/vecfor*
-rule_6 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
-rule_7 = rm -f *.gcov
+; rule_3 = ./scripts/run_tests.sh
+rule_4 = FoBiS.py doctests -mode tests-gnu-debug -coverage
+rule_5 = rm -f exe/obj/penf*
+rule_6 = gcov -o exe/obj/ src/lib/vecfor*
+rule_7 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
+rule_8 = rm -f *.gcov
