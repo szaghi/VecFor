@@ -11,16 +11,21 @@ module vecfor
 !< Furthermore the *dot* and *cross* products have been defined.
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
-use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str
+use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, Zero
 
 implicit none
 private
+public :: distance_to_line
 public :: distance_to_plane
+public :: distance_vectorial_to_plane
 public :: ex, ey, ez
 public :: face_normal3, face_normal4
 public :: iolen
+public :: is_collinear
+public :: is_concyclic
 public :: normalized
 public :: normL2
+public :: projection_onto_plane
 public :: sq_norm
 public :: vector
 
@@ -36,17 +41,22 @@ type :: vector
      generic :: operator(.paral.) => parallel     !< Compute the component of `lhs` parallel to `rhs`.
      generic :: operator(.ortho.) => orthogonal   !< Compute the component of `lhs` orthogonal to `rhs`.
      ! public methods
-     procedure, pass(self) :: distance_to_plane !< Calculate the distance to plane defined by 3 points.
-     procedure, nopass     :: face_normal3      !< Calculate the normal of the face defined by 3 points.
-     procedure, nopass     :: face_normal4      !< Calculate the normal of the face defined by 4 points.
-     procedure, pass(self) :: iolen             !< Compute IO length.
-     procedure, pass(self) :: load_from_file    !< Load vector from file.
-     procedure, pass(self) :: normalize         !< Normalize a vector.
-     procedure, pass(self) :: normalized        !< Return a normalized copy of vector.
-     procedure, pass(self) :: normL2            !< Return the norm L2 of vector.
-     procedure, pass(self) :: printf            !< Print vector components with a "pretty" format.
-     procedure, pass(self) :: save_into_file    !< Save vector into file.
-     procedure, pass(self) :: sq_norm           !< Return the square of the norm of a vector.
+     procedure, pass(self) :: distance_to_line            !< Calculate the distance (scalar) to line defined by 2 points.
+     procedure, pass(self) :: distance_to_plane           !< Calculate the distance (signed, scalar) to plane defined by 3 points.
+     procedure, pass(self) :: distance_vectorial_to_plane !< Calculate the distance (vectorial) to plane defined by 3 points.
+     procedure, nopass     :: face_normal3                !< Calculate the normal of the face defined by 3 points.
+     procedure, nopass     :: face_normal4                !< Calculate the normal of the face defined by 4 points.
+     procedure, pass(self) :: iolen                       !< Compute IO length.
+     procedure, pass(self) :: is_collinear                !< Return true if the point is collinear with other two given points.
+     procedure, pass(self) :: is_concyclic                !< Return true if the point is concyclic with other three given points.
+     procedure, pass(self) :: load_from_file              !< Load vector from file.
+     procedure, pass(self) :: normalize                   !< Normalize a vector.
+     procedure, pass(self) :: normalized                  !< Return a normalized copy of vector.
+     procedure, pass(self) :: normL2                      !< Return the norm L2 of vector.
+     procedure, pass(self) :: printf                      !< Print vector components with a "pretty" format.
+     procedure, pass(self) :: projection_onto_plane       !< Calculate the projection of point onto plane defined by 3 points.
+     procedure, pass(self) :: save_into_file              !< Save vector into file.
+     procedure, pass(self) :: sq_norm                     !< Return the square of the norm of a vector.
      ! operators overloading
      generic :: assignment(=) => assign_vector, &
 #ifdef _R16P_SUPPORTED
@@ -329,8 +339,53 @@ type(vector), parameter :: ez = vector(0._R_P, 0._R_P, 1._R_P) !< Z direction ve
 
 contains
    ! public methods
+   elemental function distance_to_line(self, pt1, pt2) result(distance)
+   !< Calculate the distance (scalar) to line defined by the 2 points.
+   !<
+   !< The convention for the points numeration is the following:
+   !<```
+   !<         . self
+   !<         ^
+   !<         |
+   !<         |
+   !< 1.-------------.2
+   !<```
+   !<
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(0:2)
+   !< real(R_P)    :: d
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< d = pt(0)%distance_to_line(pt1=pt(1), pt2=pt(2))
+   !< print "(F3.1)", d
+   !<```
+   !=> 5.3 <<<
+   !<
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(0:2)
+   !< real(R_P)    :: d
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< d = distance_to_line(pt(0), pt1=pt(1), pt2=pt(2))
+   !< print "(F3.1)", d
+   !<```
+   !=> 5.3 <<<
+   class(vector), intent(in) :: self     !< The point from which computing the distance.
+   type(vector),  intent(in) :: pt1      !< First line point.
+   type(vector),  intent(in) :: pt2      !< Second line point.
+   real(R_P)                 :: distance !< Face normal.
+
+   distance = normL2((self - pt1).cross.(self - pt2)) / normL2(pt2 - pt1)
+   endfunction distance_to_line
+
    elemental function distance_to_plane(self, pt1, pt2, pt3) result(distance)
-   !< Calculate the (signed) distance to plane defined by the 3 points.
+   !< Calculate the distance (signed, scalar) to plane defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
    !<```
@@ -341,7 +396,6 @@ contains
    !<      \|
    !<       .3
    !<```
-   !< The distance is stored into self.
    !<
    !<```fortran
    !< use penf, only : R_P
@@ -380,6 +434,53 @@ contains
    normal = face_normal3(pt1=pt1, pt2=pt2, pt3=pt3, norm='y')
    distance = normal.dot.(self - pt1)
    endfunction distance_to_plane
+
+   elemental function distance_vectorial_to_plane(self, pt1, pt2, pt3) result(distance)
+   !< Calculate the distance (vectorial) to plane defined by the 3 points.
+   !<
+   !< The convention for the points numeration is the following:
+   !<```
+   !< 1.----.2
+   !<   \   |
+   !<    \ *---------> . self
+   !<     \ |
+   !<      \|
+   !<       .3
+   !<```
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(0) = pt(0)%distance_vectorial_to_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
+   !<```
+   !=> 0.0 0.0 5.3 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(0) = distance_vectorial_to_plane(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
+   !<```
+   !=> 0.0 0.0 5.3 <<<
+   class(vector), intent(in) :: self     !< The point from which computing the distance.
+   type(vector),  intent(in) :: pt1      !< First plane point.
+   type(vector),  intent(in) :: pt2      !< Second plane point.
+   type(vector),  intent(in) :: pt3      !< Third plane point.
+   type(vector)              :: distance !< Face normal.
+   type(vector)              :: normal   !< Normal (versor) of plane.
+
+   normal = face_normal3(pt1=pt1, pt2=pt2, pt3=pt3, norm='y')
+   distance = normal * (normal.dot.(self - pt1))
+   endfunction distance_vectorial_to_plane
 
    elemental function face_normal3(pt1, pt2, pt3, norm) result(normal)
    !< Calculate the normal of the face defined by the 3 points.
@@ -509,6 +610,81 @@ contains
 
    inquire(iolength=iolen_) self%x, self%y, self%z
    endfunction iolen
+
+   elemental function is_collinear(self, pt1, pt2, tolerance) result(is_collinear_)
+   !< Return true if the point is collinear with other two given points.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:2)
+   !<
+   !< pt(0) = 3 * ex
+   !< pt(1) = 1 * ex
+   !< pt(2) = 2 * ex
+   !< print "(L1)", pt(0)%is_collinear(pt1=pt(1), pt2=pt(2))
+   !<```
+   !=> T <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:2)
+   !<
+   !< pt(0) = 3 * ex
+   !< pt(1) = 1 * ex
+   !< pt(2) = 2 * ex
+   !< print "(L1)", is_collinear(pt(0), pt1=pt(1), pt2=pt(2))
+   !<```
+   !=> T <<<
+   class(vector), intent(in)           :: self          !< Vector.
+   type(vector),  intent(in)           :: pt1           !< First line point.
+   type(vector),  intent(in)           :: pt2           !< Second line point.
+   real(R_P),     intent(in), optional :: tolerance     !< Tolerance for collinearity check.
+   logical                             :: is_collinear_ !< Inquire result.
+   real(R_P)                           :: tolerance_    !< Tolerance for collinearity check, local variable.
+
+   tolerance_ = 0._R_P ; if (present(tolerance)) tolerance_ = tolerance
+   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= Zero + tolerance_
+   endfunction is_collinear
+
+   elemental function is_concyclic(self, pt1, pt2, pt3, tolerance) result(is_concyclic_)
+   !< Return true if the point is concyclic with other three given points.
+   !<
+   !< Based on Ptolemy's Theorem.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = -1 * ey
+   !< pt(1) =  1 * ex
+   !< pt(2) =  1 * ey
+   !< pt(3) = -1 * ex
+   !< print "(L1)", pt(0)%is_concyclic(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !<```
+   !=> T <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = -1 * ey
+   !< pt(1) =  1 * ex
+   !< pt(2) =  1 * ey
+   !< pt(3) = -1 * ex
+   !< print "(L1)", is_concyclic(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !<```
+   !=> T <<<
+   class(vector), intent(in)           :: self          !< Vector.
+   type(vector),  intent(in)           :: pt1           !< First arc point.
+   type(vector),  intent(in)           :: pt2           !< Second arc point.
+   type(vector),  intent(in)           :: pt3           !< Third arc point.
+   real(R_P),     intent(in), optional :: tolerance     !< Tolerance for concyclicity check.
+   logical                             :: is_concyclic_ !< Inquire result.
+   real(R_P)                           :: tolerance_    !< Tolerance for concyclicity check, local variable.
+   real(R_P)                           :: a, b, c       !< Temporary storage to avoid bad conditioned math (lost of precision).
+
+   a = sq_norm(self - pt1) * sq_norm(pt2 - pt3)
+   b = sq_norm(pt1 - pt2) * sq_norm(pt3 - self)
+   c = sq_norm(self - pt2) * sq_norm(pt1 - pt3)
+   tolerance_ = 0._R_P ; if (present(tolerance)) tolerance_ = tolerance
+   is_concyclic_ = sqrt(a) + sqrt(b) - sqrt(c) <= smallR_P + tolerance_
+   endfunction is_concyclic
 
    subroutine load_from_file(self, unit, fmt, pos, iostat, iomsg)
    !< Load vector from file.
@@ -662,6 +838,53 @@ contains
    if (present(iostat)) iostat = iostat_
    if (present(iomsg))  iomsg  = trim(adjustl(iomsg_))
    endsubroutine printf
+
+   elemental function projection_onto_plane(self, pt1, pt2, pt3) result(projection)
+   !< Calculate the projection of point onto plane defined by 3 points.
+   !<
+   !< The convention for the points numeration is the following:
+   !<```
+   !< 1.----.2
+   !<   \   |
+   !<    \ *---------> . self
+   !<     \ |
+   !<      \|
+   !<       .3
+   !<```
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = 1 * ex + 2 * ey + 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(0) = pt(0)%projection_onto_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
+   !<```
+   !=> 1.0 2.0 0.0 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(0) = 1 * ex + 2 * ey + 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(0) = projection_onto_plane(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
+   !<```
+   !=> 1.0 2.0 0.0 <<<
+   class(vector), intent(in) :: self       !< The point from which computing the distance.
+   type(vector),  intent(in) :: pt1        !< First plane point.
+   type(vector),  intent(in) :: pt2        !< Second plane point.
+   type(vector),  intent(in) :: pt3        !< Third plane point.
+   type(vector)              :: projection !< Point projection.
+   type(vector)              :: distance   !< Vectorial distance.
+
+   distance = self%distance_vectorial_to_plane(pt1=pt1, pt2=pt2, pt3=pt3)
+   projection = self - distance
+   endfunction projection_onto_plane
 
    subroutine save_into_file(self, unit, fmt, pos, iostat, iomsg)
    !< Save vector into file.
