@@ -15,12 +15,13 @@ use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, 
 
 implicit none
 private
-public :: ex, ey, ez
-public :: sq_norm
-public :: normL2
-public :: normalize
-public :: face_normal3, face_normal4
 public :: distance_to_plane
+public :: ex, ey, ez
+public :: face_normal3, face_normal4
+public :: iolen
+public :: normalized
+public :: normL2
+public :: sq_norm
 public :: vector
 
 type :: vector
@@ -35,17 +36,17 @@ type :: vector
      generic :: operator(.paral.) => parallel     !< Compute the component of `lhs` parallel to `rhs`.
      generic :: operator(.ortho.) => orthogonal   !< Compute the component of `lhs` orthogonal to `rhs`.
      ! public methods
-     procedure, pass(self) :: distance_to_plane => distance_to_plane_self !< Calculate the distance to plane defined by 3 points.
-     procedure, pass(self) :: face_normal3 => face_normal3_self           !< Calculate the normal of the face defined by 3 points.
-     procedure, pass(self) :: face_normal4 => face_normal4_self           !< Calculate the normal of the face defined by 4 points.
-     procedure, pass(self) :: iolen                                       !< Compute IO length.
-     procedure, pass(self) :: load_from_file                              !< Load vector from file.
-     procedure, pass(self) :: normalize => normalize_self                 !< Normalize a vector.
-     procedure, pass(self) :: normalized                                  !< Return a normalized copy of vector.
-     procedure, pass(self) :: normL2 => normL2_self                       !< Return the norm L2 of vector.
-     procedure, pass(self) :: printf                                      !< Print vector components with a "pretty" format.
-     procedure, pass(self) :: save_into_file                              !< Save vector into file.
-     procedure, pass(self) :: sq_norm => sq_norm_self                     !< Return the square of the norm of a vector.
+     procedure, pass(self) :: distance_to_plane !< Calculate the distance to plane defined by 3 points.
+     procedure, nopass     :: face_normal3      !< Calculate the normal of the face defined by 3 points.
+     procedure, nopass     :: face_normal4      !< Calculate the normal of the face defined by 4 points.
+     procedure, pass(self) :: iolen             !< Compute IO length.
+     procedure, pass(self) :: load_from_file    !< Load vector from file.
+     procedure, pass(self) :: normalize         !< Normalize a vector.
+     procedure, pass(self) :: normalized        !< Return a normalized copy of vector.
+     procedure, pass(self) :: normL2            !< Return the norm L2 of vector.
+     procedure, pass(self) :: printf            !< Print vector components with a "pretty" format.
+     procedure, pass(self) :: save_into_file    !< Save vector into file.
+     procedure, pass(self) :: sq_norm           !< Return the square of the norm of a vector.
      ! operators overloading
      generic :: assignment(=) => assign_vector, &
 #ifdef _R16P_SUPPORTED
@@ -327,145 +328,8 @@ type(vector), parameter :: ey = vector(0._R_P, 1._R_P, 0._R_P) !< Y direction ve
 type(vector), parameter :: ez = vector(0._R_P, 0._R_P, 1._R_P) !< Z direction versor.
 
 contains
-   ! non TBP procedures
-  elemental function sq_norm(vec) result(sq)
-  !< Compute the square of the norm of a vector.
-  !<
-  !< The square norm if defined as \( N = x^2  + y^2  + z^2 \).
-   !<
-   !< @TODO Add doctest.
-  type(vector), intent(in) :: vec !< Vector.
-  real(R_P)                :: sq  !< Square of the Norm.
-
-  sq = (vec%x * vec%x) + (vec%y * vec%y) + (vec%z * vec%z)
-  endfunction sq_norm
-
-  elemental function normL2(vec) result(norm)
-  !< Compute the norm L2 of a vector.
-  !<
-  !< The norm L2 if defined as \( N = \sqrt {x^2  + y^2  + z^2 } \).
-   !<
-   !< @TODO Add doctest.
-  type(vector), intent(in) :: vec  !< Vector.
-  real(R_P)                :: norm !< Norm L2.
-
-  norm = sqrt((vec%x*vec%x) + (vec%y*vec%y) + (vec%z*vec%z))
-  endfunction normL2
-
-  elemental function normalize(vec) result(norm)
-  !< Normalize a vector.
-  !<
-  !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallR_P the
-  !< normalization value is set to normL2(vec)+smallR_P.
-   !<
-   !< @TODO Add doctest.
-  type(vector), intent(in) :: vec  !< Vector to be normalized.
-  type(vector)             :: norm !< Vector normalized.
-  real(R_P)                :: nm   !< Norm L2 of vector.
-
-  nm = normL2(vec)
-  if (nm < smallR_P) then
-    nm = nm + smallR_P
-  endif
-  norm%x = vec%x / nm
-  norm%y = vec%y / nm
-  norm%z = vec%z / nm
-  endfunction normalize
-
-  elemental function face_normal4(pt1, pt2, pt3, pt4, norm) result(fnormal)
-  !< Calculate the normal of the face defined by 4 points vector pt1, pt2, pt3 and pt4.
-  !<
-  !< The convention for the points numeration is the following:
-  !<```
-  !< 1.----------.2
-  !<  |          |
-  !<  |          |
-  !<  |          |
-  !<  |          |
-  !< 4.----------.3
-  !<```
-  !< The normal is calculated by the cross product of the diagonal d13 for the diagonal d24: d13 x d24.
-  !< The normal is normalized if the variable *norm* is passed (with any value).
-   !<
-   !< @TODO Add doctest.
-  type(vector), intent(in)           :: pt1     !< First face point.
-  type(vector), intent(in)           :: pt2     !< Second face point.
-  type(vector), intent(in)           :: pt3     !< Third face point.
-  type(vector), intent(in)           :: pt4     !< Fourth face point.
-  character(1), intent(in), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
-  type(vector)                       :: fnormal !< Face normal.
-  type(vector)                       :: d13     !< Face 1-3 diagonal.
-  type(vector)                       :: d24     !< Face 2-4 diagonal.
-
-  d13 = pt3 - pt1
-  d24 = pt4 - pt2
-  if (present(norm)) then
-    fnormal = normalize(d13.cross.d24)
-  else
-    fnormal = 0.5_R_P * (d13.cross.d24)
-  endif
-  endfunction face_normal4
-
-  elemental function face_normal3(pt1, pt2, pt3, norm) result(fnormal)
-  !< Calculate the normal of the face defined by the 3 points vector pt1, pt2 and pt3.
-  !<
-  !< The convention for the points numeration is the following:
-  !<```
-  !< 1.----.2
-  !<   \   |
-  !<    \  |
-  !<     \ |
-  !<      \|
-  !<       .3
-  !<```
-  !< The normal is calculated by the cross product of the side s12 for the side s13: s12 x s13.
-  !< The normal is normalized if the variable 'norm' is passed (with any value).
-   !<
-   !< @TODO Add doctest.
-  type(vector), intent(in)           :: pt1     !< First face point.
-  type(vector), intent(in)           :: pt2     !< Second face point.
-  type(vector), intent(in)           :: pt3     !< Third face point.
-  character(1), intent(in), optional :: norm    !< If 'norm' is passed as argument the normal is normalized.
-  type(vector)                       :: fnormal !< Face normal.
-  type(vector)                       :: s12     !< Face 1-2 diagonals.
-  type(vector)                       :: s13     !< Face 1-3 diagonals.
-
-  s12 = pt2 - pt1
-  s13 = pt3 - pt1
-  if (present(norm)) then
-    fnormal = normalize(s12.cross.s13)
-  else
-    fnormal = 0.5_R_P * (s12.cross.s13)
-  endif
-  endfunction face_normal3
-
-   elemental function distance_to_plane(point, pt1, pt2, pt3) result(distance)
-   !< Calculate the (signed) distance to a plane defined by the 3 points vector pt1, pt2 and pt3.
-   !<
-   !< The convention for the points numeration is the following:
-   !<```
-   !< 1.----.2
-   !<   \   |
-   !<    \ *---------> . point
-   !<     \ |
-   !<      \|
-   !<       .3
-   !<```
-   !<
-   !< @TODO Add doctest.
-   class(vector), intent(in) :: point    !< The point from which computing the distance.
-   type(vector),  intent(in) :: pt1      !< First plane point.
-   type(vector),  intent(in) :: pt2      !< Second plane point.
-   type(vector),  intent(in) :: pt3      !< Third plane point.
-   type(vector)              :: distance !< Face normal.
-   type(vector)              :: normal   !< Normal (versor) of plane.
-
-   normal = normalize((pt2 - pt1).cross.(pt3 - pt1))
-   distance = normal.dot.(point - pt1)
-   endfunction distance_to_plane
-
    ! public methods
-   elemental subroutine distance_to_plane_self(self, pt1, pt2, pt3)
+   elemental function distance_to_plane(self, pt1, pt2, pt3) result(distance)
    !< Calculate the (signed) distance to plane defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -479,18 +343,45 @@ contains
    !<```
    !< The distance is stored into self.
    !<
-   !< @TODO Add doctest.
-   class(vector), intent(inout) :: self   !< The point from which computing the distance.
-   type(vector),  intent(in)    :: pt1    !< First plane point.
-   type(vector),  intent(in)    :: pt2    !< Second plane point.
-   type(vector),  intent(in)    :: pt3    !< Third plane point.
-   type(vector)                 :: normal !< Normal (versor) of plane.
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(0:3)
+   !< real(R_P)    :: d
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< d = pt(0)%distance_to_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(F3.1)", d
+   !<```
+   !=> 5.3 <<<
+   !<
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(0:3)
+   !< real(R_P)    :: d
+   !<
+   !< pt(0) = 5.3 * ez
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< d = distance_to_plane(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(F3.1)", d
+   !<```
+   !=> 5.3 <<<
+   class(vector), intent(in) :: self     !< The point from which computing the distance.
+   type(vector),  intent(in) :: pt1      !< First plane point.
+   type(vector),  intent(in) :: pt2      !< Second plane point.
+   type(vector),  intent(in) :: pt3      !< Third plane point.
+   real(R_P)                 :: distance !< Face normal.
+   type(vector)              :: normal   !< Normal (versor) of plane.
 
-   call normal%face_normal3(pt1=pt1, pt2=pt2, pt3=pt3, norm='y')
-   self = normal.dot.(self - pt1)
-   endsubroutine distance_to_plane_self
+   normal = face_normal3(pt1=pt1, pt2=pt2, pt3=pt3, norm='y')
+   distance = normal.dot.(self - pt1)
+   endfunction distance_to_plane
 
-   elemental subroutine face_normal3_self(self, pt1, pt2, pt3, norm)
+   elemental function face_normal3(pt1, pt2, pt3, norm) result(normal)
    !< Calculate the normal of the face defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -511,28 +402,39 @@ contains
    !< pt(1) = ex
    !< pt(2) = ey
    !< pt(3) = ex - ey
-   !< call pt(0)%face_normal3(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
+   !< pt(0) = pt(1)%face_normal3(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
    !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
    !<```
    !=> 0.0 0.0 1.0 <<<
-   class(vector), intent(inout)        :: self !< Vector.
-   type(vector),  intent(in)           :: pt1  !< First face point.
-   type(vector),  intent(in)           :: pt2  !< Second face point.
-   type(vector),  intent(in)           :: pt3  !< Third face point.
-   character(1),  intent(in), optional :: norm !< If 'norm' is passed as argument the normal is normalized.
-   type(vector)                        :: s12  !< Face 1-2 diagonals.
-   type(vector)                        :: s13  !< Face 1-3 diagonals.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:3)
+   !<
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(0) = face_normal3(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
+   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+   !<```
+   !=> 0.0 0.0 1.0 <<<
+   type(vector),  intent(in)           :: pt1    !< First face point.
+   type(vector),  intent(in)           :: pt2    !< Second face point.
+   type(vector),  intent(in)           :: pt3    !< Third face point.
+   character(1),  intent(in), optional :: norm   !< If 'norm' is passed as argument the normal is normalized.
+   type(vector)                        :: normal !< Face normal.
+   type(vector)                        :: s12    !< Face 1-2 diagonals.
+   type(vector)                        :: s13    !< Face 1-3 diagonals.
 
    s12 = pt2 - pt1
    s13 = pt3 - pt1
    if (present(norm)) then
-     self = normalize(s12.cross.s13)
+     normal = normalized(s12.cross.s13)
    else
-     self = 0.5_R_P * (s12.cross.s13)
+     normal = 0.5_R_P * (s12.cross.s13)
    endif
-   endsubroutine face_normal3_self
+   endfunction face_normal3
 
-   elemental subroutine face_normal4_self(self, pt1, pt2, pt3, pt4, norm)
+   elemental function face_normal4(pt1, pt2, pt3, pt4, norm) result(normal)
    !< Calculate the normal of the face defined by 4 points.
    !<
    !< The convention for the points numeration is the following:
@@ -554,27 +456,39 @@ contains
    !< pt(2) = ey
    !< pt(3) = ex - ey
    !< pt(4) = ex + ey
-   !< call pt(0)%face_normal4(pt1=pt(1), pt2=pt(2), pt3=pt(3), pt4=pt(4), norm='y')
+   !< pt(0) = pt(1)%face_normal4(pt1=pt(1), pt2=pt(2), pt3=pt(3), pt4=pt(4), norm='y')
    !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
    !<```
    !=> 0.0 0.0 1.0 <<<
-   class(vector), intent(inout)        :: self !< Vector.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:4)
+   !<
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< pt(3) = ex - ey
+   !< pt(4) = ex + ey
+   !< pt(0) = face_normal4(pt1=pt(1), pt2=pt(2), pt3=pt(3), pt4=pt(4), norm='y')
+   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+   !<```
+   !=> 0.0 0.0 1.0 <<<
    type(vector),  intent(in)           :: pt1  !< First face point.
    type(vector),  intent(in)           :: pt2  !< Second face point.
    type(vector),  intent(in)           :: pt3  !< Third face point.
    type(vector),  intent(in)           :: pt4  !< Fourth face point.
    character(1),  intent(in), optional :: norm !< If 'norm' is passed as argument the normal is normalized.
+   type(vector)                        :: normal !< Face normal.
    type(vector)                        :: d13  !< Face 1-3 diagonals.
    type(vector)                        :: d24  !< Face 2-4 diagonals.
 
    d13 = pt3 - pt1
    d24 = pt4 - pt2
    if (present(norm)) then
-     self = normalize(d13.cross.d24)
+     normal = normalized(d13.cross.d24)
    else
-     self = 0.5_R_P * (d13.cross.d24)
+     normal = 0.5_R_P * (d13.cross.d24)
    endif
-   endsubroutine face_normal4_self
+   endfunction face_normal4
 
    function iolen(self) result(iolen_)
    !< Compute IO length.
@@ -582,6 +496,12 @@ contains
    !<```fortran
    !< type(vector) :: pt
    !< print*, pt%iolen()
+   !<```
+   !=> 24 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt
+   !< print*, iolen(pt)
    !<```
    !=> 24 <<<
    class(vector), intent(in) :: self   !< Vector.
@@ -593,7 +513,17 @@ contains
    subroutine load_from_file(self, unit, fmt, pos, iostat, iomsg)
    !< Load vector from file.
    !<
-   !< @TODO Add doctest.
+   !<```fortran
+   !< type(vector) :: pt
+   !< pt = 1 * ex + 2 * ey + 3 * ez
+   !< open(unit=10, form='unformatted', status='scratch')
+   !< call pt%save_into_file(unit=10)
+   !< rewind(unit=10)
+   !< call pt%load_from_file(unit=10)
+   !< close(unit=10)
+   !< print "(3(F3.1,1X))", pt%x, pt%y, pt%z
+   !<```
+   !=> 1.0 2.0 3.0 <<<
    class(vector), intent(inout)         :: self    !< Vector.
    integer(I4P),  intent(in)            :: unit    !< Logic unit.
    character(*),  intent(in),  optional :: fmt     !< IO format.
@@ -621,7 +551,7 @@ contains
    if (present(iomsg))  iomsg  = trim(adjustl(iomsg_))
    endsubroutine load_from_file
 
-   elemental subroutine normalize_self(self)
+   elemental subroutine normalize(self)
    !< Normalize vector.
    !<
    !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallR_P the
@@ -644,7 +574,7 @@ contains
    self%x = self%x / nm
    self%y = self%y / nm
    self%z = self%z / nm
-   endsubroutine normalize_self
+   endsubroutine normalize
 
    elemental function normalized(self) result(norm)
    !< Return a normalized copy of vector.
@@ -659,6 +589,14 @@ contains
    !< print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
    !<```
    !=> 0.71 0.71 0.00 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt
+   !< pt = ex + ey
+   !< pt = normalized(pt)
+   !< print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
+   !<```
+   !=> 0.71 0.71 0.00 <<<
    class(vector), intent(in) :: self !< Vector.
    type(vector)              :: norm !< Normalized copy.
 
@@ -666,7 +604,7 @@ contains
    call norm%normalize
    endfunction normalized
 
-   elemental function normL2_self(self) result(norm)
+   elemental function normL2(self) result(norm)
    !< Return the norm L2 of vector.
    !<
    !< The norm L2 if defined as \( N = \sqrt {x^2  + y^2  + z^2 } \).
@@ -677,11 +615,18 @@ contains
    !< print "(F4.2)", pt%normL2()
    !<```
    !=> 1.41 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt
+   !< pt = ex + ey
+   !< print "(F4.2)", normL2(pt)
+   !<```
+   !=> 1.41 <<<
    class(vector), intent(in) :: self !< Vector.
    real(R_P)                 :: norm !< Norm L2.
 
    norm = sqrt(self%sq_norm())
-   endfunction normL2_self
+   endfunction normL2
 
    subroutine printf(self, unit, prefix, sep, suffix, iostat, iomsg)
    !< Print in a pretty ascii format the components of type Vector.
@@ -721,7 +666,17 @@ contains
    subroutine save_into_file(self, unit, fmt, pos, iostat, iomsg)
    !< Save vector into file.
    !<
-   !< @TODO Add doctest.
+   !<```fortran
+   !< type(vector) :: pt
+   !< pt = 1 * ex + 2 * ey + 3 * ez
+   !< open(unit=10, form='unformatted', status='scratch')
+   !< call pt%save_into_file(unit=10)
+   !< rewind(unit=10)
+   !< call pt%load_from_file(unit=10)
+   !< close(unit=10)
+   !< print "(3(F3.1,1X))", pt%x, pt%y, pt%z
+   !<```
+   !=> 1.0 2.0 3.0 <<<
    class(vector), intent(in)            :: self    !< Vector data.
    integer(I4P),  intent(in)            :: unit    !< Logic unit.
    character(*),  intent(in),  optional :: fmt     !< IO format.
@@ -749,7 +704,7 @@ contains
    if (present(iomsg))  iomsg  = trim(adjustl(iomsg_))
    endsubroutine save_into_file
 
-   elemental function sq_norm_self(self) result(sq)
+   elemental function sq_norm(self) result(sq)
    !< Return the square of the norm of vector.
    !<
    !< The square norm if defined as \( N = x^2  + y^2  + z^2 \).
@@ -760,11 +715,18 @@ contains
    !< print "(F3.1)", pt%sq_norm()
    !<```
    !=> 2.0 <<<
+   !<
+   !<```fortran
+   !< type(vector) :: pt
+   !< pt = ex + ey
+   !< print "(F3.1)", sq_norm(pt)
+   !<```
+   !=> 2.0 <<<
    class(vector), intent(in) :: self !< Vector.
    real(R_P)                 :: sq   !< Square of the Norm.
 
    sq = (self%x * self%x) + (self%y * self%y) + (self%z * self%z)
-   endfunction sq_norm_self
+   endfunction sq_norm
 
    ! private methods
    ! new operators
@@ -846,7 +808,7 @@ contains
    type(vector),  intent(in) :: rhs   !< Right hand side.
    type(vector)              :: paral !< Component of of `lhs` parallel to `rhs`.
 
-   paral = (lhs.dot.rhs) * normalize(rhs) / normL2(rhs)
+   paral = (lhs.dot.rhs) * normalized(rhs) / normL2(rhs)
    endfunction parallel
 
    ! operator `=`
@@ -2122,8 +2084,8 @@ contains
 
    opr = (normL2(lhs) /= normL2(rhs))
    if (.not.opr) then ! the normL2 are the same, checking the directions
-     nl = normalize(lhs)
-     nr = normalize(rhs)
+     nl = normalized(lhs)
+     nr = normalized(rhs)
      opr = ((nl%x /= nr%x) .or. (nl%y /= nr%y) .or. (nl%z /= nr%z))
    endif
    endfunction vector_not_eq_vector
@@ -2899,8 +2861,8 @@ contains
 
    opr = (normL2(lhs) == normL2(rhs))
   if (opr) then ! the normL2 are the same, checking the directions
-    nl = normalize(lhs)
-    nr = normalize(rhs)
+    nl = normalized(lhs)
+    nr = normalized(rhs)
     opr = ((nl%x == nr%x) .and. (nl%y == nr%y) .and. (nl%z == nr%z))
   endif
    endfunction vector_eq_vector
