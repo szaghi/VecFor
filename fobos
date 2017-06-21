@@ -1,8 +1,8 @@
 [modes]
-modes = shared-gnu static-gnu shared-gnu-debug static-gnu-debug
-        shared-intel static-intel shared-intel-debug static-intel-debug
-        tests-gnu tests-gnu-debug
-        tests-intel tests-intel-debug
+modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
+        static-intel-debug shared-intel shared-intel-debug static-intel
+        tests-gnu-debug tests-gnu
+        tests-intel-debug tests-intel
 
 [common-variables]
 $CSHARED_GNU = -cpp -c -fPIC -frealloc-lhs
@@ -95,6 +95,7 @@ build_dir = ./exe/
 compiler     = gnu
 cflags       = $CSHARED_GNU $OPTIMIZE
 lflags       = $LSHARED $OPTIMIZE
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -107,6 +108,8 @@ jobs         = 2
 [template-static-gnu]
 compiler     = gnu
 cflags       = $CSTATIC_GNU $OPTIMIZE
+lflags       = $OPTIMIZE
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -120,7 +123,7 @@ jobs         = 2
 compiler     = gnu
 cflags       = $CSHARED_GNU $DEBUG_GNU
 lflags       = $LSHARED $DEBUG_GNU
-preproc      = -DDEBUG
+preproc      = -DDEBUG -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -134,7 +137,7 @@ jobs         = 2
 compiler     = gnu
 cflags       = $CSTATIC_GNU $DEBUG_GNU
 lflags       = $DEBUG_GNU
-preproc      = -DDEBUG
+preproc      = -DDEBUG -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -148,6 +151,7 @@ jobs         = 2
 compiler     = intel
 cflags       = $CSHARED_INT $OPTIMIZE
 lflags       = $LSHARED $OPTIMIZE
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -161,6 +165,7 @@ jobs         = 2
 compiler     = intel
 cflags       = $CSTATIC_INT $OPTIMIZE
 lflags       = $OPTIMIZE
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -174,7 +179,7 @@ jobs         = 2
 compiler     = intel
 cflags       = $CSHARED_INT $DEBUG_INT
 lflags       = $LSHARED $DEBUG_INT
-preproc      = -DDEBUG
+preproc      = -DDEBUG -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -188,7 +193,7 @@ jobs         = 2
 compiler     = intel
 cflags       = $CSTATIC_INT $DEBUG_INT
 lflags       = $DEBUG_INT
-preproc      = -DDEBUG
+preproc      = -DDEBUG -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -226,19 +231,15 @@ rule = tar --xform="s%^%VecFor/%" -czf VecFor.tar.gz *
 
 [rule-makecoverage]
 help   = Perform coverage analysis
-rule_1 = FoBiS.py clean -mode tests-gnu-debug
-rule_2 = FoBiS.py build -mode tests-gnu-debug -coverage
-rule_3 = ./scripts/run_tests.sh
-rule_4 = rm -f exe/obj/penf*
-rule_5 = gcov -o exe/obj/ src/lib/vecfor*
-rule_6 = rm -f *.gcov
+rule_1 = FoBiS.py doctests -mode tests-gnu-debug -coverage
+rule_2 = rm -f exe/obj/penf*
+rule_3 = gcov -o exe/obj/ src/lib/vecfor*
+rule_4 = rm -f *.gcov
 
 [rule-makecoverage-analysis]
 help   = Perform coverage analysis and saving reports in markdown
-rule_1 = FoBiS.py clean -mode tests-gnu-debug
-rule_2 = FoBiS.py build -mode tests-gnu-debug -coverage
-rule_3 = ./scripts/run_tests.sh
-rule_4 = rm -f exe/obj/penf*
-rule_5 = gcov -o exe/obj/ src/lib/vecfor*
-rule_6 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
-rule_7 = rm -f *.gcov
+rule_1 = FoBiS.py doctests -mode tests-gnu-debug -coverage
+rule_2 = rm -f exe/obj/penf*
+rule_3 = gcov -o exe/obj/ src/lib/vecfor*
+rule_4 = FoBiS.py rule -gcov_analyzer wiki/ Coverage-Analysis
+rule_5 = rm -f *.gcov
