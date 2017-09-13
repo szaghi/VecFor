@@ -11,7 +11,7 @@ module vecfor
 !< Furthermore the *dot* and *cross* products have been defined.
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
-use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, Zero
+use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
 implicit none
 private
@@ -641,7 +641,7 @@ contains
    real(R_P)                           :: tolerance_    !< Tolerance for collinearity check, local variable.
 
    tolerance_ = 0._R_P ; if (present(tolerance)) tolerance_ = tolerance
-   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= Zero + tolerance_
+   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= ZeroR_P + tolerance_
    endfunction is_collinear
 
    elemental function is_concyclic(self, pt1, pt2, pt3, tolerance) result(is_concyclic_)
