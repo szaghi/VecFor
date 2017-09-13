@@ -1,8 +1,7 @@
 program volatile_doctest
 use vecfor
- type(vector) :: pt(0:2)
- pt(1) = 1 * ex + 2 * ey + 1 * ez
- pt(2) = pt(1) + 1
- pt(0) = pt(1) * pt(2)
- print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+ use penf, only : I2P
+ type(vector) :: pt
+ pt = 1_I2P
+ print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
 endprogram volatile_doctest

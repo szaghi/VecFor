@@ -1,7 +1,6 @@
 program volatile_doctest
 use vecfor
- type(vector) :: pt(1:2)
- pt(1) = ex
- pt(2) = ey
- print "(F3.1)", pt(1).dot.pt(2)
+ type(vector) :: pt
+ pt = ex + ey
+ print "(F3.1)", sq_norm(pt)
 endprogram volatile_doctest

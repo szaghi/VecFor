@@ -1,7 +1,7 @@
 program volatile_doctest
 use vecfor
- use penf, only : I8P
+ use penf, only : I1P
  type(vector) :: pt
  pt = ex + ey + ez
- print "(L1)", pt >= 1_I8P
+ print "(L1)", pt > 1_I1P
 endprogram volatile_doctest

@@ -2,5 +2,5 @@ program volatile_doctest
 use vecfor
  type(vector) :: pt
  pt = ex + ey
- call pt%printf(prefix='[x, y, z] = ', sep=', ')
+ print "(F4.2)", pt%normL2()
 endprogram volatile_doctest

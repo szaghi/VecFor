@@ -1,7 +1,10 @@
 program volatile_doctest
 use vecfor
- type(vector) :: pt
- pt = ex + ey
- call pt%normalize
- print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
+ type(vector) :: pt(0:3)
+
+ pt(0) = -1 * ey
+ pt(1) =  1 * ex
+ pt(2) =  1 * ey
+ pt(3) = -1 * ex
+ print "(L1)", is_concyclic(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
 endprogram volatile_doctest
