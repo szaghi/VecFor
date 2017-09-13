@@ -15,6 +15,7 @@ use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, 
 
 implicit none
 private
+public :: angle
 public :: distance_to_line
 public :: distance_to_plane
 public :: distance_vectorial_to_plane
@@ -41,6 +42,7 @@ type :: vector
      generic :: operator(.paral.) => parallel     !< Compute the component of `lhs` parallel to `rhs`.
      generic :: operator(.ortho.) => orthogonal   !< Compute the component of `lhs` orthogonal to `rhs`.
      ! public methods
+     procedure, pass(self) :: angle                       !< Calculate the angle (rad) between two vectors.
      procedure, pass(self) :: distance_to_line            !< Calculate the distance (scalar) to line defined by 2 points.
      procedure, pass(self) :: distance_to_plane           !< Calculate the distance (signed, scalar) to plane defined by 3 points.
      procedure, pass(self) :: distance_vectorial_to_plane !< Calculate the distance (vectorial) to plane defined by 3 points.
@@ -339,6 +341,45 @@ type(vector), parameter :: ez = vector(0._R_P, 0._R_P, 1._R_P) !< Z direction ve
 
 contains
    ! public methods
+   elemental function angle(self, other) result(angle_)
+   !< Calculate the angle (rad) between two vectors.
+   !<
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(1:2)
+   !< real(R_P)    :: a
+   !<
+   !< pt(1) = ex
+   !< pt(2) = 2 * ex
+   !< a = pt(1)%angle(pt(2))
+   !< print "(F3.1)", a
+   !<```
+   !=> 0.0 <<<
+   !<
+   !<```fortran
+   !< use penf, only : R_P
+   !< type(vector) :: pt(1:2)
+   !< real(R_P)    :: a
+   !<
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< a = angle(pt(1), pt(2))
+   !< print "(F4.2)", a
+   !<```
+   !=> 1.57 <<<
+   class(vector), intent(in) :: self      !< The first vector.
+   type(vector),  intent(in) :: other     !< Other vector.
+   real(R_P)                 :: angle_    !< Angle between vectors, in radians.
+   real(R_P)                 :: angle_cos !< Angle computed by means of cos.
+   real(R_P)                 :: angle_sin !< Angle computed by means of sin.
+   type(vector)              :: versor(2) !< Input vectors normalized.
+
+   versor = [self%normalized(), other%normalized()]
+   angle_cos = versor(1).dot.versor(2)
+   angle_sin = normL2(versor(1).cross.versor(2))
+   angle_ = atan2(angle_sin, angle_cos)
+   endfunction angle
+
    elemental function distance_to_line(self, pt1, pt2) result(distance)
    !< Calculate the distance (scalar) to line defined by the 2 points.
    !<

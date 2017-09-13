@@ -1,7 +1,7 @@
 program volatile_doctest
 use vecfor
- use penf, only : R16P
+ use penf, only : I1P
  type(vector) :: pt
- pt = 4 * ex + 3 * ey
- print "(L1)", 5._R16P == pt
+ pt = ex + ey + ez
+ print "(L1)", pt <= 4_I1P
 endprogram volatile_doctest

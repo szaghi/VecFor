@@ -1,7 +1,11 @@
 program volatile_doctest
 use vecfor
  type(vector) :: pt
- pt = ex + ey
- pt = pt%normalized()
- print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
+ pt = 1 * ex + 2 * ey + 3 * ez
+ open(unit=10, form='unformatted', status='scratch')
+ call pt%save_into_file(unit=10)
+ rewind(unit=10)
+ call pt%load_from_file(unit=10)
+ close(unit=10)
+ print "(3(F3.1,1X))", pt%x, pt%y, pt%z
 endprogram volatile_doctest

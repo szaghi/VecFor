@@ -1,8 +1,6 @@
 program volatile_doctest
 use vecfor
- type(vector) :: pt(0:2)
- pt(1) = 2 * ex
- pt(2) = ex
- pt(0) = pt(1).cross.pt(2)
- print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+ type(vector) :: pt
+ pt = ex + ey
+ print "(F3.1)", pt%sq_norm()
 endprogram volatile_doctest

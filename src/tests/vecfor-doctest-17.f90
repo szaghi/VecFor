@@ -1,11 +1,10 @@
 program volatile_doctest
 use vecfor
- type(vector) :: pt
- pt = 1 * ex + 2 * ey + 3 * ez
- open(unit=10, form='unformatted', status='scratch')
- call pt%save_into_file(unit=10)
- rewind(unit=10)
- call pt%load_from_file(unit=10)
- close(unit=10)
- print "(3(F3.1,1X))", pt%x, pt%y, pt%z
+ type(vector) :: pt(0:3)
+
+ pt(0) = -1 * ey
+ pt(1) =  1 * ex
+ pt(2) =  1 * ey
+ pt(3) = -1 * ex
+ print "(L1)", pt(0)%is_concyclic(pt1=pt(1), pt2=pt(2), pt3=pt(3))
 endprogram volatile_doctest

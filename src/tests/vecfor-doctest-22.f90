@@ -2,5 +2,6 @@ program volatile_doctest
 use vecfor
  type(vector) :: pt
  pt = ex + ey
- print "(F4.2)", normL2(pt)
+ pt = normalized(pt)
+ print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
 endprogram volatile_doctest
