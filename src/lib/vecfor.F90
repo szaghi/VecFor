@@ -49,6 +49,7 @@ type :: vector
     procedure, pass(vec1), private :: dotproduct
     procedure, pass(vec1), private :: parallel
     procedure, pass(vec1), private :: orthogonal
+    procedure, pass(vec1), private :: distance
     ! operators overloading
     generic :: assignment(=) => assign_self,    &
 #ifdef r16p
