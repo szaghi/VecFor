@@ -12,6 +12,13 @@ module vecfor
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 use, intrinsic :: iso_fortran_env, only : stdout=>output_unit
 use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
+#if defined DEFKIND_R16P
+use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
+#elif defined DEFKIND_R4P
+use penf, only : RPP=>R4P, smallRPP=>smallR4P, ZeroRPP=>ZeroR4P
+#else
+use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
+#endif
 
 implicit none
 private
@@ -27,14 +34,17 @@ public :: is_concyclic
 public :: normalized
 public :: normL2
 public :: projection_onto_plane
+public :: RPP, smallRPP, ZeroRPP
 public :: sq_norm
 public :: vector
+! PENF object
+public :: DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
 type :: vector
   !< Vector class.
-  real(R_P) :: x = 0._R_P !< Cartesian component in x direction.
-  real(R_P) :: y = 0._R_P !< Cartesian component in y direction.
-  real(R_P) :: z = 0._R_P !< Cartesian component in z direction.
+  real(RPP) :: x = 0._RPP !< Cartesian component in x direction.
+  real(RPP) :: y = 0._RPP !< Cartesian component in y direction.
+  real(RPP) :: z = 0._RPP !< Cartesian component in z direction.
   contains
      ! public new operators
      generic :: operator(.cross.) => crossproduct !< Compute the cross product.
@@ -335,9 +345,9 @@ type, public :: vector_ptr
   type(vector), pointer:: p=>null()
 endtype vector_ptr
 
-type(vector), parameter :: ex = vector(1._R_P, 0._R_P, 0._R_P) !< X direction versor.
-type(vector), parameter :: ey = vector(0._R_P, 1._R_P, 0._R_P) !< Y direction versor.
-type(vector), parameter :: ez = vector(0._R_P, 0._R_P, 1._R_P) !< Z direction versor.
+type(vector), parameter :: ex = vector(1._RPP, 0._RPP, 0._RPP) !< X direction versor.
+type(vector), parameter :: ey = vector(0._RPP, 1._RPP, 0._RPP) !< Y direction versor.
+type(vector), parameter :: ez = vector(0._RPP, 0._RPP, 1._RPP) !< Z direction versor.
 
 contains
    ! public methods
@@ -345,9 +355,8 @@ contains
    !< Calculate the angle (rad) between two vectors.
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(1:2)
-   !< real(R_P)    :: a
+   !< real(RPP)    :: a
    !<
    !< pt(1) = ex
    !< pt(2) = 2 * ex
@@ -357,9 +366,8 @@ contains
    !=> 0.0 <<<
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(1:2)
-   !< real(R_P)    :: a
+   !< real(RPP)    :: a
    !<
    !< pt(1) = ex
    !< pt(2) = ey
@@ -369,9 +377,9 @@ contains
    !=> 1.57 <<<
    class(vector), intent(in) :: self      !< The first vector.
    type(vector),  intent(in) :: other     !< Other vector.
-   real(R_P)                 :: angle_    !< Angle between vectors, in radians.
-   real(R_P)                 :: angle_cos !< Angle computed by means of cos.
-   real(R_P)                 :: angle_sin !< Angle computed by means of sin.
+   real(RPP)                 :: angle_    !< Angle between vectors, in radians.
+   real(RPP)                 :: angle_cos !< Angle computed by means of cos.
+   real(RPP)                 :: angle_sin !< Angle computed by means of sin.
    type(vector)              :: versor(2) !< Input vectors normalized.
 
    versor = [self%normalized(), other%normalized()]
@@ -393,9 +401,8 @@ contains
    !<```
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(0:2)
-   !< real(R_P)    :: d
+   !< real(RPP)    :: d
    !<
    !< pt(0) = 5.3 * ez
    !< pt(1) = ex
@@ -406,9 +413,8 @@ contains
    !=> 5.3 <<<
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(0:2)
-   !< real(R_P)    :: d
+   !< real(RPP)    :: d
    !<
    !< pt(0) = 5.3 * ez
    !< pt(1) = ex
@@ -420,7 +426,7 @@ contains
    class(vector), intent(in) :: self     !< The point from which computing the distance.
    type(vector),  intent(in) :: pt1      !< First line point.
    type(vector),  intent(in) :: pt2      !< Second line point.
-   real(R_P)                 :: distance !< Face normal.
+   real(RPP)                 :: distance !< Face normal.
 
    distance = normL2((self - pt1).cross.(self - pt2)) / normL2(pt2 - pt1)
    endfunction distance_to_line
@@ -439,9 +445,8 @@ contains
    !<```
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(0:3)
-   !< real(R_P)    :: d
+   !< real(RPP)    :: d
    !<
    !< pt(0) = 5.3 * ez
    !< pt(1) = ex
@@ -453,9 +458,8 @@ contains
    !=> 5.3 <<<
    !<
    !<```fortran
-   !< use penf, only : R_P
    !< type(vector) :: pt(0:3)
-   !< real(R_P)    :: d
+   !< real(RPP)    :: d
    !<
    !< pt(0) = 5.3 * ez
    !< pt(1) = ex
@@ -469,7 +473,7 @@ contains
    type(vector),  intent(in) :: pt1      !< First plane point.
    type(vector),  intent(in) :: pt2      !< Second plane point.
    type(vector),  intent(in) :: pt3      !< Third plane point.
-   real(R_P)                 :: distance !< Face normal.
+   real(RPP)                 :: distance !< Face normal.
    type(vector)              :: normal   !< Normal (versor) of plane.
 
    normal = face_normal3(pt1=pt1, pt2=pt2, pt3=pt3, norm='y')
@@ -572,7 +576,7 @@ contains
    if (present(norm)) then
      normal = normalized(s12.cross.s13)
    else
-     normal = 0.5_R_P * (s12.cross.s13)
+     normal = 0.5_RPP * (s12.cross.s13)
    endif
    endfunction face_normal3
 
@@ -628,7 +632,7 @@ contains
    if (present(norm)) then
      normal = normalized(d13.cross.d24)
    else
-     normal = 0.5_R_P * (d13.cross.d24)
+     normal = 0.5_RPP * (d13.cross.d24)
    endif
    endfunction face_normal4
 
@@ -636,16 +640,18 @@ contains
    !< Compute IO length.
    !<
    !<```fortran
+   !< use penf, only : byte_size
    !< type(vector) :: pt
-   !< print*, pt%iolen()
+   !< print*, pt%iolen()/byte_size(pt%x)
    !<```
-   !=> 24 <<<
+   !=> 3 <<<
    !<
    !<```fortran
+   !< use penf, only : byte_size
    !< type(vector) :: pt
-   !< print*, iolen(pt)
+   !< print*, iolen(pt)/byte_size(pt%x)
    !<```
-   !=> 24 <<<
+   !=> 3 <<<
    class(vector), intent(in) :: self   !< Vector.
    integer(I4P)              :: iolen_ !< IO length.
 
@@ -677,12 +683,12 @@ contains
    class(vector), intent(in)           :: self          !< Vector.
    type(vector),  intent(in)           :: pt1           !< First line point.
    type(vector),  intent(in)           :: pt2           !< Second line point.
-   real(R_P),     intent(in), optional :: tolerance     !< Tolerance for collinearity check.
+   real(RPP),     intent(in), optional :: tolerance     !< Tolerance for collinearity check.
    logical                             :: is_collinear_ !< Inquire result.
-   real(R_P)                           :: tolerance_    !< Tolerance for collinearity check, local variable.
+   real(RPP)                           :: tolerance_    !< Tolerance for collinearity check, local variable.
 
-   tolerance_ = 0._R_P ; if (present(tolerance)) tolerance_ = tolerance
-   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= ZeroR_P + tolerance_
+   tolerance_ = 0._RPP ; if (present(tolerance)) tolerance_ = tolerance
+   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= ZeroRPP + tolerance_
    endfunction is_collinear
 
    elemental function is_concyclic(self, pt1, pt2, pt3, tolerance) result(is_concyclic_)
@@ -715,16 +721,16 @@ contains
    type(vector),  intent(in)           :: pt1           !< First arc point.
    type(vector),  intent(in)           :: pt2           !< Second arc point.
    type(vector),  intent(in)           :: pt3           !< Third arc point.
-   real(R_P),     intent(in), optional :: tolerance     !< Tolerance for concyclicity check.
+   real(RPP),     intent(in), optional :: tolerance     !< Tolerance for concyclicity check.
    logical                             :: is_concyclic_ !< Inquire result.
-   real(R_P)                           :: tolerance_    !< Tolerance for concyclicity check, local variable.
-   real(R_P)                           :: a, b, c       !< Temporary storage to avoid bad conditioned math (lost of precision).
+   real(RPP)                           :: tolerance_    !< Tolerance for concyclicity check, local variable.
+   real(RPP)                           :: a, b, c       !< Temporary storage to avoid bad conditioned math (lost of precision).
 
    a = sq_norm(self - pt1) * sq_norm(pt2 - pt3)
    b = sq_norm(pt1 - pt2) * sq_norm(pt3 - self)
    c = sq_norm(self - pt2) * sq_norm(pt1 - pt3)
-   tolerance_ = 0._R_P ; if (present(tolerance)) tolerance_ = tolerance
-   is_concyclic_ = sqrt(a) + sqrt(b) - sqrt(c) <= smallR_P + tolerance_
+   tolerance_ = 0._RPP ; if (present(tolerance)) tolerance_ = tolerance
+   is_concyclic_ = sqrt(a) + sqrt(b) - sqrt(c) <= smallRPP + tolerance_
    endfunction is_concyclic
 
    subroutine load_from_file(self, unit, fmt, pos, iostat, iomsg)
@@ -771,8 +777,8 @@ contains
    elemental subroutine normalize(self)
    !< Normalize vector.
    !<
-   !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallR_P the
-   !< normalization value is set to `normL2 + smallR_P`.
+   !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallRPP the
+   !< normalization value is set to `normL2 + smallRPP`.
    !<
    !<```fortran
    !< type(vector) :: pt
@@ -782,11 +788,11 @@ contains
    !<```
    !=> 0.71 0.71 0.00 <<<
    class(vector), intent(inout) :: self !< Vector.
-   real(R_P)                    :: nm   !< Norm L2 of vector.
+   real(RPP)                    :: nm   !< Norm L2 of vector.
 
    nm = normL2(self)
-   if (nm < smallR_P) then
-     nm = nm + smallR_P
+   if (nm < smallRPP) then
+     nm = nm + smallRPP
    endif
    self%x = self%x / nm
    self%y = self%y / nm
@@ -796,8 +802,8 @@ contains
    elemental function normalized(self) result(norm)
    !< Return a normalized copy of vector.
    !<
-   !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallR_P the
-   !< normalization value is set to normL2(vec)+smallR_P.
+   !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallRPP the
+   !< normalization value is set to normL2(vec)+smallRPP.
    !<
    !<```fortran
    !< type(vector) :: pt
@@ -840,7 +846,7 @@ contains
    !<```
    !=> 1.41 <<<
    class(vector), intent(in) :: self !< Vector.
-   real(R_P)                 :: norm !< Norm L2.
+   real(RPP)                 :: norm !< Norm L2.
 
    norm = sqrt(self%sq_norm())
    endfunction normL2
@@ -987,7 +993,7 @@ contains
    !<```
    !=> 2.0 <<<
    class(vector), intent(in) :: self !< Vector.
-   real(R_P)                 :: sq   !< Square of the Norm.
+   real(RPP)                 :: sq   !< Square of the Norm.
 
    sq = (self%x * self%x) + (self%y * self%y) + (self%z * self%z)
    endfunction sq_norm
@@ -1034,7 +1040,7 @@ contains
    !=> 0.0 <<<
    class(vector), intent(in) :: lhs !< Left hand side.
    type(vector),  intent(in) :: rhs !< Right hand side.
-   real(R_P)                 :: dot !< Dot product.
+   real(RPP)                 :: dot !< Dot product.
 
    dot = (lhs%x * rhs%x) + (lhs%y * rhs%y) + (lhs%z * rhs%z)
    endfunction dotproduct
@@ -1097,7 +1103,6 @@ contains
    !< Operator `= real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = 1._R16P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1106,16 +1111,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    real(R16P),    intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_R16P
 
    elemental subroutine assign_R8P(lhs, rhs)
    !< Operator `= real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = 1._R8P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1124,16 +1128,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    real(R8P),     intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_R8P
 
    elemental subroutine assign_R4P(lhs, rhs)
    !< Operator `= real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = 1._R4P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1142,16 +1145,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    real(R4P),     intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_R4P
 
    elemental subroutine assign_I8P(lhs, rhs)
    !< Operator `= integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = 1_I8P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1160,16 +1162,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    integer(I8P),  intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_I8P
 
    elemental subroutine assign_I4P(lhs, rhs)
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = 1_I4P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1178,16 +1179,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    integer(I4P),  intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_I4P
 
    elemental subroutine assign_I2P(lhs, rhs)
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = 1_I2P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1196,16 +1196,15 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    integer(I2P),  intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_I2P
 
    elemental subroutine assign_I1P(lhs, rhs)
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = 1_I1P
    !< print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
@@ -1214,9 +1213,9 @@ contains
    class(vector), intent(inout) :: lhs !< Left hand side.
    integer(I1P),  intent(in)    :: rhs !< Right hand side.
 
-   lhs%x = real(rhs, R_P)
-   lhs%y = real(rhs, R_P)
-   lhs%z = real(rhs, R_P)
+   lhs%x = real(rhs, RPP)
+   lhs%y = real(rhs, RPP)
+   lhs%z = real(rhs, RPP)
    endsubroutine assign_I1P
 
    ! operator `*`
@@ -1244,7 +1243,6 @@ contains
    !< Operator `real(R16P) *`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R16P * pt(1)
@@ -1255,16 +1253,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction R16P_mul_vector
 
    elemental function vector_mul_R16P(lhs, rhs) result(opr)
    !< Operator `* real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2._R16P
@@ -1275,16 +1272,15 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_R16P
 
    elemental function R8P_mul_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) *`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R8P * pt(1)
@@ -1295,16 +1291,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction R8P_mul_vector
 
    elemental function vector_mul_R8P(lhs, rhs) result(opr)
    !< Operator `* real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2._R8P
@@ -1315,16 +1310,15 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_R8P
 
    elemental function R4P_mul_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) *`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R4P * pt(1)
@@ -1335,16 +1329,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction R4P_mul_vector
 
    elemental function vector_mul_R4P(lhs, rhs) result(opr)
    !< Operator `* real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2._R4P
@@ -1355,16 +1348,15 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_R4P
 
    elemental function I8P_mul_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) *`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I8P * pt(1)
@@ -1375,16 +1367,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction I8P_mul_vector
 
    elemental function vector_mul_I8P(lhs, rhs) result(opr)
    !< Operator `* integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2_I8P
@@ -1395,16 +1386,15 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_I8P
 
    elemental function I4P_mul_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) *`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I4P * pt(1)
@@ -1415,16 +1405,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction I4P_mul_vector
 
    elemental function vector_mul_I4P(lhs, rhs) result(opr)
    !< Operator `* integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2_I4P
@@ -1435,16 +1424,15 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_I4P
 
    elemental function I2P_mul_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) *`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I2P * pt(1)
@@ -1455,16 +1443,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction I2P_mul_vector
 
    elemental function vector_mul_I2P(lhs, rhs) result(opr)
    !< Operator `* integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2_I2P
@@ -1475,16 +1462,15 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_I2P
 
    elemental function I1P_mul_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) *`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I1P * pt(1)
@@ -1495,16 +1481,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) * rhs%x
-   opr%y = real(lhs, R_P) * rhs%y
-   opr%z = real(lhs, R_P) * rhs%z
+   opr%x = real(lhs, RPP) * rhs%x
+   opr%y = real(lhs, RPP) * rhs%y
+   opr%z = real(lhs, RPP) * rhs%z
    endfunction I1P_mul_vector
 
    elemental function vector_mul_I1P(lhs, rhs) result(opr)
    !< Operator `* integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) * 2_I1P
@@ -1515,9 +1500,9 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x * real(rhs, R_P)
-   opr%y = lhs%y * real(rhs, R_P)
-   opr%z = lhs%z * real(rhs, R_P)
+   opr%x = lhs%x * real(rhs, RPP)
+   opr%y = lhs%y * real(rhs, RPP)
+   opr%z = lhs%z * real(rhs, RPP)
    endfunction vector_mul_I1P
 
    ! operator `/`
@@ -1545,7 +1530,6 @@ contains
    !< Operator `/ real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2._R16P
@@ -1556,16 +1540,15 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_R16P
 
    elemental function vector_div_R8P(lhs, rhs) result(opr)
    !< Operator `/ real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2._R8P
@@ -1576,16 +1559,15 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_R8P
 
    elemental function vector_div_R4P(lhs, rhs) result(opr)
    !< Operator `/ real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2._R4P
@@ -1596,16 +1578,15 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_R4P
 
    elemental function vector_div_I8P(lhs, rhs) result(opr)
    !< Operator `/ integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2_I8P
@@ -1616,16 +1597,15 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_I8P
 
    elemental function vector_div_I4P(lhs, rhs) result(opr)
    !< Operator `/ integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2_I4P
@@ -1636,16 +1616,15 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_I4P
 
    elemental function vector_div_I2P(lhs, rhs) result(opr)
    !< Operator `/ integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2_I2P
@@ -1656,16 +1635,15 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_I2P
 
    elemental function vector_div_I1P(lhs, rhs) result(opr)
    !< Operator `/ integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) / 2_I1P
@@ -1676,9 +1654,9 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x / real(rhs, R_P)
-   opr%y = lhs%y / real(rhs, R_P)
-   opr%z = lhs%z / real(rhs, R_P)
+   opr%x = lhs%x / real(rhs, RPP)
+   opr%y = lhs%y / real(rhs, RPP)
+   opr%z = lhs%z / real(rhs, RPP)
    endfunction vector_div_I1P
 
    ! operator `+`
@@ -1724,7 +1702,6 @@ contains
    !< Operator `real(R16P) +`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R16P + pt(1)
@@ -1735,16 +1712,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction R16P_sum_vector
 
    elemental function vector_sum_R16P(lhs, rhs) result(opr)
    !< Operator `+ real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2._R16P
@@ -1755,16 +1731,15 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_R16P
 
    elemental function R8P_sum_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) +`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R8P + pt(1)
@@ -1775,16 +1750,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction R8P_sum_vector
 
    elemental function vector_sum_R8P(lhs, rhs) result(opr)
    !< Operator `+ real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2._R8P
@@ -1795,16 +1769,15 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_R8P
 
    elemental function R4P_sum_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) +`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R4P + pt(1)
@@ -1815,16 +1788,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction R4P_sum_vector
 
    elemental function vector_sum_R4P(lhs, rhs) result(opr)
    !< Operator `+ real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2._R4P
@@ -1835,16 +1807,15 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_R4P
 
    elemental function I8P_sum_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) +`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I8P + pt(1)
@@ -1855,16 +1826,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction I8P_sum_vector
 
    elemental function vector_sum_I8P(lhs, rhs) result(opr)
    !< Operator `+ integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2_I8P
@@ -1875,16 +1845,15 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_I8P
 
    elemental function I4P_sum_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) +`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I4P + pt(1)
@@ -1895,16 +1864,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction I4P_sum_vector
 
    elemental function vector_sum_I4P(lhs, rhs) result(opr)
    !< Operator `+ integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2_I4P
@@ -1915,16 +1883,15 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_I4P
 
    elemental function I2P_sum_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) +`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I2P + pt(1)
@@ -1935,16 +1902,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction I2P_sum_vector
 
    elemental function vector_sum_I2P(lhs, rhs) result(opr)
    !< Operator `+ integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2_I2P
@@ -1955,16 +1921,15 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_I2P
 
    elemental function I1P_sum_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) +`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I1P + pt(1)
@@ -1975,16 +1940,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) + rhs%x
-   opr%y = real(lhs, R_P) + rhs%y
-   opr%z = real(lhs, R_P) + rhs%z
+   opr%x = real(lhs, RPP) + rhs%x
+   opr%y = real(lhs, RPP) + rhs%y
+   opr%z = real(lhs, RPP) + rhs%z
    endfunction I1P_sum_vector
 
    elemental function vector_sum_I1P(lhs, rhs) result(opr)
    !< Operator `+ integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) + 2_I1P
@@ -1995,9 +1959,9 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x + real(rhs, R_P)
-   opr%y = lhs%y + real(rhs, R_P)
-   opr%z = lhs%z + real(rhs, R_P)
+   opr%x = lhs%x + real(rhs, RPP)
+   opr%y = lhs%y + real(rhs, RPP)
+   opr%z = lhs%z + real(rhs, RPP)
    endfunction vector_sum_I1P
 
    ! operator `-`
@@ -2043,7 +2007,6 @@ contains
    !< Operator `real(R16P) -`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R16P - pt(1)
@@ -2054,16 +2017,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction R16P_sub_vector
 
    elemental function vector_sub_R16P(lhs, rhs) result(opr)
    !< Operator `- real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2._R16P
@@ -2074,16 +2036,15 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_R16P
 
    elemental function R8P_sub_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) -`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R8P - pt(1)
@@ -2094,16 +2055,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction R8P_sub_vector
 
    elemental function vector_sub_R8P(lhs, rhs) result(opr)
    !< Operator `- real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2._R8P
@@ -2114,16 +2074,15 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_R8P
 
    elemental function R4P_sub_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) -`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2._R4P - pt(1)
@@ -2134,16 +2093,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction R4P_sub_vector
 
    elemental function vector_sub_R4P(lhs, rhs) result(opr)
    !< Operator `- real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2._R4P
@@ -2154,16 +2112,15 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_R4P
 
    elemental function I8P_sub_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) -`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I8P - pt(1)
@@ -2174,16 +2131,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction I8P_sub_vector
 
    elemental function vector_sub_I8P(lhs, rhs) result(opr)
    !< Operator `- integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2_I8P
@@ -2194,16 +2150,15 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_I8P
 
    elemental function I4P_sub_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) -`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I4P - pt(1)
@@ -2214,16 +2169,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction I4P_sub_vector
 
    elemental function vector_sub_I4P(lhs, rhs) result(opr)
    !< Operator `- integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2_I4P
@@ -2234,16 +2188,15 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_I4P
 
    elemental function I2P_sub_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) -`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I2P - pt(1)
@@ -2254,16 +2207,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction I2P_sub_vector
 
    elemental function vector_sub_I2P(lhs, rhs) result(opr)
    !< Operator `- integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2_I2P
@@ -2274,16 +2226,15 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_I2P
 
    elemental function I1P_sub_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) -`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = 2_I1P - pt(1)
@@ -2294,16 +2245,15 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = real(lhs, R_P) - rhs%x
-   opr%y = real(lhs, R_P) - rhs%y
-   opr%z = real(lhs, R_P) - rhs%z
+   opr%x = real(lhs, RPP) - rhs%x
+   opr%y = real(lhs, RPP) - rhs%y
+   opr%z = real(lhs, RPP) - rhs%z
    endfunction I1P_sub_vector
 
    elemental function vector_sub_I1P(lhs, rhs) result(opr)
    !< Operator `- integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt(0:1)
    !< pt(1) = 1 * ex + 2 * ey + 1 * ez
    !< pt(0) = pt(1) - 2_I1P
@@ -2314,9 +2264,9 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    type(vector)              :: opr !< Operator result.
 
-   opr%x = lhs%x - real(rhs, R_P)
-   opr%y = lhs%y - real(rhs, R_P)
-   opr%z = lhs%z - real(rhs, R_P)
+   opr%x = lhs%x - real(rhs, RPP)
+   opr%y = lhs%y - real(rhs, RPP)
+   opr%z = lhs%z - real(rhs, RPP)
    endfunction vector_sub_I1P
 
    ! operator `/=`
@@ -2358,7 +2308,6 @@ contains
    !< Operator `real(R16P) /=`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R16P /= pt
@@ -2368,14 +2317,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction R16P_not_eq_vector
 
    elemental function vector_not_eq_R16P(lhs, rhs) result(opr)
    !< Operator `/= real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1._R16P
@@ -2385,14 +2333,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_R16P
 
    elemental function R8P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) /=`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R8P /= pt
@@ -2402,14 +2349,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction R8P_not_eq_vector
 
    elemental function vector_not_eq_R8P(lhs, rhs) result(opr)
    !< Operator `/= real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1._R8P
@@ -2419,14 +2365,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_R8P
 
    elemental function R4P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) /=`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R4P /= pt
@@ -2436,14 +2381,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction R4P_not_eq_vector
 
    elemental function vector_not_eq_R4P(lhs, rhs) result(opr)
    !< Operator `/= real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1._R4P
@@ -2453,14 +2397,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_R4P
 
    elemental function I8P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) /=`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I8P /= pt
@@ -2470,14 +2413,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction I8P_not_eq_vector
 
    elemental function vector_not_eq_I8P(lhs, rhs) result(opr)
    !< Operator `/= integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1_I8P
@@ -2487,14 +2429,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_I8P
 
    elemental function I4P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) /=`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I4P /= pt
@@ -2504,14 +2445,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction I4P_not_eq_vector
 
    elemental function vector_not_eq_I4P(lhs, rhs) result(opr)
    !< Operator `/= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1_I4P
@@ -2521,14 +2461,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_I4P
 
    elemental function I2P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) /=`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I2P /= pt
@@ -2538,14 +2477,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction I2P_not_eq_vector
 
    elemental function vector_not_eq_I2P(lhs, rhs) result(opr)
    !< Operator `/= integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1_I2P
@@ -2555,14 +2493,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_I2P
 
    elemental function I1P_not_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) /=`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I1P /= pt
@@ -2572,14 +2509,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) /= normL2(rhs))
+   opr = (real(lhs, RPP) /= normL2(rhs))
    endfunction I1P_not_eq_vector
 
    elemental function vector_not_eq_I1P(lhs, rhs) result(opr)
    !< Operator `/= integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt /= 1_I1P
@@ -2589,7 +2525,7 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) /= real(rhs, R_P))
+   opr = (normL2(lhs) /= real(rhs, RPP))
    endfunction vector_not_eq_I1P
 
    ! operator `<`
@@ -2614,7 +2550,6 @@ contains
    !< Operator `real(R16P) <`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R16P < pt
@@ -2624,14 +2559,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction R16P_low_vector
 
    elemental function vector_low_R16P(lhs, rhs) result(opr)
    !< Operator `< real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4._R16P
@@ -2641,14 +2575,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_R16P
 
    elemental function R8P_low_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) <`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R8P < pt
@@ -2658,14 +2591,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction R8P_low_vector
 
    elemental function vector_low_R8P(lhs, rhs) result(opr)
    !< Operator `< real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4._R8P
@@ -2675,14 +2607,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_R8P
 
    elemental function R4P_low_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) <`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R4P < pt
@@ -2692,14 +2623,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction R4P_low_vector
 
    elemental function vector_low_R4P(lhs, rhs) result(opr)
    !< Operator `< real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4._R4P
@@ -2709,14 +2639,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_R4P
 
    elemental function I8P_low_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) <`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I8P < pt
@@ -2726,14 +2655,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction I8P_low_vector
 
    elemental function vector_low_I8P(lhs, rhs) result(opr)
    !< Operator `< integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4_I8P
@@ -2743,14 +2671,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_I8P
 
    elemental function I4P_low_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) <`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I4P < pt
@@ -2760,14 +2687,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction I4P_low_vector
 
    elemental function vector_low_I4P(lhs, rhs) result(opr)
    !< Operator `< integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4_I4P
@@ -2777,14 +2703,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_I4P
 
    elemental function I2P_low_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) <`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I2P < pt
@@ -2794,14 +2719,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction I2P_low_vector
 
    elemental function vector_low_I2P(lhs, rhs) result(opr)
    !< Operator `< integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4_I2P
@@ -2811,14 +2735,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_I2P
 
    elemental function I1P_low_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) <`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I1P < pt
@@ -2828,14 +2751,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) < normL2(rhs))
+   opr = (real(lhs, RPP) < normL2(rhs))
    endfunction I1P_low_vector
 
    elemental function vector_low_I1P(lhs, rhs) result(opr)
    !< Operator `< integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt < 4_I1P
@@ -2845,7 +2767,7 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) < real(rhs, R_P))
+   opr = (normL2(lhs) < real(rhs, RPP))
    endfunction vector_low_I1P
 
    ! operator `<=`
@@ -2870,7 +2792,6 @@ contains
    !< Operator `real(R16P) <=`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R16P <= pt
@@ -2880,14 +2801,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction R16P_low_eq_vector
 
    elemental function vector_low_eq_R16P(lhs, rhs) result(opr)
    !< Operator `<= real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4._R16P
@@ -2897,14 +2817,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_R16P
 
    elemental function R8P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) <=`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R8P <= pt
@@ -2914,14 +2833,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction R8P_low_eq_vector
 
    elemental function vector_low_eq_R8P(lhs, rhs) result(opr)
    !< Operator `<= real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4._R8P
@@ -2931,14 +2849,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_R8P
 
    elemental function R4P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) <=`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1._R4P <= pt
@@ -2948,14 +2865,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction R4P_low_eq_vector
 
    elemental function vector_low_eq_R4P(lhs, rhs) result(opr)
    !< Operator `<= real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4._R4P
@@ -2965,14 +2881,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_R4P
 
    elemental function I8P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) <=`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I8P <= pt
@@ -2982,14 +2897,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction I8P_low_eq_vector
 
    elemental function vector_low_eq_I8P(lhs, rhs) result(opr)
    !< Operator `<= integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4_I8P
@@ -2999,14 +2913,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_I8P
 
    elemental function I4P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) <=`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I4P <= pt
@@ -3016,14 +2929,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction I4P_low_eq_vector
 
    elemental function vector_low_eq_I4P(lhs, rhs) result(opr)
    !< Operator `<= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4_I4P
@@ -3033,14 +2945,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_I4P
 
    elemental function I2P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) <=`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I2P <= pt
@@ -3050,14 +2961,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction I2P_low_eq_vector
 
    elemental function vector_low_eq_I2P(lhs, rhs) result(opr)
    !< Operator `<= integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4_I2P
@@ -3067,14 +2977,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_I2P
 
    elemental function I1P_low_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) <=`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 1_I1P <= pt
@@ -3084,14 +2993,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) <= normL2(rhs))
+   opr = (real(lhs, RPP) <= normL2(rhs))
    endfunction I1P_low_eq_vector
 
    elemental function vector_low_eq_I1P(lhs, rhs) result(opr)
    !< Operator `<= integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt <= 4_I1P
@@ -3101,7 +3009,7 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) <= real(rhs, R_P))
+   opr = (normL2(lhs) <= real(rhs, RPP))
    endfunction vector_low_eq_I1P
 
    ! operator `==`
@@ -3135,7 +3043,6 @@ contains
    !< Operator `real(R16P) ==`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5._R16P == pt
@@ -3145,14 +3052,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction R16P_eq_vector
 
    elemental function vector_eq_R16P(lhs, rhs) result(opr)
    !< Operator `== real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5._R16P
@@ -3162,14 +3068,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_R16P
 
    elemental function R8P_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) ==`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5._R8P == pt
@@ -3179,14 +3084,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction R8P_eq_vector
 
    elemental function vector_eq_R8P(lhs, rhs) result(opr)
    !< Operator `== real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5._R8P
@@ -3196,14 +3100,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_R8P
 
    elemental function R4P_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) ==`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5._R4P == pt
@@ -3213,14 +3116,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction R4P_eq_vector
 
    elemental function vector_eq_R4P(lhs, rhs) result(opr)
    !< Operator `== real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5._R4P
@@ -3230,14 +3132,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_R4P
 
    elemental function I8P_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) ==`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5_I8P == pt
@@ -3247,14 +3148,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction I8P_eq_vector
 
    elemental function vector_eq_I8P(lhs, rhs) result(opr)
    !< Operator `== integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5_I8P
@@ -3264,14 +3164,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_I8P
 
    elemental function I4P_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) ==`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5_I4P == pt
@@ -3281,14 +3180,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction I4P_eq_vector
 
    elemental function vector_eq_I4P(lhs, rhs) result(opr)
    !< Operator `== integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5_I4P
@@ -3298,14 +3196,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_I4P
 
    elemental function I2P_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) ==`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5_I2P == pt
@@ -3315,14 +3212,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction I2P_eq_vector
 
    elemental function vector_eq_I2P(lhs, rhs) result(opr)
    !< Operator `== integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5_I2P
@@ -3332,14 +3228,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_I2P
 
    elemental function I1P_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) ==`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", 5_I1P == pt
@@ -3349,14 +3244,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) == normL2(rhs))
+   opr = (real(lhs, RPP) == normL2(rhs))
    endfunction I1P_eq_vector
 
    elemental function vector_eq_I1P(lhs, rhs) result(opr)
    !< Operator `== integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = 4 * ex + 3 * ey
    !< print "(L1)", pt == 5_I1P
@@ -3366,7 +3260,7 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) == real(rhs, R_P))
+   opr = (normL2(lhs) == real(rhs, RPP))
    endfunction vector_eq_I1P
 
    ! operator `>=`
@@ -3391,7 +3285,6 @@ contains
    !< Operator `real(R16P) >=`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R16P >= pt
@@ -3401,14 +3294,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction R16P_great_eq_vector
 
    elemental function vector_great_eq_R16P(lhs, rhs) result(opr)
    !< Operator `>= real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1._R16P
@@ -3418,14 +3310,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_R16P
 
    elemental function R8P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) >=`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R8P >= pt
@@ -3435,14 +3326,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction R8P_great_eq_vector
 
    elemental function vector_great_eq_R8P(lhs, rhs) result(opr)
    !< Operator `>= real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1._R8P
@@ -3452,14 +3342,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_R8P
 
    elemental function R4P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) >=`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R4P >= pt
@@ -3469,14 +3358,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction R4P_great_eq_vector
 
    elemental function vector_great_eq_R4P(lhs, rhs) result(opr)
    !< Operator `>= real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1._R4P
@@ -3486,14 +3374,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_R4P
 
    elemental function I8P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) >=`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I8P >= pt
@@ -3503,14 +3390,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction I8P_great_eq_vector
 
    elemental function vector_great_eq_I8P(lhs, rhs) result(opr)
    !< Operator `>= integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1_I8P
@@ -3520,14 +3406,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_I8P
 
    elemental function I4P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) >=`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I4P >= pt
@@ -3537,14 +3422,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction I4P_great_eq_vector
 
    elemental function vector_great_eq_I4P(lhs, rhs) result(opr)
    !< Operator `>= integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1_I4P
@@ -3554,14 +3438,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_I4P
 
    elemental function I2P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) >=`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I2P >= pt
@@ -3571,14 +3454,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction I2P_great_eq_vector
 
    elemental function vector_great_eq_I2P(lhs, rhs) result(opr)
    !< Operator `>= integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1_I2P
@@ -3588,14 +3470,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_I2P
 
    elemental function I1P_great_eq_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) >=`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I1P >= pt
@@ -3605,14 +3486,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) >= normL2(rhs))
+   opr = (real(lhs, RPP) >= normL2(rhs))
    endfunction I1P_great_eq_vector
 
    elemental function vector_great_eq_I1P(lhs, rhs) result(opr)
    !< Operator `>= integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt >= 1_I1P
@@ -3622,7 +3502,7 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) >= real(rhs, R_P))
+   opr = (normL2(lhs) >= real(rhs, RPP))
    endfunction vector_great_eq_I1P
 
    ! operator `>`
@@ -3647,7 +3527,6 @@ contains
    !< Operator `real(R16P) >`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R16P > pt
@@ -3657,14 +3536,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction R16P_great_vector
 
    elemental function vector_great_R16P(lhs, rhs) result(opr)
    !< Operator `> real(R16P)`.
    !<
    !<```fortran
-   !< use penf, only : R16P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1._R16P
@@ -3674,14 +3552,13 @@ contains
    real(R16P),    intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_R16P
 
    elemental function R8P_great_vector(lhs, rhs) result(opr)
    !< Operator `real(R8P) >`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R8P > pt
@@ -3691,14 +3568,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction R8P_great_vector
 
    elemental function vector_great_R8P(lhs, rhs) result(opr)
    !< Operator `> real(R8P)`.
    !<
    !<```fortran
-   !< use penf, only : R8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1._R8P
@@ -3708,14 +3584,13 @@ contains
    real(R8P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_R8P
 
    elemental function R4P_great_vector(lhs, rhs) result(opr)
    !< Operator `real(R4P) >`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4._R4P > pt
@@ -3725,14 +3600,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction R4P_great_vector
 
    elemental function vector_great_R4P(lhs, rhs) result(opr)
    !< Operator `> real(R4P)`.
    !<
    !<```fortran
-   !< use penf, only : R4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1._R4P
@@ -3742,14 +3616,13 @@ contains
    real(R4P),     intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_R4P
 
    elemental function I8P_great_vector(lhs, rhs) result(opr)
    !< Operator `integer(I8P) >`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I8P > pt
@@ -3759,14 +3632,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction I8P_great_vector
 
    elemental function vector_great_I8P(lhs, rhs) result(opr)
    !< Operator `> integer(I8P)`.
    !<
    !<```fortran
-   !< use penf, only : I8P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1_I8P
@@ -3776,14 +3648,13 @@ contains
    integer(I8P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_I8P
 
    elemental function I4P_great_vector(lhs, rhs) result(opr)
    !< Operator `integer(I4P) >`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I4P > pt
@@ -3793,14 +3664,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction I4P_great_vector
 
    elemental function vector_great_I4P(lhs, rhs) result(opr)
    !< Operator `> integer(I4P)`.
    !<
    !<```fortran
-   !< use penf, only : I4P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1_I4P
@@ -3810,14 +3680,13 @@ contains
    integer(I4P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_I4P
 
    elemental function I2P_great_vector(lhs, rhs) result(opr)
    !< Operator `integer(I2P) >`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I2P > pt
@@ -3827,14 +3696,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction I2P_great_vector
 
    elemental function vector_great_I2P(lhs, rhs) result(opr)
    !< Operator `> integer(I2P)`.
    !<
    !<```fortran
-   !< use penf, only : I2P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1_I2P
@@ -3844,14 +3712,13 @@ contains
    integer(I2P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_I2P
 
    elemental function I1P_great_vector(lhs, rhs) result(opr)
    !< Operator `integer(I1P) >`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", 4_I1P > pt
@@ -3861,14 +3728,13 @@ contains
    class(vector), intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (real(lhs, R_P) > normL2(rhs))
+   opr = (real(lhs, RPP) > normL2(rhs))
    endfunction I1P_great_vector
 
    elemental function vector_great_I1P(lhs, rhs) result(opr)
    !< Operator `> integer(I1P)`.
    !<
    !<```fortran
-   !< use penf, only : I1P
    !< type(vector) :: pt
    !< pt = ex + ey + ez
    !< print "(L1)", pt > 1_I1P
@@ -3878,6 +3744,6 @@ contains
    integer(I1P),  intent(in) :: rhs !< Right hand side.
    logical                   :: opr !< Operator result.
 
-   opr = (normL2(lhs) > real(rhs, R_P))
+   opr = (normL2(lhs) > real(rhs, RPP))
    endfunction vector_great_I1P
 endmodule vecfor
