@@ -1,8 +1,7 @@
 program volatile_doctest
 use vecfor
- use penf, only : R_P
  type(vector) :: pt(0:3)
- real(R_P)    :: d
+ real(RPP)    :: d
 
  pt(0) = 5.3 * ez
  pt(1) = ex

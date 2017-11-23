@@ -1,8 +1,7 @@
 program volatile_doctest
 use vecfor
- use penf, only : R_P
  type(vector) :: pt(1:2)
- real(R_P)    :: a
+ real(RPP)    :: a
 
  pt(1) = ex
  pt(2) = 2 * ex
