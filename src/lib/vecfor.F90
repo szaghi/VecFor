@@ -78,6 +78,7 @@ use vecfor_R16P, only : angle_R16P                       => angle,              
                         vector_R16P                      => vector
 
 ! default kind
+#ifdef __GFORTRAN__
 #if defined DEFKIND_R16P
 use vecfor_R16P, only : angle,                       &
                         distance_to_line,            &
@@ -120,7 +121,6 @@ use vecfor_R4P, only : angle,                       &
                        ZeroRPP,                     &
                        sq_norm,                     &
                        vector
-
 #else
 use vecfor_R8P, only : angle,                       &
                        distance_to_line,            &
@@ -142,6 +142,7 @@ use vecfor_R8P, only : angle,                       &
                        ZeroRPP,                     &
                        sq_norm,                     &
                        vector
+#endif
 #endif
 use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
@@ -208,6 +209,7 @@ public :: smallRPP_R16P
 public :: ZeroRPP_R16P
 public :: sq_norm_R16P
 public :: vector_R16P
+#ifdef __GFORTRAN__
 ! default kind
 public :: angle
 public :: distance_to_line
@@ -229,6 +231,7 @@ public :: smallRPP
 public :: ZeroRPP
 public :: sq_norm
 public :: vector
+#endif
 ! PENF object
 public :: DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 endmodule vecfor
