@@ -27,10 +27,14 @@ type :: vector
   real(RPP) :: z = 0._RPP !< Cartesian component in z direction.
   contains
      ! public new operators
-     generic :: operator(.cross.) => crossproduct !< Compute the cross product.
-     generic :: operator(.dot.)   => dotproduct   !< Compute the scalar (dot) product.
-     generic :: operator(.paral.) => parallel     !< Compute the component of `lhs` parallel to `rhs`.
-     generic :: operator(.ortho.) => orthogonal   !< Compute the component of `lhs` orthogonal to `rhs`.
+     generic :: operator(.cross.) => crossproduct !< Cross product operator.
+     generic :: operator(.dot.)   => dotproduct   !< Scalar (dot) product operator.
+     generic :: operator(.paral.) => parallel     !< Component of `lhs` parallel to `rhs` operator.
+     generic :: operator(.ortho.) => orthogonal   !< Component of `lhs` orthogonal to `rhs` operator.
+     procedure, pass(lhs) :: crossproduct         !< Compute the cross product.
+     procedure, pass(lhs) :: dotproduct           !< Compute the scalar (dot) product.
+     procedure, pass(lhs) :: orthogonal           !< Compute the component of `lhs` orthogonal to `rhs`.
+     procedure, pass(lhs) :: parallel             !< Compute the component of `lhs` parallel to `rhs`.
      ! public methods
      procedure, pass(self) :: angle                       !< Calculate the angle (rad) between two vectors.
      procedure, pass(self) :: distance_to_line            !< Calculate the distance (scalar) to line defined by 2 points.
@@ -161,10 +165,6 @@ type :: vector
                                I2P_great_vector, vector_great_I2P,   &
                                I1P_great_vector, vector_great_I1P !< Overloading `>`.
      ! private methods
-     procedure, pass(lhs), private :: crossproduct           !< Compute the cross product.
-     procedure, pass(lhs), private :: dotproduct             !< Compute the scalar (dot) product.
-     procedure, pass(lhs), private :: orthogonal             !< Compute the component of `lhs` orthogonal to `rhs`.
-     procedure, pass(lhs), private :: parallel               !< Compute the component of `lhs` parallel to `rhs`.
      procedure, pass(lhs), private :: assign_vector          !< Operator `=`.
      procedure, pass(lhs), private :: assign_R16P            !< Operator `= real(R16P)`.
      procedure, pass(lhs), private :: assign_R8P             !< Operator `= real(R8P)`.
@@ -416,12 +416,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \ *---------> . self
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !<
    !<```fortran
@@ -465,12 +465,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \ *---------> . self
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !<
    !<```fortran
@@ -512,12 +512,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \  |
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !< The normal is calculated by the cross product of the side s12 for the side s13: s12 x s13.
    !< The normal is normalized if the variable *norm* is passed (with any value).
@@ -565,12 +565,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----------.2
+   !< 3.----------.2
    !<  |          |
    !<  |          |
    !<  |          |
    !<  |          |
-   !< 4.----------.3
+   !< 4.----------.1
    !<```
    !< The normal is calculated by the cross product of the diagonal d13 for the diagonal d24: d13 x d24.
    !< The normal is normalized if the variable *norm* is passed (with any value).
