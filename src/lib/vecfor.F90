@@ -24,9 +24,11 @@ use vecfor_R4P, only : angle_R4P                       => angle,                
                        iolen_R4P                       => iolen,                       &
                        is_collinear_R4P                => is_collinear,                &
                        is_concyclic_R4P                => is_concyclic,                &
+                       mirror_matrix_R4P               => mirror_matrix,               &
                        normalized_R4P                  => normalized,                  &
                        normL2_R4P                      => normL2,                      &
                        projection_onto_plane_R4P       => projection_onto_plane,       &
+                       rotation_matrix_R4P             => rotation_matrix,             &
                        RPP_R4P                         => RPP,                         &
                        smallRPP_R4P                    => smallRPP,                    &
                        ZeroRPP_R4P                     => ZeroRPP,                     &
@@ -46,9 +48,11 @@ use vecfor_R8P, only : angle_R8P                       => angle,                
                        iolen_R8P                       => iolen,                       &
                        is_collinear_R8P                => is_collinear,                &
                        is_concyclic_R8P                => is_concyclic,                &
+                       mirror_matrix_R8P               => mirror_matrix,               &
                        normalized_R8P                  => normalized,                  &
                        normL2_R8P                      => normL2,                      &
                        projection_onto_plane_R8P       => projection_onto_plane,       &
+                       rotation_matrix_R8P             => rotation_matrix,             &
                        RPP_R8P                         => RPP,                         &
                        smallRPP_R8P                    => smallRPP,                    &
                        ZeroRPP_R8P                     => ZeroRPP,                     &
@@ -68,9 +72,11 @@ use vecfor_R16P, only : angle_R16P                       => angle,              
                         iolen_R16P                       => iolen,                       &
                         is_collinear_R16P                => is_collinear,                &
                         is_concyclic_R16P                => is_concyclic,                &
+                        mirror_matrix_R16P               => mirror_matrix,               &
                         normalized_R16P                  => normalized,                  &
                         normL2_R16P                      => normL2,                      &
                         projection_onto_plane_R16P       => projection_onto_plane,       &
+                        rotation_matrix_R16P             => rotation_matrix,             &
                         RPP_R16P                         => RPP,                         &
                         smallRPP_R16P                    => smallRPP,                    &
                         ZeroRPP_R16P                     => ZeroRPP,                     &
@@ -78,6 +84,7 @@ use vecfor_R16P, only : angle_R16P                       => angle,              
                         vector_R16P                      => vector
 
 ! default kind
+#ifdef __GFORTRAN__
 #if defined DEFKIND_R16P
 use vecfor_R16P, only : angle,                       &
                         distance_to_line,            &
@@ -91,9 +98,11 @@ use vecfor_R16P, only : angle,                       &
                         iolen,                       &
                         is_collinear,                &
                         is_concyclic,                &
+                        mirror_matrix,               &
                         normalized,                  &
                         normL2,                      &
                         projection_onto_plane,       &
+                        rotation_matrix,             &
                         RPP,                         &
                         smallRPP,                    &
                         ZeroRPP,                     &
@@ -112,15 +121,16 @@ use vecfor_R4P, only : angle,                       &
                        iolen,                       &
                        is_collinear,                &
                        is_concyclic,                &
+                       mirror_matrix,               &
                        normalized,                  &
                        normL2,                      &
                        projection_onto_plane,       &
+                       rotation_matrix,             &
                        RPP,                         &
                        smallRPP,                    &
                        ZeroRPP,                     &
                        sq_norm,                     &
                        vector
-
 #else
 use vecfor_R8P, only : angle,                       &
                        distance_to_line,            &
@@ -134,14 +144,17 @@ use vecfor_R8P, only : angle,                       &
                        iolen,                       &
                        is_collinear,                &
                        is_concyclic,                &
+                       mirror_matrix,               &
                        normalized,                  &
                        normL2,                      &
                        projection_onto_plane,       &
+                       rotation_matrix,             &
                        RPP,                         &
                        smallRPP,                    &
                        ZeroRPP,                     &
                        sq_norm,                     &
                        vector
+#endif
 #endif
 use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
@@ -158,9 +171,11 @@ public :: face_normal4_R4P
 public :: iolen_R4P
 public :: is_collinear_R4P
 public :: is_concyclic_R4P
+public :: mirror_matrix_R4P
 public :: normalized_R4P
 public :: normL2_R4P
 public :: projection_onto_plane_R4P
+public :: rotation_matrix_R4P
 public :: RPP_R4P
 public :: smallRPP_R4P
 public :: ZeroRPP_R4P
@@ -179,9 +194,11 @@ public :: face_normal4_R8P
 public :: iolen_R8P
 public :: is_collinear_R8P
 public :: is_concyclic_R8P
+public :: mirror_matrix_R8P
 public :: normalized_R8P
 public :: normL2_R8P
 public :: projection_onto_plane_R8P
+public :: rotation_matrix_R8P
 public :: RPP_R8P
 public :: smallRPP_R8P
 public :: ZeroRPP_R8P
@@ -200,14 +217,17 @@ public :: face_normal4_R16P
 public :: iolen_R16P
 public :: is_collinear_R16P
 public :: is_concyclic_R16P
+public :: mirror_matrix_R16P
 public :: normalized_R16P
 public :: normL2_R16P
 public :: projection_onto_plane_R16P
+public :: rotation_matrix_R16P
 public :: RPP_R16P
 public :: smallRPP_R16P
 public :: ZeroRPP_R16P
 public :: sq_norm_R16P
 public :: vector_R16P
+#ifdef __GFORTRAN__
 ! default kind
 public :: angle
 public :: distance_to_line
@@ -221,14 +241,17 @@ public :: face_normal4
 public :: iolen
 public :: is_collinear
 public :: is_concyclic
+public :: mirror_matrix
 public :: normalized
 public :: normL2
 public :: projection_onto_plane
+public :: rotation_matrix
 public :: RPP
 public :: smallRPP
 public :: ZeroRPP
 public :: sq_norm
 public :: vector
+#endif
 ! PENF object
 public :: DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 endmodule vecfor

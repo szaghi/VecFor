@@ -6,15 +6,22 @@ public :: angle
 public :: distance_to_line
 public :: distance_to_plane
 public :: distance_vectorial_to_plane
-public :: ex, ey, ez
-public :: face_normal3, face_normal4
+public :: ex
+public :: ey
+public :: ez
+public :: face_normal3
+public :: face_normal4
 public :: iolen
 public :: is_collinear
 public :: is_concyclic
+public :: mirror_matrix
 public :: normalized
 public :: normL2
 public :: projection_onto_plane
-public :: RPP, smallRPP, ZeroRPP
+public :: rotation_matrix
+public :: RPP
+public :: smallRPP
+public :: ZeroRPP
 public :: sq_norm
 public :: vector
 ! PENF object
@@ -27,10 +34,16 @@ type :: vector
   real(RPP) :: z = 0._RPP !< Cartesian component in z direction.
   contains
      ! public new operators
-     generic :: operator(.cross.) => crossproduct !< Compute the cross product.
-     generic :: operator(.dot.)   => dotproduct   !< Compute the scalar (dot) product.
-     generic :: operator(.paral.) => parallel     !< Compute the component of `lhs` parallel to `rhs`.
-     generic :: operator(.ortho.) => orthogonal   !< Compute the component of `lhs` orthogonal to `rhs`.
+     generic :: operator(.cross.)  => crossproduct  !< Cross product operator.
+     generic :: operator(.dot.)    => dotproduct    !< Scalar (dot) product operator.
+     generic :: operator(.matrix.) => matrixproduct !< Matrix product operator.
+     generic :: operator(.paral.)  => parallel      !< Component of `lhs` parallel to `rhs` operator.
+     generic :: operator(.ortho.)  => orthogonal    !< Component of `lhs` orthogonal to `rhs` operator.
+     procedure, pass(lhs) :: crossproduct           !< Compute the cross product.
+     procedure, pass(lhs) :: dotproduct             !< Compute the scalar (dot) product.
+     procedure, pass(rhs) :: matrixproduct          !< Compute the matrix product.
+     procedure, pass(lhs) :: orthogonal             !< Compute the component of `lhs` orthogonal to `rhs`.
+     procedure, pass(lhs) :: parallel               !< Compute the component of `lhs` parallel to `rhs`.
      ! public methods
      procedure, pass(self) :: angle                       !< Calculate the angle (rad) between two vectors.
      procedure, pass(self) :: distance_to_line            !< Calculate the distance (scalar) to line defined by 2 points.
@@ -42,11 +55,15 @@ type :: vector
      procedure, pass(self) :: is_collinear                !< Return true if the point is collinear with other two given points.
      procedure, pass(self) :: is_concyclic                !< Return true if the point is concyclic with other three given points.
      procedure, pass(self) :: load_from_file              !< Load vector from file.
+     generic               :: mirror => mirror_by_normal, &
+                                        mirror_by_matrix  !< Mirror vector.
      procedure, pass(self) :: normalize                   !< Normalize a vector.
      procedure, pass(self) :: normalized                  !< Return a normalized copy of vector.
      procedure, pass(self) :: normL2                      !< Return the norm L2 of vector.
      procedure, pass(self) :: printf                      !< Print vector components with a "pretty" format.
      procedure, pass(self) :: projection_onto_plane       !< Calculate the projection of point onto plane defined by 3 points.
+     generic               :: rotate => rotate_by_axis_angle, &
+                                        rotate_by_matrix  !< Rotate vector.
      procedure, pass(self) :: save_into_file              !< Save vector into file.
      procedure, pass(self) :: sq_norm                     !< Return the square of the norm of a vector.
      ! operators overloading
@@ -161,10 +178,11 @@ type :: vector
                                I2P_great_vector, vector_great_I2P,   &
                                I1P_great_vector, vector_great_I1P !< Overloading `>`.
      ! private methods
-     procedure, pass(lhs), private :: crossproduct           !< Compute the cross product.
-     procedure, pass(lhs), private :: dotproduct             !< Compute the scalar (dot) product.
-     procedure, pass(lhs), private :: orthogonal             !< Compute the component of `lhs` orthogonal to `rhs`.
-     procedure, pass(lhs), private :: parallel               !< Compute the component of `lhs` parallel to `rhs`.
+     procedure, pass(self), private :: mirror_by_normal     !< Mirror vector given normal of mirroring plane.
+     procedure, pass(self), private :: mirror_by_matrix     !< Mirror vector given matrix.
+     procedure, pass(self), private :: rotate_by_axis_angle !< Rotate vector given axis and angle.
+     procedure, pass(self), private :: rotate_by_matrix     !< Rotate vector given matrix.
+     ! operators
      procedure, pass(lhs), private :: assign_vector          !< Operator `=`.
      procedure, pass(lhs), private :: assign_R16P            !< Operator `= real(R16P)`.
      procedure, pass(lhs), private :: assign_R8P             !< Operator `= real(R8P)`.
@@ -331,6 +349,154 @@ type(vector), parameter :: ez = vector(0._RPP, 0._RPP, 1._RPP) !< Z direction ve
 
 contains
    ! public methods
+   ! non TBP
+   pure function rotation_matrix(axis, angle) result(matrix)
+   !< Return the rotation matrix given axis and angle of ratation.
+   !<
+   !< Angle must be in radiants.
+   type(vector), intent(in) :: axis        !< Axis of ratation.
+   real(RPP),    intent(in) :: angle       !< Angle of ratation.
+   type(vector)             :: axis_       !< Axis of ratation, normalized.
+   real(RPP)                :: matrix(3,3) !< Rotation matrix.
+   real(RPP)                :: c           !< `cos(angle)`.
+   real(RPP)                :: s           !< `sin(angle)`.
+   real(RPP)                :: one_c       !< `1-cos(angle)`.
+
+   axis_ = normalized(axis)
+   c = cos(angle)
+   s = sin(angle)
+   one_c = 1._RPP - cos(angle)
+   associate(x=>axis_%x, y=>axis_%y, z=>axis_%z, m=>matrix)
+      m(1,1) = c + x * x * one_c     ; m(1,2) = x * y * one_c - z * s ; m(1,3) = x * z * one_c + y * s
+      m(2,1) = y * x * one_c + z * s ; m(2,2) = c + y * y * one_c     ; m(2,3) = y * z * one_c - x * s
+      m(3,1) = z * x * one_c - y * s ; m(3,2) = z * y * one_c + x * s ; m(3,3) = c + z * z * one_c
+   endassociate
+   endfunction rotation_matrix
+
+   pure function mirror_matrix(normal) result(matrix)
+   !< Return the mirror matrix (Householder's matrix) given normal of the mirroring plane.
+   type(vector), intent(in) :: normal      !< Normal of mirroring plane.
+   real(RPP)                :: matrix(3,3) !< Rotation matrix.
+   type(vector)             :: normal_     !< Normal of mirroring plane, local variable.
+
+   normal_ = normalized(normal)
+   associate(x=>normal_%x, y=>normal_%y, z=>normal_%z, m=>matrix)
+      m(1,1) = 1._RPP - 2._RPP * x * x ; m(1,2) =                   x * y ; m(1,3) =                   x * z
+      m(2,1) =                   y * x ; m(2,2) = 1._RPP - 2._RPP * y * y ; m(2,3) =                   y * z
+      m(3,1) =                   z * x ; m(3,2) =                   z * y ; m(3,3) = 1._RPP - 2._RPP * z * z 
+   endassociate
+   endfunction mirror_matrix  
+
+   ! new operators
+   elemental function crossproduct(lhs, rhs) result(cross)
+   !< Compute the cross product.
+   !<
+   !< $$ \vec V=\left({y_1 z_2 - z_1 y_2}\right)\vec i +
+   !<           \left({z_1 x_2 - x_1 z_2}\right)\vec j +
+   !<           \left({x_1 y_2 - y_1 x_2}\right)\vec k $$
+   !< where \( x_i \), \( y_i \) and \( z_i \) \( i=1,2 \) are the components of the vectors.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:2)
+   !< pt(1) = 2 * ex
+   !< pt(2) = ex
+   !< pt(0) = pt(1).cross.pt(2)
+   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+   !<```
+   !=> 0.0 0.0 0.0 <<<
+   class(vector), intent(in) :: lhs   !< Left hand side.
+   type(vector),  intent(in) :: rhs   !< Right hand side.
+   type(vector)              :: cross !< Cross product vector.
+
+   cross%x = (lhs%y * rhs%z) - (lhs%z * rhs%y)
+   cross%y = (lhs%z * rhs%x) - (lhs%x * rhs%z)
+   cross%z = (lhs%x * rhs%y) - (lhs%y * rhs%x)
+   endfunction crossproduct
+
+   elemental function dotproduct(lhs, rhs) result(dot)
+   !< Compute the scalar (dot) product.
+   !<
+   !< $$ {\rm D}= x_1 \cdot x_2 + y_1 \cdot y_2 + z_1 \cdot z_2 $$
+   !< where \( x_i \), \( y_i \) and \( z_i \) \( i=1,2 \) are the components of the vectors.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(1:2)
+   !< pt(1) = ex
+   !< pt(2) = ey
+   !< print "(F3.1)", pt(1).dot.pt(2)
+   !<```
+   !=> 0.0 <<<
+   class(vector), intent(in) :: lhs !< Left hand side.
+   type(vector),  intent(in) :: rhs !< Right hand side.
+   real(RPP)                 :: dot !< Dot product.
+
+   dot = (lhs%x * rhs%x) + (lhs%y * rhs%y) + (lhs%z * rhs%z)
+   endfunction dotproduct
+
+   pure function matrixproduct(lhs, rhs) result(opr)
+   !< Compute the matrix product.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(2)
+   !< real(RPP)    :: I(3,3)
+   !< pt(1) = 2 * ex
+   !< I = 0._RPP
+   !< I(1,1) = 1._RPP
+   !< I(2,2) = 1._RPP
+   !< I(3,3) = 1._RPP
+   !< pt(2) = I.matrix.pt(1)
+   !< print "(3(F3.1,1X))", abs(pt(2)%x), abs(pt(2)%y), abs(pt(2)%z)
+   !<```
+   !=> 2.0 0.0 0.0 <<<
+   real(RPP),     intent(in) :: lhs(3,3) !< Left hand side.
+   class(vector), intent(in) :: rhs      !< Right hand side.
+   type(vector)              :: opr      !< Operator result.
+   real(RPP)                 :: v(1:3)   !< Vector coordinatex array.
+
+   v = [rhs%x, rhs%y, rhs%z]
+   v = matmul(lhs, v)
+   opr%x = v(1)
+   opr%y = v(2)
+   opr%z = v(3)
+   endfunction matrixproduct  
+
+   elemental function orthogonal(lhs, rhs) result(ortho)
+   !< Compute the component of `lhs` orthogonal to `rhs`.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:2)
+   !< pt(1) = 2 * ex + 3 * ey
+   !< pt(2) = ex
+   !< pt(0) = pt(1).ortho.pt(2)
+   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+   !<```
+   !=> 0.0 3.0 0.0 <<<
+   class(vector), intent(in) :: lhs   !< Left hand side.
+   type(vector),  intent(in) :: rhs   !< Right hand side.
+   type(vector)              :: ortho !< Component of of `lhs` orthogonal to `rhs`.
+
+   ortho = lhs - (lhs.paral.rhs)
+   endfunction orthogonal
+
+   elemental function parallel(lhs, rhs) result(paral)
+   !> Compute the component of `lhs` parallel to `rhs`.
+   !<
+   !<```fortran
+   !< type(vector) :: pt(0:2)
+   !< pt(1) = 2 * ex + 3 * ey
+   !< pt(2) = ex
+   !< pt(0) = pt(1).paral.pt(2)
+   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+   !<```
+   !=> 2.0 0.0 0.0 <<<
+   class(vector), intent(in) :: lhs   !< Left hand side.
+   type(vector),  intent(in) :: rhs   !< Right hand side.
+   type(vector)              :: paral !< Component of of `lhs` parallel to `rhs`.
+
+   paral = (lhs.dot.rhs) * normalized(rhs) / normL2(rhs)
+   endfunction parallel
+ 
+    ! methods
    elemental function angle(self, other) result(angle_)
    !< Calculate the angle (rad) between two vectors.
    !<
@@ -416,12 +582,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \ *---------> . self
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !<
    !<```fortran
@@ -465,12 +631,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \ *---------> . self
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !<
    !<```fortran
@@ -512,12 +678,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----.2
+   !< 3.----.2
    !<   \   |
    !<    \  |
    !<     \ |
    !<      \|
-   !<       .3
+   !<       .1
    !<```
    !< The normal is calculated by the cross product of the side s12 for the side s13: s12 x s13.
    !< The normal is normalized if the variable *norm* is passed (with any value).
@@ -565,12 +731,12 @@ contains
    !<
    !< The convention for the points numeration is the following:
    !<```
-   !< 1.----------.2
+   !< 3.----------.2
    !<  |          |
    !<  |          |
    !<  |          |
    !<  |          |
-   !< 4.----------.3
+   !< 4.----------.1
    !<```
    !< The normal is calculated by the cross product of the diagonal d13 for the diagonal d24: d13 x d24.
    !< The normal is normalized if the variable *norm* is passed (with any value).
@@ -979,87 +1145,40 @@ contains
    endfunction sq_norm
 
    ! private methods
-   ! new operators
-   elemental function crossproduct(lhs, rhs) result(cross)
-   !< Compute the cross product.
+   pure subroutine mirror_by_normal(self, normal)
+   !< Mirror vector given normal of mirroring plane.
+   class(vector), intent(inout) :: self   !< Vector.
+   type(vector),  intent(in)    :: normal !< Normal of mirroring plane.
+
+   self = self%matrixproduct(mirror_matrix(normal=normal))
+   endsubroutine mirror_by_normal  
+
+   pure subroutine mirror_by_matrix(self, matrix)
+   !< Mirror vector given matrix (of mirroring).
+   class(vector), intent(inout) :: self        !< Vector.
+   real(RPP),     intent(in)    :: matrix(3,3) !< Mirroring matrix.
+
+   self = self%matrixproduct(matrix)
+   endsubroutine mirror_by_matrix   
+
+   pure subroutine rotate_by_axis_angle(self, axis, angle)
+   !< Rotate vector given axis and angle.
    !<
-   !< $$ \vec V=\left({y_1 z_2 - z_1 y_2}\right)\vec i +
-   !<           \left({z_1 x_2 - x_1 z_2}\right)\vec j +
-   !<           \left({x_1 y_2 - y_1 x_2}\right)\vec k $$
-   !< where \( x_i \), \( y_i \) and \( z_i \) \( i=1,2 \) are the components of the vectors.
-   !<
-   !<```fortran
-   !< type(vector) :: pt(0:2)
-   !< pt(1) = 2 * ex
-   !< pt(2) = ex
-   !< pt(0) = pt(1).cross.pt(2)
-   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
-   !<```
-   !=> 0.0 0.0 0.0 <<<
-   class(vector), intent(in) :: lhs   !< Left hand side.
-   type(vector),  intent(in) :: rhs   !< Right hand side.
-   type(vector)              :: cross !< Cross product vector.
+   !< Angle must be in radiants.
+   class(vector), intent(inout) :: self  !< Vector.
+   type(vector),  intent(in)    :: axis  !< Axis of rotation.
+   real(RPP),     intent(in)    :: angle !< Angle of rotation.
 
-   cross%x = (lhs%y * rhs%z) - (lhs%z * rhs%y)
-   cross%y = (lhs%z * rhs%x) - (lhs%x * rhs%z)
-   cross%z = (lhs%x * rhs%y) - (lhs%y * rhs%x)
-   endfunction crossproduct
+   self = self%matrixproduct(rotation_matrix(axis=axis, angle=angle))
+   endsubroutine rotate_by_axis_angle
 
-   elemental function dotproduct(lhs, rhs) result(dot)
-   !< Compute the scalar (dot) product.
-   !<
-   !< $$ {\rm D}= x_1 \cdot x_2 + y_1 \cdot y_2 + z_1 \cdot z_2 $$
-   !< where \( x_i \), \( y_i \) and \( z_i \) \( i=1,2 \) are the components of the vectors.
-   !<
-   !<```fortran
-   !< type(vector) :: pt(1:2)
-   !< pt(1) = ex
-   !< pt(2) = ey
-   !< print "(F3.1)", pt(1).dot.pt(2)
-   !<```
-   !=> 0.0 <<<
-   class(vector), intent(in) :: lhs !< Left hand side.
-   type(vector),  intent(in) :: rhs !< Right hand side.
-   real(RPP)                 :: dot !< Dot product.
+   pure subroutine rotate_by_matrix(self, matrix)
+   !< Rotate vector given matrix (of ratation).
+   class(vector), intent(inout) :: self        !< Vector.
+   real(RPP),     intent(in)    :: matrix(3,3) !< Rotation matrix.
 
-   dot = (lhs%x * rhs%x) + (lhs%y * rhs%y) + (lhs%z * rhs%z)
-   endfunction dotproduct
-
-   elemental function orthogonal(lhs, rhs) result(ortho)
-   !< Compute the component of `lhs` orthogonal to `rhs`.
-   !<
-   !<```fortran
-   !< type(vector) :: pt(0:2)
-   !< pt(1) = 2 * ex + 3 * ey
-   !< pt(2) = ex
-   !< pt(0) = pt(1).ortho.pt(2)
-   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
-   !<```
-   !=> 0.0 3.0 0.0 <<<
-   class(vector), intent(in) :: lhs   !< Left hand side.
-   type(vector),  intent(in) :: rhs   !< Right hand side.
-   type(vector)              :: ortho !< Component of of `lhs` orthogonal to `rhs`.
-
-   ortho = lhs - (lhs.paral.rhs)
-   endfunction orthogonal
-
-   elemental function parallel(lhs, rhs) result(paral)
-   !> Compute the component of `lhs` parallel to `rhs`.
-   !<
-   !<```fortran
-   !< type(vector) :: pt(0:2)
-   !< pt(1) = 2 * ex + 3 * ey
-   !< pt(2) = ex
-   !< pt(0) = pt(1).paral.pt(2)
-   !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
-   !<```
-   !=> 2.0 0.0 0.0 <<<
-   class(vector), intent(in) :: lhs   !< Left hand side.
-   type(vector),  intent(in) :: rhs   !< Right hand side.
-   type(vector)              :: paral !< Component of of `lhs` parallel to `rhs`.
-
-   paral = (lhs.dot.rhs) * normalized(rhs) / normL2(rhs)
-   endfunction parallel
+   self = self%matrixproduct(matrix)
+   endsubroutine rotate_by_matrix 
 
    ! operator `=`
    pure subroutine assign_vector(lhs, rhs)
