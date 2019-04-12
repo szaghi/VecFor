@@ -496,7 +496,7 @@ contains
    paral = (lhs.dot.rhs) * normalized(rhs) / normL2(rhs)
    endfunction parallel
  
-    ! methods
+   ! methods
    elemental function angle(self, other) result(angle_)
    !< Calculate the angle (rad) between two vectors.
    !<
