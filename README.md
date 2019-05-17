@@ -122,13 +122,13 @@ Note that *ex*, *ey* and *ez* are the Cartesian versors exposed by VecFor.
 
 #### Perform vectorial calculus algebra
 ```fortran
-distance = point2 - ponint1
+distance = point2 - point1
 ```
 
 #### Use helper methods to simplify your life
 ```fortran
 print "(A)", " Vectorial distance"
-call distance%print
+call distance%printf
 print "(A)", " Distance module"
 print*, distance%normL2()
 ! expected output
