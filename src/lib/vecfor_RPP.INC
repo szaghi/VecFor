@@ -24,8 +24,6 @@ public :: smallRPP
 public :: ZeroRPP
 public :: sq_norm
 public :: vector
-! PENF object
-public :: DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
 type :: vector
   !< Vector class.
@@ -337,11 +335,6 @@ type :: vector
      procedure, pass(rhs), private :: I1P_great_vector       !< Operator `integer(I1P) >`.
      procedure, pass(lhs), private :: vector_great_I1P       !< Operator `> integer(I1P)`.
 endtype vector
-
-type, public :: vector_ptr
-  !< Pointer of Vector for creating array of pointers of Vector.
-  type(vector), pointer:: p=>null()
-endtype vector_ptr
 
 type(vector), parameter :: ex = vector(1._RPP, 0._RPP, 0._RPP) !< X direction versor.
 type(vector), parameter :: ey = vector(0._RPP, 1._RPP, 0._RPP) !< Y direction versor.
