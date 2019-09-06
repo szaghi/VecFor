@@ -11,7 +11,6 @@ module vecfor
 !< Furthermore the *dot* and *cross* products have been defined.
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 
-! R4P kind
 use vecfor_R4P, only : angle_R4P                       => angle,                       &
                        distance_to_line_R4P            => distance_to_line,            &
                        distance_to_plane_R4P           => distance_to_plane,           &
@@ -35,7 +34,6 @@ use vecfor_R4P, only : angle_R4P                       => angle,                
                        sq_norm_R4P                     => sq_norm,                     &
                        vector_R4P                      => vector
 
-! R8P kind
 use vecfor_R8P, only : angle_R8P                       => angle,                       &
                        distance_to_line_R8P            => distance_to_line,            &
                        distance_to_plane_R8P           => distance_to_plane,           &
@@ -59,7 +57,6 @@ use vecfor_R8P, only : angle_R8P                       => angle,                
                        sq_norm_R8P                     => sq_norm,                     &
                        vector_R8P                      => vector
 
-! R16P kind
 use vecfor_R16P, only : angle_R16P                       => angle,                       &
                         distance_to_line_R16P            => distance_to_line,            &
                         distance_to_plane_R16P           => distance_to_plane,           &
@@ -83,79 +80,6 @@ use vecfor_R16P, only : angle_R16P                       => angle,              
                         sq_norm_R16P                     => sq_norm,                     &
                         vector_R16P                      => vector
 
-! default kind
-#ifdef __GFORTRAN__
-#if defined DEFKIND_R16P
-use vecfor_R16P, only : angle,                       &
-                        distance_to_line,            &
-                        distance_to_plane,           &
-                        distance_vectorial_to_plane, &
-                        ex,                          &
-                        ey,                          &
-                        ez,                          &
-                        face_normal3,                &
-                        face_normal4,                &
-                        iolen,                       &
-                        is_collinear,                &
-                        is_concyclic,                &
-                        mirror_matrix,               &
-                        normalized,                  &
-                        normL2,                      &
-                        projection_onto_plane,       &
-                        rotation_matrix,             &
-                        RPP,                         &
-                        smallRPP,                    &
-                        ZeroRPP,                     &
-                        sq_norm,                     &
-                        vector
-#elif defined DEFKIND_R4P
-use vecfor_R4P, only : angle,                       &
-                       distance_to_line,            &
-                       distance_to_plane,           &
-                       distance_vectorial_to_plane, &
-                       ex,                          &
-                       ey,                          &
-                       ez,                          &
-                       face_normal3,                &
-                       face_normal4,                &
-                       iolen,                       &
-                       is_collinear,                &
-                       is_concyclic,                &
-                       mirror_matrix,               &
-                       normalized,                  &
-                       normL2,                      &
-                       projection_onto_plane,       &
-                       rotation_matrix,             &
-                       RPP,                         &
-                       smallRPP,                    &
-                       ZeroRPP,                     &
-                       sq_norm,                     &
-                       vector
-#else
-use vecfor_R8P, only : angle,                       &
-                       distance_to_line,            &
-                       distance_to_plane,           &
-                       distance_vectorial_to_plane, &
-                       ex,                          &
-                       ey,                          &
-                       ez,                          &
-                       face_normal3,                &
-                       face_normal4,                &
-                       iolen,                       &
-                       is_collinear,                &
-                       is_concyclic,                &
-                       mirror_matrix,               &
-                       normalized,                  &
-                       normL2,                      &
-                       projection_onto_plane,       &
-                       rotation_matrix,             &
-                       RPP,                         &
-                       smallRPP,                    &
-                       ZeroRPP,                     &
-                       sq_norm,                     &
-                       vector
-#endif
-#endif
 use penf, only : DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 
 ! R4P kind
@@ -227,31 +151,7 @@ public :: smallRPP_R16P
 public :: ZeroRPP_R16P
 public :: sq_norm_R16P
 public :: vector_R16P
-#ifdef __GFORTRAN__
-! default kind
-public :: angle
-public :: distance_to_line
-public :: distance_to_plane
-public :: distance_vectorial_to_plane
-public :: ex
-public :: ey
-public :: ez
-public :: face_normal3
-public :: face_normal4
-public :: iolen
-public :: is_collinear
-public :: is_concyclic
-public :: mirror_matrix
-public :: normalized
-public :: normL2
-public :: projection_onto_plane
-public :: rotation_matrix
-public :: RPP
-public :: smallRPP
-public :: ZeroRPP
-public :: sq_norm
-public :: vector
-#endif
+
 ! PENF object
 public :: DR8P, FR8P, I1P, I2P, I4P, I8P, R_P, R4P, R8P, R16P, smallR_P, str, ZeroR_P
 endmodule vecfor
