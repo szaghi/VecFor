@@ -1,11 +1,10 @@
 program volatile_doctest
 use vecfor_R16P
- type(vector) :: pt(0:3)
+ type(vector_R16P) :: pt(1:2)
+ real(R16P) :: a
 
- pt(0) = 5.3 * ez
- pt(1) = ex
- pt(2) = ey
- pt(3) = ex - ey
- pt(0) = pt(0)%distance_vectorial_to_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
- print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
+ pt(1) = ex_R16P
+ pt(2) = ey_R16P
+ a = angle_R16P(pt(1), pt(2))
+ print "(F4.2)", a
 endprogram volatile_doctest

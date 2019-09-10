@@ -1,7 +1,6 @@
 program volatile_doctest
 use vecfor_R4P
- type(vector) :: pt(1:2)
- pt(1) = ex + ey + ez
- pt(2) = ex + ey + ez
- print "(L1)", pt(1) == pt(2)
+ type(vector_R4P) :: pt
+ pt = ex_R4P + ey_R4P + ez_R4P
+ print "(L1)", pt <= 4_I1P
 endprogram volatile_doctest
