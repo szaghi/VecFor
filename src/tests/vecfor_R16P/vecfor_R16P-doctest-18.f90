@@ -1,10 +1,6 @@
 program volatile_doctest
 use vecfor_R16P
- type(vector) :: pt(0:3)
-
- pt(0) = -1 * ey
- pt(1) = 1 * ex
- pt(2) = 1 * ey
- pt(3) = -1 * ex
- print "(L1)", is_concyclic(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+ use penf, only : byte_size
+ type(vector_R16P) :: pt
+ print*, pt%iolen_R16P()/byte_size(pt%x)
 endprogram volatile_doctest

@@ -1,8 +1,11 @@
 program volatile_doctest
 use vecfor_R8P
- type(vector) :: pt(0:2)
- pt(1) = 2 * ex + 3 * ey
- pt(2) = ex
- pt(0) = pt(1).ortho.pt(2)
- print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+ type(vector_R8P) :: pt
+ pt = 1 * ex_R8P + 2 * ey_R8P + 3 * ez_R8P
+ open(unit=10, form='unformatted', status='scratch')
+ call pt%save_into_file(unit=10)
+ rewind(unit=10)
+ call pt%load_from_file(unit=10)
+ close(unit=10)
+ print "(3(F3.1,1X))", pt%x, pt%y, pt%z
 endprogram volatile_doctest

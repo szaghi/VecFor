@@ -1,11 +1,7 @@
 program volatile_doctest
 use vecfor_R4P
- type(vector) :: pt(0:1)
- character(4) :: res(3)
- pt(1) = 1 * ex + 2 * ey + 1 * ez
- pt(0) = pt(1) - 2_I8P
- res(1) = trim(adjustl(str('(F4.1)',pt(0)%x)))
- res(2) = trim(adjustl(str('(F4.1)',pt(0)%y)))
- res(3) = trim(adjustl(str('(F4.1)',pt(0)%z)))
- print "(A4,1X,A3,1X,A4)", res(1), res(2), res(3)
+ type(vector_R4P) :: pt(0:1)
+ pt(1) = 1 * ex_R4P + 2 * ey_R4P + 1 * ez_R4P
+ pt(0) = 2_I8P - pt(1)
+ print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
 endprogram volatile_doctest

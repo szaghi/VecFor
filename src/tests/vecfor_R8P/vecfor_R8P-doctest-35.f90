@@ -1,6 +1,6 @@
 program volatile_doctest
 use vecfor_R8P
- type(vector) :: pt
- pt = 1 * ex + 2 * ey + 3 * ez
- print "(3(F3.1,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
+ type(vector_R8P) :: pt
+ pt = ex_R8P + ey_R8P
+ print "(F3.1)", sq_norm_R8P(pt)
 endprogram volatile_doctest

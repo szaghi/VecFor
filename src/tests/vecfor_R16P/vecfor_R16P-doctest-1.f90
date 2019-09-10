@@ -1,10 +1,8 @@
 program volatile_doctest
 use vecfor_R16P
- type(vector) :: pt(1:2)
- real(RPP) :: a
-
- pt(1) = ex
- pt(2) = 2 * ex
- a = pt(1)%angle(pt(2))
- print "(F3.1)", a
+ type(vector_R16P) :: pt(0:2)
+ pt(1) = 2 * ex_R16P
+ pt(2) = ex_R16P
+ pt(0) = pt(1).cross.pt(2)
+ print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
 endprogram volatile_doctest

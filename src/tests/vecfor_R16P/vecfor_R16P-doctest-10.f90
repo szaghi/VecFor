@@ -1,10 +1,12 @@
 program volatile_doctest
 use vecfor_R16P
- type(vector) :: pt(0:3)
+ type(vector_R16P) :: pt(0:3)
+ real(R16P) :: d
 
- pt(1) = ex
- pt(2) = ey
- pt(3) = ex - ey
- pt(0) = face_normal3(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
- print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
+ pt(0) = 5.3 * ez_R16P
+ pt(1) = ex_R16P
+ pt(2) = ey_R16P
+ pt(3) = ex_R16P - ey_R16P
+ d = pt(0)%distance_to_plane_R16P(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+ print "(F3.1)", d
 endprogram volatile_doctest

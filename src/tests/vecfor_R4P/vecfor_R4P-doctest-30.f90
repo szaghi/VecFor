@@ -1,6 +1,6 @@
 program volatile_doctest
 use vecfor_R4P
- type(vector) :: pt
- pt = ex + ey
- print "(F3.1)", sq_norm(pt)
+ type(vector_R4P) :: pt
+ pt = ex_R4P + ey_R4P
+ call pt%printf(prefix='[x, y, z] = ', sep=', ')
 endprogram volatile_doctest

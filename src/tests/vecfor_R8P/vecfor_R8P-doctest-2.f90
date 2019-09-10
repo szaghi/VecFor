@@ -1,10 +1,7 @@
 program volatile_doctest
 use vecfor_R8P
- type(vector) :: pt(1:2)
- real(RPP) :: a
-
- pt(1) = ex
- pt(2) = ey
- a = angle(pt(1), pt(2))
- print "(F4.2)", a
+ type(vector_R8P) :: pt(1:2)
+ pt(1) = ex_R8P
+ pt(2) = ey_R8P
+ print "(F3.1)", pt(1).dot.pt(2)
 endprogram volatile_doctest
