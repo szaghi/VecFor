@@ -1,7 +1,11 @@
 program volatile_doctest
 use vecfor_R16P
- type(vector) :: pt(1:2)
- pt(1) = ex
- pt(2) = ey
- print "(F3.1)", pt(1).dot.pt(2)
+ type(vector_R16P) :: pt(0:3)
+
+ pt(0) = 1 * ex_R16P + 2 * ey_R16P + 5.3 * ez_R16P
+ pt(1) = ex_R16P
+ pt(2) = ey_R16P
+ pt(3) = ex_R16P - ey_R16P
+ pt(0) = projection_onto_plane_R16P(pt(0), pt1=pt(1), pt2=pt(2), pt3=pt(3))
+ print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
 endprogram volatile_doctest
