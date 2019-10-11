@@ -1,7 +1,7 @@
 program volatile_doctest
 use vecfor_R4P
  type(vector_R4P) :: pt(0:3)
- real(R4P) :: d
+ real(R4P)        :: d
 
  pt(0) = 5.3 * ez_R4P
  pt(1) = ex_R4P

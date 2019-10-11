@@ -1,7 +1,7 @@
 program volatile_doctest
 use vecfor_R8P
  type(vector_R8P) :: pt(0:2)
- real(R8P) :: d
+ real(R8P)        :: d
 
  pt(0) = 5.3 * ez_R8P
  pt(1) = ex_R8P
