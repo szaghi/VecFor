@@ -1,257 +1,102 @@
 [modes]
-modes = static-gnu-debug-r4p static-gnu-r4p shared-gnu-debug-r4p shared-gnu-r4p
-        static-gnu-debug-r8p static-gnu-r8p shared-gnu-debug-r8p shared-gnu-r8p
-        static-gnu-debug-r16p static-gnu-r16p shared-gnu-debug-r16p shared-gnu-r16p
-        static-intel-debug-r4p shared-intel-r4p shared-intel-debug-r4p static-intel-r4p
-        static-intel-debug-r8p shared-intel-r8p shared-intel-debug-r8p static-intel-r8p
-        static-intel-debug-r16p shared-intel-r16p shared-intel-debug-r16p static-intel-r16p
-        tests-gnu-debug-r4p tests-gnu-r4p
-        tests-gnu-debug-r8p tests-gnu-r8p
-        tests-gnu-debug-r16p tests-gnu-r16p
-        tests-intel-debug-r4p tests-intel-r4p
-        tests-intel-debug-r8p tests-intel-r8p
-        tests-intel-debug-r16p tests-intel-r16p
+modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
+        static-intel-debug shared-intel shared-intel-debug static-intel
+        tests-gnu-debug tests-gnu
+        tests-intel-debug tests-intel
 
 [common-variables]
 $CSHARED_GNU   = -c -fPIC -frealloc-lhs
 $CSHARED_INT   = -c -fpic -assume realloc_lhs
 $LSHARED       = -shared
 $CSTATIC_GNU   = -c -frealloc-lhs
-$CSTATIC_INT   = -c -assume realloc_lhs
+$CSTATIC_INT   = -c -assume realloc_lhs -fpp
 $DEBUG_GNU     = -Og -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wuninitialized -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan -std=f2008 -fall-intrinsics
 $DEBUG_INT     = -O0 -debug all -check all -warn all -extend-source 132 -traceback -gen-interfaces -fp-stack-check -fstack-protector-all -ftrapuv -no-ftz -std08
 $OPTIMIZE      = -O2
 $EXDIRS        = PENF/src/tests/ PENF/src/third_party/
-$PREPROCS_R4P  = -DDEFKIND_R4P
-$PREPROCS_R8P  = -DDEFKIND_R8P
-$PREPROCS_R16P = -DDEFKIND_R16P
 
 # main modes
 # GNU
-[shared-gnu-r4p]
-template  = template-shared-gnu-r4p
+[shared-gnu]
+template  = template-shared-gnu
 target    = vecfor.F90
 build_dir = ./shared/
 output    = libvecfor.so
 mklib     = shared
 
-[static-gnu-r4p]
-template  = template-static-gnu-r4p
+[static-gnu]
+template  = template-static-gnu
 target    = vecfor.F90
 build_dir = ./static/
 output    = libvecfor.a
 mklib     = static
 
-[shared-gnu-debug-r4p]
-template  = template-shared-gnu-debug-r4p
+[shared-gnu-debug]
+template  = template-shared-gnu-debug
 target    = vecfor.F90
 build_dir = ./shared/
 output    = libvecfor.so
 mklib     = shared
 
-[static-gnu-debug-r4p]
-template  = template-static-gnu-debug-r4p
+[static-gnu-debug]
+template  = template-static-gnu-debug
 target    = vecfor.F90
 build_dir = ./static/
 output    = libvecfor.a
 mklib     = static
 
-[tests-gnu-r4p]
-template  = template-static-gnu-r4p
+[tests-gnu]
+template  = template-static-gnu
 build_dir = ./exe/
 
-[tests-gnu-debug-r4p]
-template  = template-static-gnu-debug-r4p
-build_dir = ./exe/
-
-[shared-gnu-r8p]
-template  = template-shared-gnu-r8p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-gnu-r8p]
-template  = template-static-gnu-r8p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[shared-gnu-debug-r8p]
-template  = template-shared-gnu-debug-r8p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-gnu-debug-r8p]
-template  = template-static-gnu-debug-r8p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[tests-gnu-r8p]
-template  = template-static-gnu-r8p
-build_dir = ./exe/
-
-[tests-gnu-debug-r8p]
-template  = template-static-gnu-debug-r8p
-build_dir = ./exe/
-
-[shared-gnu-r16p]
-template  = template-shared-gnu-r16p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-gnu-r16p]
-template  = template-static-gnu-r16p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[shared-gnu-debug-r16p]
-template  = template-shared-gnu-debug-r16p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-gnu-debug-r16p]
-template  = template-static-gnu-debug-r16p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[tests-gnu-r16p]
-template  = template-static-gnu-r16p
-build_dir = ./exe/
-
-[tests-gnu-debug-r16p]
-template  = template-static-gnu-debug-r16p
+[tests-gnu-debug]
+template  = template-static-gnu-debug
 build_dir = ./exe/
 
 # Intel
-[shared-intel-r4p]
-template  = template-shared-intel-r4p
+[shared-intel]
+template  = template-shared-intel
 target    = vecfor.F90
 build_dir = ./shared/
 output    = libvecfor.so
 mklib     = shared
 
-[static-intel-r4p]
-template  = template-static-intel-r4p
+[static-intel]
+template  = template-static-intel
 target    = vecfor.F90
 build_dir = ./static/
 output    = libvecfor.a
 mklib     = static
 
-[shared-intel-debug-r4p]
-template  = template-shared-intel-debug-r4p
+[shared-intel-debug]
+template  = template-shared-intel-debug
 target    = vecfor.F90
 build_dir = ./shared/
 output    = libvecfor.so
 mklib     = shared
 
-[static-intel-debug-r4p]
-template  = template-static-intel-debug-r4p
+[static-intel-debug]
+template  = template-static-intel-debug
 target    = vecfor.F90
 build_dir = ./static/
 output    = libvecfor.a
 mklib     = static
 
-[tests-intel-r4p]
-template = template-static-intel-r4p
+[tests-intel]
+template = template-static-intel
 build_dir = ./exe/
 
-[tests-intel-debug-r4p]
-template  = template-static-intel-debug-r4p
-build_dir = ./exe/
-
-[shared-intel-r8p]
-template  = template-shared-intel-r8p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-intel-r8p]
-template  = template-static-intel-r8p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[shared-intel-debug-r8p]
-template  = template-shared-intel-debug-r8p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-intel-debug-r8p]
-template  = template-static-intel-debug-r8p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[tests-intel-r8p]
-template = template-static-intel-r8p
-build_dir = ./exe/
-
-[tests-intel-debug-r8p]
-template  = template-static-intel-debug-r8p
-build_dir = ./exe/
-
-[shared-intel-r16p]
-template  = template-shared-intel-r16p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-intel-r16p]
-template  = template-static-intel-r16p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[shared-intel-debug-r16p]
-template  = template-shared-intel-debug-r16p
-target    = vecfor.F90
-build_dir = ./shared/
-output    = libvecfor.so
-mklib     = shared
-
-[static-intel-debug-r16p]
-template  = template-static-intel-debug-r16p
-target    = vecfor.F90
-build_dir = ./static/
-output    = libvecfor.a
-mklib     = static
-
-[tests-intel-r16p]
-template = template-static-intel-r16p
-build_dir = ./exe/
-
-[tests-intel-debug-r16p]
-template  = template-static-intel-debug-r16p
+[tests-intel-debug]
+template  = template-static-intel-debug
 build_dir = ./exe/
 
 #templates
 # GNU
-[template-shared-gnu-r4p]
+[template-shared-gnu]
 compiler     = gnu
 cflags       = $CSHARED_GNU $OPTIMIZE
 lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -261,11 +106,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-static-gnu-r4p]
+[template-static-gnu]
 compiler     = gnu
 cflags       = $CSTATIC_GNU $OPTIMIZE
 lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -275,11 +120,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-shared-gnu-debug-r4p]
+[template-shared-gnu-debug]
 compiler     = gnu
 cflags       = $CSHARED_GNU $DEBUG_GNU
 lflags       = $LSHARED $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED -DDEBUG
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -289,123 +134,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-static-gnu-debug-r4p]
+[template-static-gnu-debug]
 compiler     = gnu
 cflags       = $CSTATIC_GNU $DEBUG_GNU
 lflags       = $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R4P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-gnu-r8p]
-compiler     = gnu
-cflags       = $CSHARED_GNU $OPTIMIZE
-lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-gnu-r8p]
-compiler     = gnu
-cflags       = $CSTATIC_GNU $OPTIMIZE
-lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-gnu-debug-r8p]
-compiler     = gnu
-cflags       = $CSHARED_GNU $DEBUG_GNU
-lflags       = $LSHARED $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-gnu-debug-r8p]
-compiler     = gnu
-cflags       = $CSTATIC_GNU $DEBUG_GNU
-lflags       = $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-gnu-r16p]
-compiler     = gnu
-cflags       = $CSHARED_GNU $OPTIMIZE
-lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-gnu-r16p]
-compiler     = gnu
-cflags       = $CSTATIC_GNU $OPTIMIZE
-lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-gnu-debug-r16p]
-compiler     = gnu
-cflags       = $CSHARED_GNU $DEBUG_GNU
-lflags       = $LSHARED $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-gnu-debug-r16p]
-compiler     = gnu
-cflags       = $CSTATIC_GNU $DEBUG_GNU
-lflags       = $DEBUG_GNU
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R16P
+preproc      = -D_R16P_SUPPORTED -DDEBUG
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -416,11 +149,11 @@ log          = True
 jobs         = 2
 
 # Intel
-[template-shared-intel-r4p]
+[template-shared-intel]
 compiler     = intel
 cflags       = $CSHARED_INT $OPTIMIZE
 lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -430,11 +163,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-static-intel-r4p]
+[template-static-intel]
 compiler     = intel
 cflags       = $CSTATIC_INT $OPTIMIZE
 lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -444,11 +177,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-shared-intel-debug-r4p]
+[template-shared-intel-debug]
 compiler     = intel
 cflags       = $CSHARED_INT $DEBUG_INT
 lflags       = $LSHARED $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R4P
+preproc      = -D_R16P_SUPPORTED -DDEBUG
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
@@ -458,123 +191,11 @@ quiet        = False
 log          = True
 jobs         = 2
 
-[template-static-intel-debug-r4p]
+[template-static-intel-debug]
 compiler     = intel
 cflags       = $CSTATIC_INT $DEBUG_INT
 lflags       = $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R4P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-intel-r8p]
-compiler     = intel
-cflags       = $CSHARED_INT $OPTIMIZE
-lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-intel-r8p]
-compiler     = intel
-cflags       = $CSTATIC_INT $OPTIMIZE
-lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-intel-debug-r8p]
-compiler     = intel
-cflags       = $CSHARED_INT $DEBUG_INT
-lflags       = $LSHARED $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-intel-debug-r8p]
-compiler     = intel
-cflags       = $CSTATIC_INT $DEBUG_INT
-lflags       = $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R8P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-intel-r16p]
-compiler     = intel
-cflags       = $CSHARED_INT $OPTIMIZE
-lflags       = $LSHARED $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-intel-r16p]
-compiler     = intel
-cflags       = $CSTATIC_INT $OPTIMIZE
-lflags       = $OPTIMIZE
-preproc      = -D_R16P_SUPPORTED $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-shared-intel-debug-r16p]
-compiler     = intel
-cflags       = $CSHARED_INT $DEBUG_INT
-lflags       = $LSHARED $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R16P
-exclude_dirs = $EXDIRS
-mod_dir      = ./mod/
-obj_dir      = ./obj/
-src          = ./src/
-colors       = True
-quiet        = False
-log          = True
-jobs         = 2
-
-[template-static-intel-debug-r16p]
-compiler     = intel
-cflags       = $CSTATIC_INT $DEBUG_INT
-lflags       = $DEBUG_INT
-preproc      = -D_R16P_SUPPORTED -DDEBUG $PREPROCS_R16P
+preproc      = -D_R16P_SUPPORTED -DDEBUG
 exclude_dirs = $EXDIRS
 mod_dir      = ./mod/
 obj_dir      = ./obj/
