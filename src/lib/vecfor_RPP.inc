@@ -39,27 +39,35 @@ type :: vector_RPP
      procedure, pass(lhs) :: orthogonal             !< Compute the component of `lhs` orthogonal to `rhs`.
      procedure, pass(lhs) :: parallel               !< Compute the component of `lhs` parallel to `rhs`.
      ! public methods
-     procedure, pass(self) :: angle_RPP                       !< Return the angle (rad) between two vectors.
-     procedure, pass(self) :: distance_to_line_RPP            !< Return the distance (scalar) to line defined by 2 points.
-     procedure, pass(self) :: distance_to_plane_RPP           !< Return the distance (signed, scalar) to plane defined by 3 points.
-     procedure, pass(self) :: distance_vectorial_to_plane_RPP !< Return the distance (vectorial) to plane defined by 3 points.
-     procedure, nopass     :: face_normal3_RPP                !< Return the normal of the face defined by 3 points.
-     procedure, nopass     :: face_normal4_RPP                !< Return the normal of the face defined by 4 points.
-     procedure, pass(self) :: iolen_RPP                       !< Compute IO length.
-     procedure, pass(self) :: is_collinear_RPP                !< Return true if the point is collinear with other two given points.
-     procedure, pass(self) :: is_concyclic_RPP                !< Return true if the point is concyclic with other three given pts.
-     procedure, pass(self) :: load_from_file                  !< Load vector from file.
-     generic               :: mirror => mirror_by_normal, &
-                                        mirror_by_matrix      !< Mirror vector.
-     procedure, pass(self) :: normalize                       !< Normalize a vector.
-     procedure, pass(self) :: normalized_RPP                  !< Return a normalized copy of vector.
-     procedure, pass(self) :: normL2_RPP                      !< Return the norm L2 of vector.
-     procedure, pass(self) :: printf                          !< Print vector components with a "pretty" format.
-     procedure, pass(self) :: projection_onto_plane_RPP       !< Calculate the projection of point onto plane defined by 3 points.
-     generic               :: rotate => rotate_by_axis_angle, &
-                                        rotate_by_matrix      !< Rotate vector.
-     procedure, pass(self) :: save_into_file                  !< Save vector into file.
-     procedure, pass(self) :: sq_norm_RPP                     !< Return the square of the norm of a vector.
+     procedure, pass(self) :: angle => angle_RPP                                             !< Return the angle (rad) between two 
+                                                                                             !< vectors.
+     procedure, pass(self) :: distance_to_line => distance_to_line_RPP                       !< Return the distance (scalar) to 
+                                                                                             !< line.
+     procedure, pass(self) :: distance_to_plane => distance_to_plane_RPP                     !< Return the distance (signed, scalar) 
+                                                                                             !< to plane.
+     procedure, pass(self) :: distance_vectorial_to_plane => distance_vectorial_to_plane_RPP !< Return the distance (vectorial) to 
+                                                                                             !< plane.
+     procedure, nopass     :: face_normal3 => face_normal3_RPP                               !< Return the normal of the face.
+     procedure, nopass     :: face_normal4 => face_normal4_RPP                               !< Return the normal of the face.
+     procedure, pass(self) :: iolen => iolen_RPP                                             !< Compute IO length.
+     procedure, pass(self) :: is_collinear => is_collinear_RPP                               !< Return true if the point is col- 
+                                                                                             !< linear with other two given points.
+     procedure, pass(self) :: is_concyclic => is_concyclic_RPP                               !< Return true if the point is concy-
+                                                                                             !< clic with other three given pts.
+     procedure, pass(self) :: load_from_file                                                 !< Load vector from file.
+     generic               :: mirror => mirror_by_normal, &                                  
+                                        mirror_by_matrix                                     !< Mirror vector.
+     procedure, pass(self) :: normalize                                                      !< Normalize a vector.
+     procedure, pass(self) :: normalized => normalized_RPP                                   !< Return a normalized copy of vector.
+     procedure, pass(self) :: normL2 => normL2_RPP                                           !< Return the norm L2 of vector.
+     procedure, pass(self) :: printf                                                         !< Print vector components with a 
+                                                                                             !< "pretty" format.
+     procedure, pass(self) :: projection_onto_plane => projection_onto_plane_RPP             !< Calculate the projection of point 
+                                                                                             !< onto plane defined by 3 points.
+     generic               :: rotate => rotate_by_axis_angle, &                              
+                                        rotate_by_matrix                                     !< Rotate vector.
+     procedure, pass(self) :: save_into_file                                                 !< Save vector into file.
+     procedure, pass(self) :: sq_norm => sq_norm_RPP                                         !< Return the square of the norm.
      ! operators overloading
      generic :: assignment(=) => assign_vector, &
                                  assign_R16P,   &
@@ -473,7 +481,7 @@ contains
    !<
    !< pt(1) = ex_RPP
    !< pt(2) = 2 * ex_RPP
-   !< a = pt(1)%angle_RPP(pt(2))
+   !< a = pt(1)%angle(pt(2))
    !< print "(F3.1)", a
    !<```
    !=> 0.0 <<<
@@ -495,7 +503,7 @@ contains
    real(RPP)                     :: angle_sin !< Angle computed by means of sin.
    type(vector_RPP)              :: versor(2) !< Input vectors normalized.
 
-   versor = [self%normalized_RPP(), other%normalized_RPP()]
+   versor = [self%normalized(), other%normalized()]
    angle_cos = versor(1).dot.versor(2)
    angle_sin = normL2_RPP(versor(1).cross.versor(2))
    angle_ = atan2(angle_sin, angle_cos)
@@ -520,7 +528,7 @@ contains
    !< pt(0) = 5.3 * ez_RPP
    !< pt(1) = ex_RPP
    !< pt(2) = ey_RPP
-   !< d = pt(0)%distance_to_line_RPP(pt1=pt(1), pt2=pt(2))
+   !< d = pt(0)%distance_to_line(pt1=pt(1), pt2=pt(2))
    !< print "(F3.1)", d
    !<```
    !=> 5.3 <<<
@@ -565,7 +573,7 @@ contains
    !< pt(1) = ex_RPP
    !< pt(2) = ey_RPP
    !< pt(3) = ex_RPP - ey_RPP
-   !< d = pt(0)%distance_to_plane_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< d = pt(0)%distance_to_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
    !< print "(F3.1)", d
    !<```
    !=> 5.3 <<<
@@ -613,7 +621,7 @@ contains
    !< pt(1) = ex_RPP
    !< pt(2) = ey_RPP
    !< pt(3) = ex_RPP - ey_RPP
-   !< pt(0) = pt(0)%distance_vectorial_to_plane_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< pt(0) = pt(0)%distance_vectorial_to_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
    !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
    !<```
    !=> 0.0 0.0 5.3 <<<
@@ -661,7 +669,7 @@ contains
    !< pt(1) = ex_RPP
    !< pt(2) = ey_RPP
    !< pt(3) = ex_RPP - ey_RPP
-   !< pt(0) = pt(1)%face_normal3_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
+   !< pt(0) = pt(1)%face_normal3(pt1=pt(1), pt2=pt(2), pt3=pt(3), norm='y')
    !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
    !<```
    !=> 0.0 0.0 1.0 <<<
@@ -715,7 +723,7 @@ contains
    !< pt(2) = ey_RPP
    !< pt(3) = ex_RPP - ey_RPP
    !< pt(4) = ex_RPP + ey_RPP
-   !< pt(0) = pt(1)%face_normal4_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3), pt4=pt(4), norm='y')
+   !< pt(0) = pt(1)%face_normal4(pt1=pt(1), pt2=pt(2), pt3=pt(3), pt4=pt(4), norm='y')
    !< print "(3(F3.1,1X))", abs(pt(0)%x), abs(pt(0)%y), abs(pt(0)%z)
    !<```
    !=> 0.0 0.0 1.0 <<<
@@ -755,7 +763,7 @@ contains
    !<```fortran
    !< use penf, only : byte_size
    !< type(vector_RPP) :: pt
-   !< print*, pt%iolen_RPP()/byte_size(pt%x)
+   !< print*, pt%iolen()/byte_size(pt%x)
    !<```
    !=> 3 <<<
    !<
@@ -780,7 +788,7 @@ contains
    !< pt(0) = 3 * ex_RPP
    !< pt(1) = 1 * ex_RPP
    !< pt(2) = 2 * ex_RPP
-   !< print "(L1)", pt(0)%is_collinear_RPP(pt1=pt(1), pt2=pt(2))
+   !< print "(L1)", pt(0)%is_collinear(pt1=pt(1), pt2=pt(2))
    !<```
    !=> T <<<
    !<
@@ -801,7 +809,7 @@ contains
    real(RPP)                               :: tolerance_    !< Tolerance for collinearity check, local variable.
 
    tolerance_ = 0._RPP ; if (present(tolerance)) tolerance_ = tolerance
-   is_collinear_ = self%distance_to_line_RPP(pt1=pt1, pt2=pt2) <= ZeroRPP + tolerance_
+   is_collinear_ = self%distance_to_line(pt1=pt1, pt2=pt2) <= ZeroRPP + tolerance_
    endfunction is_collinear_RPP
 
    elemental function is_concyclic_RPP(self, pt1, pt2, pt3, tolerance) result(is_concyclic_)
@@ -816,7 +824,7 @@ contains
    !< pt(1) =  1 * ex_RPP
    !< pt(2) =  1 * ey_RPP
    !< pt(3) = -1 * ex_RPP
-   !< print "(L1)", pt(0)%is_concyclic_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< print "(L1)", pt(0)%is_concyclic(pt1=pt(1), pt2=pt(2), pt3=pt(3))
    !<```
    !=> T <<<
    !<
@@ -921,7 +929,7 @@ contains
    !<```fortran
    !< type(vector_RPP) :: pt
    !< pt = ex_RPP + ey_RPP
-   !< pt = pt%normalized_RPP()
+   !< pt = pt%normalized()
    !< print "(3(F4.2,1X))", abs(pt%x), abs(pt%y), abs(pt%z)
    !<```
    !=> 0.71 0.71 0.00 <<<
@@ -948,7 +956,7 @@ contains
    !<```fortran
    !< type(vector_RPP) :: pt
    !< pt = ex_RPP + ey_RPP
-   !< print "(F4.2)", pt%normL2_RPP()
+   !< print "(F4.2)", pt%normL2()
    !<```
    !=> 1.41 <<<
    !<
@@ -961,7 +969,7 @@ contains
    class(vector_RPP), intent(in) :: self !< Vector.
    real(RPP)                     :: norm !< Norm L2.
 
-   norm = sqrt(self%sq_norm_RPP())
+   norm = sqrt(self%sq_norm())
    endfunction normL2_RPP
 
    subroutine printf(self, unit, prefix, sep, suffix, iostat, iomsg)
@@ -1019,7 +1027,7 @@ contains
    !< pt(1) = ex_RPP
    !< pt(2) = ey_RPP
    !< pt(3) = ex_RPP - ey_RPP
-   !< pt(0) = pt(0)%projection_onto_plane_RPP(pt1=pt(1), pt2=pt(2), pt3=pt(3))
+   !< pt(0) = pt(0)%projection_onto_plane(pt1=pt(1), pt2=pt(2), pt3=pt(3))
    !< print "(3(F3.1,1X))", pt(0)%x, pt(0)%y, pt(0)%z
    !<```
    !=> 1.0 2.0 0.0 <<<
@@ -1042,7 +1050,7 @@ contains
    type(vector_RPP)              :: projection !< Point projection.
    type(vector_RPP)              :: distance   !< Vectorial distance.
 
-   distance = self%distance_vectorial_to_plane_RPP(pt1=pt1, pt2=pt2, pt3=pt3)
+   distance = self%distance_vectorial_to_plane(pt1=pt1, pt2=pt2, pt3=pt3)
    projection = self - distance
    endfunction projection_onto_plane_RPP
 
@@ -1095,7 +1103,7 @@ contains
    !<```fortran
    !< type(vector_RPP) :: pt
    !< pt = ex_RPP + ey_RPP
-   !< print "(F3.1)", pt%sq_norm_RPP()
+   !< print "(F3.1)", pt%sq_norm()
    !<```
    !=> 2.0 <<<
    !<
