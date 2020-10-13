@@ -41,6 +41,6 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define rotation_matrix_RPP rotation_matrix
 #define sq_norm_RPP sq_norm
 
-#include "vecfor_RPP.inc"
+#include "vecfor_RPP.INC"
 
 endmodule vecfor_RPP

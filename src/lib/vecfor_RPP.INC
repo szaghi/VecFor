@@ -70,7 +70,9 @@ type :: vector_RPP
      procedure, pass(self) :: sq_norm => sq_norm_RPP                                         !< Return the square of the norm.
      ! operators overloading
      generic :: assignment(=) => assign_vector, &
+#ifdef _R16P
                                  assign_R16P,   &
+#endif
                                  assign_R8P,    &
                                  assign_R4P,    &
                                  assign_I8P,    &
@@ -78,7 +80,9 @@ type :: vector_RPP
                                  assign_I2P,    &
                                  assign_I1P !< Overloading `=`.
      generic :: operator(*) => vector_mul_vector,                &
+#ifdef _R16P
                                R16P_mul_vector, vector_mul_R16P, &
+#endif
                                R8P_mul_vector, vector_mul_R8P,   &
                                R4P_mul_vector, vector_mul_R4P,   &
                                I8P_mul_vector, vector_mul_I8P,   &
@@ -86,7 +90,9 @@ type :: vector_RPP
                                I2P_mul_vector, vector_mul_I2P,   &
                                I1P_mul_vector, vector_mul_I1P !< Overloading `*`.
      generic :: operator(/) => vector_div_vector, &
+#ifdef _R16P
                                vector_div_R16P,   &
+#endif
                                vector_div_R8P,    &
                                vector_div_R4P,    &
                                vector_div_I8P,    &
@@ -94,7 +100,9 @@ type :: vector_RPP
                                vector_div_I2P,    &
                                vector_div_I1P !< Overloading `/`.
      generic :: operator(+) => positive, vector_sum_vector,      &
+#ifdef _R16P
                                R16P_sum_vector, vector_sum_R16P, &
+#endif
                                R8P_sum_vector, vector_sum_R8P,   &
                                R4P_sum_vector, vector_sum_R4P,   &
                                I8P_sum_vector, vector_sum_I8P,   &
@@ -102,7 +110,9 @@ type :: vector_RPP
                                I2P_sum_vector, vector_sum_I2P,   &
                                I1P_sum_vector, vector_sum_I1P !< Overloading `+`.
      generic :: operator(-) => negative, vector_sub_vector,      &
+#ifdef _R16P
                                R16P_sub_vector, vector_sub_R16P, &
+#endif
                                R8P_sub_vector, vector_sub_R8P,   &
                                R4P_sub_vector, vector_sub_R4P,   &
                                I8P_sub_vector, vector_sub_I8P,   &
@@ -110,7 +120,9 @@ type :: vector_RPP
                                I2P_sub_vector, vector_sub_I2P,   &
                                I1P_sub_vector, vector_sub_I1P !< Overloading `-`.
      generic :: operator(/=) => vector_not_eq_vector,                   &
+#ifdef _R16P
                                 R16P_not_eq_vector, vector_not_eq_R16P, &
+#endif
                                 R8P_not_eq_vector, vector_not_eq_R8P,   &
                                 R4P_not_eq_vector, vector_not_eq_R4P,   &
                                 I8P_not_eq_vector, vector_not_eq_I8P,   &
@@ -118,7 +130,9 @@ type :: vector_RPP
                                 I2P_not_eq_vector, vector_not_eq_I2P,   &
                                 I1P_not_eq_vector, vector_not_eq_I1P !< Overloading `/=`.
      generic :: operator(<) => vector_low_vector,                &
+#ifdef _R16P
                                R16P_low_vector, vector_low_R16P, &
+#endif
                                R8P_low_vector, vector_low_R8P,   &
                                R4P_low_vector, vector_low_R4P,   &
                                I8P_low_vector, vector_low_I8P,   &
@@ -126,7 +140,9 @@ type :: vector_RPP
                                I2P_low_vector, vector_low_I2P,   &
                                I1P_low_vector, vector_low_I1P !< Overloading `<`.
      generic :: operator(<=) => vector_low_eq_vector,                   &
+#ifdef _R16P
                                 R16P_low_eq_vector, vector_low_eq_R16P, &
+#endif
                                 R8P_low_eq_vector, vector_low_eq_R8P,   &
                                 R4P_low_eq_vector, vector_low_eq_R4P,   &
                                 I8P_low_eq_vector, vector_low_eq_I8P,   &
@@ -134,7 +150,9 @@ type :: vector_RPP
                                 I2P_low_eq_vector, vector_low_eq_I2P,   &
                                 I1P_low_eq_vector, vector_low_eq_I1P !< Overloading `<=`.
      generic :: operator(==) => vector_eq_vector,               &
+#ifdef _R16P
                                 R16P_eq_vector, vector_eq_R16P, &
+#endif
                                 R8P_eq_vector, vector_eq_R8P,   &
                                 R4P_eq_vector, vector_eq_R4P,   &
                                 I8P_eq_vector, vector_eq_I8P,   &
@@ -142,7 +160,9 @@ type :: vector_RPP
                                 I2P_eq_vector, vector_eq_I2P,   &
                                 I1P_eq_vector, vector_eq_I1P !< Overloading `==`.
      generic :: operator(>=) => vector_great_eq_vector,                     &
+#ifdef _R16P
                                 R16P_great_eq_vector, vector_great_eq_R16P, &
+#endif
                                 R8P_great_eq_vector, vector_great_eq_R8P,   &
                                 R4P_great_eq_vector, vector_great_eq_R4P,   &
                                 I8P_great_eq_vector, vector_great_eq_I8P,   &
@@ -150,7 +170,9 @@ type :: vector_RPP
                                 I2P_great_eq_vector, vector_great_eq_I2P,   &
                                 I1P_great_eq_vector, vector_great_eq_I1P !< Overloading `>=`.
      generic :: operator(>) => vector_great_vector,                  &
+#ifdef _R16P
                                R16P_great_vector, vector_great_R16P, &
+#endif
                                R8P_great_vector, vector_great_R8P,   &
                                R4P_great_vector, vector_great_R4P,   &
                                I8P_great_vector, vector_great_I8P,   &
