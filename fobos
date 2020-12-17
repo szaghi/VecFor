@@ -3,17 +3,20 @@ modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
         static-intel-debug shared-intel shared-intel-debug static-intel
         tests-gnu-debug tests-gnu
         tests-intel-debug tests-intel
+        tests-nvf tests-nvf-debug
 
 [common-variables]
-$CSHARED_GNU   = -c -fPIC -frealloc-lhs
-$CSHARED_INT   = -c -fpic -assume realloc_lhs
-$LSHARED       = -shared
-$CSTATIC_GNU   = -c -frealloc-lhs
-$CSTATIC_INT   = -c -assume realloc_lhs -fpp
-$DEBUG_GNU     = -Og -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wuninitialized -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan -std=f2008 -fall-intrinsics
-$DEBUG_INT     = -O0 -debug all -check all -warn all -extend-source 132 -traceback -gen-interfaces -fp-stack-check -fstack-protector-all -ftrapuv -no-ftz -std08
-$OPTIMIZE      = -O2
-$EXDIRS        = PENF/src/tests/ PENF/src/third_party/
+$CSHARED_GNU = -c -fPIC -frealloc-lhs
+$CSHARED_INT = -c -fpic -assume realloc_lhs
+$LSHARED     = -shared
+$CSTATIC_GNU = -c -frealloc-lhs
+$CSTATIC_INT = -c -assume realloc_lhs -fpp
+$CSTATIC_NVF = -cpp -c
+$DEBUG_GNU   = -Og -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wuninitialized -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan -std=f2008 -fall-intrinsics
+$DEBUG_INT   = -O0 -debug all -check all -warn all -extend-source 132 -traceback -gen-interfaces -fp-stack-check -fstack-protector-all -ftrapuv -no-ftz -std08
+$DEBUG_NVF   = -O0 -g -C
+$OPTIMIZE    = -O2
+$EXDIRS      = PENF/src/tests/ PENF/src/third_party/
 
 # main modes
 # GNU
@@ -88,6 +91,15 @@ build_dir = ./exe/
 
 [tests-intel-debug]
 template  = template-static-intel-debug
+build_dir = ./exe/
+
+# NVFortran
+[tests-nvf]
+template  = template-static-nvf
+build_dir = ./exe/
+
+[tests-nvf-debug]
+template  = template-static-nvf-debug
 build_dir = ./exe/
 
 #templates
@@ -197,6 +209,34 @@ cflags       = $CSTATIC_INT $DEBUG_INT
 lflags       = $DEBUG_INT
 preproc      = -D_R16P_SUPPORTED -DDEBUG
 exclude_dirs = $EXDIRS
+mod_dir      = ./mod/
+obj_dir      = ./obj/
+src          = ./src/
+colors       = True
+quiet        = False
+log          = True
+jobs         = 2
+
+# NVFortran
+[template-static-nvf]
+compiler     = nvfortran
+cflags       = $CSTATIC_NVF $OPTIMIZE
+exclude_dirs = $EXDIRS
+preproc      = -D_NVF
+mod_dir      = ./mod/
+obj_dir      = ./obj/
+src          = ./src/
+colors       = True
+quiet        = False
+log          = True
+jobs         = 2
+
+[template-static-nvf-debug]
+compiler     = nvfortran
+cflags       = $CSTATIC_NVF $DEBUG_NVF
+lflags       = $DEBUG_NVF
+exclude_dirs = $EXDIRS
+preproc      = -D_NVF
 mod_dir      = ./mod/
 obj_dir      = ./obj/
 src          = ./src/

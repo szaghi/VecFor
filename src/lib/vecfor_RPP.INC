@@ -363,11 +363,15 @@ contains
    c = cos(angle)
    s = sin(angle)
    one_c = 1._RPP - cos(angle)
-   associate(x=>axis_%x, y=>axis_%y, z=>axis_%z, m=>matrix)
-      m(1,1) = c + x * x * one_c     ; m(1,2) = x * y * one_c - z * s ; m(1,3) = x * z * one_c + y * s
-      m(2,1) = y * x * one_c + z * s ; m(2,2) = c + y * y * one_c     ; m(2,3) = y * z * one_c - x * s
-      m(3,1) = z * x * one_c - y * s ; m(3,2) = z * y * one_c + x * s ; m(3,3) = c + z * z * one_c
-   endassociate
+   matrix(1,1) = c + axis_%x * axis_%x * one_c    
+   matrix(2,1) =     axis_%y * axis_%x * one_c + axis_%z * s
+   matrix(3,1) =     axis_%z * axis_%x * one_c - axis_%y * s
+   matrix(1,2) =     axis_%x * axis_%y * one_c - axis_%z * s
+   matrix(2,2) = c + axis_%y * axis_%y * one_c    
+   matrix(3,2) =     axis_%z * axis_%y * one_c + axis_%x * s
+   matrix(1,3) =     axis_%x * axis_%z * one_c + axis_%y * s  
+   matrix(2,3) =     axis_%y * axis_%z * one_c - axis_%x * s  
+   matrix(3,3) = c + axis_%z * axis_%z * one_c      
    endfunction rotation_matrix_RPP
 
    pure function mirror_matrix_RPP(normal) result(matrix)
@@ -377,14 +381,36 @@ contains
    type(vector_RPP)             :: normal_     !< Normal of mirroring plane, local variable.
 
    normal_ = normalized_RPP(normal)
-   associate(x=>normal_%x, y=>normal_%y, z=>normal_%z, m=>matrix)
-      m(1,1) = 1._RPP - 2._RPP * x * x ; m(1,2) =                   x * y ; m(1,3) =                   x * z
-      m(2,1) =                   y * x ; m(2,2) = 1._RPP - 2._RPP * y * y ; m(2,3) =                   y * z
-      m(3,1) =                   z * x ; m(3,2) =                   z * y ; m(3,3) = 1._RPP - 2._RPP * z * z
-   endassociate
+   matrix(1,1) = 1._RPP - 2._RPP * normal_%x * normal_%x
+   matrix(2,1) =                   normal_%y * normal_%x
+   matrix(3,1) =                   normal_%z * normal_%x
+   matrix(1,2) =                   normal_%x * normal_%y
+   matrix(2,2) = 1._RPP - 2._RPP * normal_%y * normal_%y
+   matrix(3,2) =                   normal_%z * normal_%y
+   matrix(1,3) =                   normal_%x * normal_%z  
+   matrix(2,3) =                   normal_%y * normal_%z  
+   matrix(3,3) = 1._RPP - 2._RPP * normal_%z * normal_%z  
    endfunction mirror_matrix_RPP
 
    ! new operators
+   /* elemental function crossproduct_RPP(lhs, rhs) result(cross) */
+   /* !< Compute the cross product. */
+   /* class(vector_RPP), intent(in) :: lhs   !< Left hand side. */
+   /* type(vector_RPP),  intent(in) :: rhs   !< Right hand side. */
+   /* type(vector_RPP)              :: cross !< Cross product vector. */
+
+   /* cross = lhs%crossproduct(rhs=rhs) */
+   /* endfunction crossproduct_RPP */
+
+   /* elemental function dotproduct_RPP(lhs, rhs) result(dot) */
+   /* !< Compute the scalar (dot) product. */
+   /* class(vector_RPP), intent(in) :: lhs !< Left hand side. */
+   /* type(vector_RPP),  intent(in) :: rhs !< Right hand side. */
+   /* real(RPP)                     :: dot !< Dot product. */
+
+   /* dot = lhs%dotproduct(rhs=rhs) */
+   /* endfunction dotproduct_RPP */
+
    elemental function crossproduct(lhs, rhs) result(cross)
    !< Compute the cross product.
    !<
