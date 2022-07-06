@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   <meta name="description" content="Vector algebra class for Fortran poor people">
+    <meta name="author" content="Stefano Zaghi" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>vecfor_test_front_module &ndash; VecFor</title>
+
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+    <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="../js/jquery-2.1.3.min.js"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="../index.html">VecFor </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li><a href="../lists/files.html">Source Files</a></li>
+            <li><a href="../lists/modules.html">Modules</a></li>
+            <li><a href="../lists/procedures.html">Procedures</a></li>
+                   <li><a href="../lists/types.html">Derived Types</a></li>
+            <li><a href="../lists/programs.html">Programs</a></li>
+       
+            </ul>
+        
+            </li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/files.html">Source Files</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/modules.html">Modules</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/procedures.html">Procedures</a></li>
+                             <li class="visible-xs hidden-sm visible-lg"><a href="../lists/types.html">Derived Types</a></li>
+<li class="visible-xs hidden-sm visible-lg"><a href="../lists/programs.html">Programs</a></li>
+          </ul>
+        <form action="../search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+  <div class="row">
+    <h1>vecfor_test_front_module    <small>Program</small>
+    </h1>
+    <div class="row">
+  <div class="col-lg-12">
+<div class="well well-sm">
+  <ul class="list-inline" style="margin-bottom:0px;display:inline">
+     <li><i class="fa fa-list-ol"></i>
+       <a data-toggle="tooltip"
+    data-placement="bottom" data-html="true"
+    title=" 0.1% of total for programs.">4 statements</a>
+     </li> 
+    <li><i class="fa fa-code"></i><a href="../src/vecfor_test_front_module.f90"> Source File</a></li>
+  </ul>
+  <ol class="breadcrumb in-well text-right">
+     <li><a href='../sourcefile/vecfor_test_front_module.f90.html'>vecfor_test_front_module.f90</a></li>
+     <li class="active">vecfor_test_front_module</li>
+  </ol>
+</div>
+</div>
+</div>
+<script>
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+  })
+</script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+    <div id="sidebar">
+  <h3>Contents</h3>
+ 
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../program/vecfor_test_front_module.html#src">vecfor_test_front_module</a>
+  </div>
+</div>
+
+</div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+        <div class="panel panel-default">
+      <div class="panel-heading">
+  <h3 class="panel-title">Uses</h3>
+      </div>
+      <ul class="list-group">
+      <li class="list-group-item">
+  <ul class="list-inline">
+    <li><a href='../module/vecfor.html'>vecfor</a></li>
+  </ul>
+      </li>
+      <li class="list-group-item">
+  <div class="depgraph"><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: program~~vecfor_test_front_module~~UsesGraph Pages: 1 -->
+<svg id="programvecfor_test_front_moduleUsesGraph" width="641pt" height="154pt"
+ viewBox="0.00 0.00 641.00 154.07" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="program~~vecfor_test_front_module~~UsesGraph" class="graph" transform="scale(1.46 1.46) rotate(0) translate(4 220.26)">
+<title>program~~vecfor_test_front_module~~UsesGraph</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-220.26 929,-220.26 929,4 -4,4"/>
+<!-- program~vecfor_test_front_module -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node1" class="node">
+<title>program~vecfor_test_front_module</title>
+<polygon fill="none" stroke="black" points="925,-87 778,-87 778,-63 925,-63 925,-87"/>
+<text text-anchor="middle" x="851.5" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50">vecfor_test_front_module</text>
+</g>
+<!-- module~vecfor -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node2" class="node">
+<title>module~vecfor</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node2"><a xlink:href=".././module/vecfor.html" xlink:title="vecfor">
+<polygon fill="#337ab7" stroke="#337ab7" points="742,-87 688,-87 688,-63 742,-63 742,-87"/>
+<text text-anchor="middle" x="715" y="-72.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vecfor</text>
+</a>
+</g>
+</g>
+<!-- program~vecfor_test_front_module&#45;&gt;module~vecfor -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge1" class="edge">
+<title>program~vecfor_test_front_module&#45;&gt;module~vecfor</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M777.74,-75C768.87,-75 760.14,-75 752.15,-75"/>
+<polygon fill="#000000" stroke="#000000" points="752.13,-71.5 742.13,-75 752.13,-78.5 752.13,-71.5"/>
+</g>
+<!-- module~vecfor_r4p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node3" class="node">
+<title>module~vecfor_r4p</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node3"><a xlink:href=".././module/vecfor_r4p.html" xlink:title="vecfor_R4P">
+<polygon fill="#337ab7" stroke="#337ab7" points="648.5,-108 576.5,-108 576.5,-84 648.5,-84 648.5,-108"/>
+<text text-anchor="middle" x="612.5" y="-93.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vecfor_R4P</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor&#45;&gt;module~vecfor_r4p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge2" class="edge">
+<title>module~vecfor&#45;&gt;module~vecfor_r4p</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M687.86,-80.46C678.87,-82.34 668.54,-84.5 658.49,-86.6"/>
+<polygon fill="#000000" stroke="#000000" points="657.67,-83.2 648.59,-88.67 659.1,-90.05 657.67,-83.2"/>
+</g>
+<!-- module~vecfor_r8p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node4" class="node">
+<title>module~vecfor_r8p</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node4"><a xlink:href=".././module/vecfor_r8p.html" xlink:title="vecfor_R8P">
+<polygon fill="#337ab7" stroke="#337ab7" points="648.5,-24 576.5,-24 576.5,0 648.5,0 648.5,-24"/>
+<text text-anchor="middle" x="612.5" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vecfor_R8P</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor&#45;&gt;module~vecfor_r8p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge4" class="edge">
+<title>module~vecfor&#45;&gt;module~vecfor_r8p</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M697.18,-62.96C684.87,-54.31 667.65,-42.54 652,-33 649.84,-31.68 647.59,-30.35 645.31,-29.04"/>
+<polygon fill="#000000" stroke="#000000" points="646.94,-25.94 636.51,-24.08 643.5,-32.04 646.94,-25.94"/>
+</g>
+<!-- module~vecfor_r16p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node5" class="node">
+<title>module~vecfor_r16p</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node5"><a xlink:href=".././module/vecfor_r16p.html" xlink:title="vecfor_R16P">
+<polygon fill="#337ab7" stroke="#337ab7" points="652,-150 573,-150 573,-126 652,-126 652,-150"/>
+<text text-anchor="middle" x="612.5" y="-135.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vecfor_R16P</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor&#45;&gt;module~vecfor_r16p -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge3" class="edge">
+<title>module~vecfor&#45;&gt;module~vecfor_r16p</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M697.18,-87.04C684.87,-95.69 667.65,-107.46 652,-117 649.84,-118.32 647.59,-119.65 645.31,-120.96"/>
+<polygon fill="#000000" stroke="#000000" points="643.5,-117.96 636.51,-125.92 646.94,-124.06 643.5,-117.96"/>
+</g>
+<!-- module~vecfor_rpp -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node6" class="node">
+<title>module~vecfor_rpp</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node6"><a xlink:href=".././module/vecfor_rpp.html" xlink:title="vecfor_RPP">
+<polygon fill="#337ab7" stroke="#337ab7" points="648,-66 577,-66 577,-42 648,-42 648,-66"/>
+<text text-anchor="middle" x="612.5" y="-51.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">vecfor_RPP</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor&#45;&gt;module~vecfor_rpp -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge5" class="edge">
+<title>module~vecfor&#45;&gt;module~vecfor_rpp</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M687.86,-69.54C678.78,-67.64 668.34,-65.46 658.2,-63.34"/>
+<polygon fill="#000000" stroke="#000000" points="658.72,-59.87 648.22,-61.25 657.29,-66.73 658.72,-59.87"/>
+</g>
+<!-- iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node7" class="node">
+<title>iso_fortran_env</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node7"><a xlink:href="https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORTRAN_005fENV.html" xlink:title="iso_fortran_env">
+<polygon fill="#337ab7" stroke="#337ab7" points="326,-126 232,-126 232,-102 326,-102 326,-126"/>
+<text text-anchor="middle" x="279" y="-111.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">iso_fortran_env</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor_r4p&#45;&gt;iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge6" class="edge">
+<title>module~vecfor_r4p&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M576.06,-94.26C556.78,-93.75 532.53,-93.82 511,-96"/>
+</g>
+<!-- module~penf -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node8" class="node">
+<title>module~penf</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node8"><a xlink:href=".././module/penf.html" xlink:title="penf">
+<polygon fill="#337ab7" stroke="#337ab7" points="537,-148 483,-148 483,-124 537,-124 537,-148"/>
+<text text-anchor="middle" x="510" y="-133.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">penf</text>
+</a>
+</g>
+</g>
+<!-- module~vecfor_r4p&#45;&gt;module~penf -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge7" class="edge">
+<title>module~vecfor_r4p&#45;&gt;module~penf</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M581.35,-108C570.44,-112.34 558.01,-117.29 546.67,-121.8"/>
+<polygon fill="#000000" stroke="#000000" points="545.05,-118.68 537.05,-125.63 547.63,-125.19 545.05,-118.68"/>
+</g>
+<!-- module~vecfor_r8p&#45;&gt;iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge8" class="edge">
+<title>module~vecfor_r8p&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M586.8,-24.06C582.06,-26.77 577.25,-29.79 573,-33 541.64,-56.66 550.08,-92.04 511,-96"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M509,-96C450.17,-101.96 382.66,-107.06 336.26,-110.29"/>
+<polygon fill="#000000" stroke="#000000" points="335.85,-106.81 326.11,-110.99 336.33,-113.79 335.85,-106.81"/>
+</g>
+<!-- module~vecfor_r8p&#45;&gt;module~penf -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge9" class="edge">
+<title>module~vecfor_r8p&#45;&gt;module~penf</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M583.85,-24.23C579.91,-26.75 576.13,-29.67 573,-33 547.13,-60.53 558.68,-79.07 537,-110 535.49,-112.15 533.8,-114.28 532.02,-116.34"/>
+<polygon fill="#000000" stroke="#000000" points="529.25,-114.17 524.92,-123.85 534.33,-118.99 529.25,-114.17"/>
+</g>
+<!-- module~vecfor_r16p&#45;&gt;iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge10" class="edge">
+<title>module~vecfor_r16p&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M589.64,-125.96C565.15,-112.99 526.8,-94.4 511,-96"/>
+</g>
+<!-- module~vecfor_r16p&#45;&gt;module~penf -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge11" class="edge">
+<title>module~vecfor_r16p&#45;&gt;module~penf</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M572.93,-137.23C564.52,-137.07 555.66,-136.89 547.34,-136.72"/>
+<polygon fill="#000000" stroke="#000000" points="547.24,-133.22 537.18,-136.52 547.1,-140.22 547.24,-133.22"/>
+</g>
+<!-- module~vecfor_rpp&#45;&gt;iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge12" class="edge">
+<title>module~vecfor_rpp&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M586.96,-66.2C562.44,-78.05 526.24,-94.45 511,-96"/>
+</g>
+<!-- module~vecfor_rpp&#45;&gt;module~penf -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge13" class="edge">
+<title>module~vecfor_rpp&#45;&gt;module~penf</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M586.84,-66.12C582.1,-68.82 577.28,-71.82 573,-75 570.62,-76.77 547.85,-99.3 530.59,-116.47"/>
+<polygon fill="#000000" stroke="#000000" points="527.76,-114.35 523.14,-123.88 532.7,-119.31 527.76,-114.35"/>
+</g>
+<!-- module~penf_global_parameters_variables -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node9" class="node">
+<title>module~penf_global_parameters_variables</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node9"><a xlink:href=".././module/penf_global_parameters_variables.html" xlink:title="penf_global_parameters_variables">
+<polygon fill="#337ab7" stroke="#337ab7" points="196,-206 0,-206 0,-182 196,-182 196,-206"/>
+<text text-anchor="middle" x="98" y="-191.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">penf_global_parameters_variables</text>
+</a>
+</g>
+</g>
+<!-- module~penf&#45;&gt;module~penf_global_parameters_variables -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge14" class="edge">
+<title>module~penf&#45;&gt;module~penf_global_parameters_variables</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M500.08,-148.38C489.25,-162.33 469.62,-184.44 447,-195 379.32,-226.61 354.68,-212.21 280,-214"/>
+</g>
+<!-- module~penf_b_size -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node10" class="node">
+<title>module~penf_b_size</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node10"><a xlink:href=".././module/penf_b_size.html" xlink:title="penf_b_size">
+<polygon fill="#337ab7" stroke="#337ab7" points="316,-186 242,-186 242,-162 316,-162 316,-186"/>
+<text text-anchor="middle" x="279" y="-171.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">penf_b_size</text>
+</a>
+</g>
+</g>
+<!-- module~penf&#45;&gt;module~penf_b_size -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge15" class="edge">
+<title>module~penf&#45;&gt;module~penf_b_size</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M482.82,-137.95C453.3,-140.4 403.94,-145.24 362,-153 350.26,-155.17 337.72,-158.08 326.07,-161.04"/>
+<polygon fill="#000000" stroke="#000000" points="324.89,-157.72 316.1,-163.63 326.65,-164.5 324.89,-157.72"/>
+</g>
+<!-- module~penf_stringify -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_node11" class="node">
+<title>module~penf_stringify</title>
+<g id="a_program~~vecfor_test_front_module~~UsesGraph_node11"><a xlink:href=".././module/penf_stringify.html" xlink:title="penf_stringify">
+<polygon fill="#337ab7" stroke="#337ab7" points="447,-186 362,-186 362,-162 447,-162 447,-186"/>
+<text text-anchor="middle" x="404.5" y="-171.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">penf_stringify</text>
+</a>
+</g>
+</g>
+<!-- module~penf&#45;&gt;module~penf_stringify -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge16" class="edge">
+<title>module~penf&#45;&gt;module~penf_stringify</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M482.88,-145.59C472.31,-149.47 459.83,-154.05 448.01,-158.39"/>
+<polygon fill="#000000" stroke="#000000" points="446.47,-155.23 438.29,-161.96 448.89,-161.8 446.47,-155.23"/>
+</g>
+<!-- module~penf_b_size&#45;&gt;module~penf_global_parameters_variables -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge17" class="edge">
+<title>module~penf_b_size&#45;&gt;module~penf_global_parameters_variables</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M241.78,-178.05C231.22,-179.23 219.1,-180.58 206.49,-181.99"/>
+<polygon fill="#000000" stroke="#000000" points="205.84,-178.54 196.29,-183.13 206.61,-185.5 205.84,-178.54"/>
+</g>
+<!-- module~penf_stringify&#45;&gt;iso_fortran_env -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge18" class="edge">
+<title>module~penf_stringify&#45;&gt;iso_fortran_env</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M378.51,-161.86C360.01,-152.87 334.59,-140.52 314.21,-130.62"/>
+<polygon fill="#000000" stroke="#000000" points="315.48,-127.35 304.95,-126.12 312.42,-133.64 315.48,-127.35"/>
+</g>
+<!-- module~penf_stringify&#45;&gt;module~penf_global_parameters_variables -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge20" class="edge">
+<title>module~penf_stringify&#45;&gt;module~penf_global_parameters_variables</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M380.09,-186.08C355.77,-197.53 316.27,-213.13 280,-214"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M278,-214C244.86,-214.8 208.46,-211.5 177.2,-207.37"/>
+<polygon fill="#000000" stroke="#000000" points="177.62,-203.89 167.23,-206 176.67,-210.83 177.62,-203.89"/>
+</g>
+<!-- module~penf_stringify&#45;&gt;module~penf_b_size -->
+<g id="program~~vecfor_test_front_module~~UsesGraph_edge19" class="edge">
+<title>module~penf_stringify&#45;&gt;module~penf_b_size</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M361.69,-174C350.44,-174 338.2,-174 326.7,-174"/>
+<polygon fill="#000000" stroke="#000000" points="326.4,-170.5 316.4,-174 326.4,-177.5 326.4,-170.5"/>
+</g>
+</g>
+</svg>
+</div><script>var panprogramvecfor_test_front_moduleUsesGraph = svgPanZoom('#programvecfor_test_front_moduleUsesGraph', {zoomEnabled: true,controlIconsEnabled: true, fit: true, center: true,}); </script><div><a type="button" class="graph-help" data-toggle="modal" href="#graph-help-text">Help</a></div><div class="modal fade" id="graph-help-text" tabindex="-1" role="dialog"><div class="modal-dialog modal-lg" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="-graph-help-label">Graph Key</h4></div><div class="modal-body">
+    <p>Nodes of different colours represent the following: </p>
+    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+ "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Generated by graphviz version 2.43.0 (0)
+ -->
+<!-- Title: Graph Key Pages: 1 -->
+<svg width="518pt" height="32pt"
+ viewBox="0.00 0.00 517.50 32.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 28)">
+<title>Graph Key</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-28 513.5,-28 513.5,4 -4,4"/>
+<!-- Module -->
+<g id="node1" class="node">
+<title>Module</title>
+<polygon fill="#337ab7" stroke="#337ab7" points="54,-24 0,-24 0,0 54,0 54,-24"/>
+<text text-anchor="middle" x="27" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Module</text>
+</g>
+<!-- Submodule -->
+<g id="node2" class="node">
+<title>Submodule</title>
+<polygon fill="#5bc0de" stroke="#5bc0de" points="145.5,-24 72.5,-24 72.5,0 145.5,0 145.5,-24"/>
+<text text-anchor="middle" x="109" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Submodule</text>
+</g>
+<!-- Subroutine -->
+<g id="node3" class="node">
+<title>Subroutine</title>
+<polygon fill="#d9534f" stroke="#d9534f" points="234,-24 164,-24 164,0 234,0 234,-24"/>
+<text text-anchor="middle" x="199" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Subroutine</text>
+</g>
+<!-- Function -->
+<g id="node4" class="node">
+<title>Function</title>
+<polygon fill="#d94e8f" stroke="#d94e8f" points="310,-24 252,-24 252,0 310,0 310,-24"/>
+<text text-anchor="middle" x="281" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Function</text>
+</g>
+<!-- Program -->
+<g id="node5" class="node">
+<title>Program</title>
+<polygon fill="#f0ad4e" stroke="#f0ad4e" points="386,-24 328,-24 328,0 386,0 386,-24"/>
+<text text-anchor="middle" x="357" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50" fill="white">Program</text>
+</g>
+<!-- This Page&#39;s Entity -->
+<g id="node6" class="node">
+<title>This Page&#39;s Entity</title>
+<polygon fill="none" stroke="black" points="509.5,-24 404.5,-24 404.5,0 509.5,0 509.5,-24"/>
+<text text-anchor="middle" x="457" y="-9.6" font-family="Helvetica,sans-Serif" font-size="10.50">This Page&#39;s Entity</text>
+</g>
+</g>
+</svg>
+
+    
+    <p>Solid arrows point from a submodule to the (sub)module which it is
+    descended from. Dashed arrows point from a module or program unit to 
+    modules which it uses.
+    </p>
+    </div></div></div></div>
+      </li>
+      </ul>
+    </div>
+
+    
+
+     <section class="visible-xs visible-sm hidden-md">
+       <h3>Contents</h3>
+ 
+<div class="panel panel-primary">
+  <div class="panel-heading text-left"><h3 class="panel-title">Source Code</h3></div>
+  <div class="list-group">
+    <a class="list-group-item" href="../program/vecfor_test_front_module.html#src">vecfor_test_front_module</a>
+  </div>
+</div>
+
+     </section>
+     <br class="visible-xs visible-sm hidden-md">
+
+
+    
+    
+    
+
+    
+
+
+    
+    <section>
+    <h2 id="src">Source Code</h2>
+    <div class="highlight"><pre><span></span><span class="k">program </span><span class="n">vecfor_test_front_module</span><span class="w"></span>
+<span class="k">use </span><span class="n">vecfor</span><span class="w"></span>
+<span class="k">implicit none</span>
+<span class="k">endprogram </span><span class="n">vecfor_test_front_module</span><span class="w"></span>
+</pre></div>
+
+    </section>
+    
+    </div>
+  </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-6"><p>VecFor was developed by Stefano Zaghi<br>&copy; 2022 
+</p>
+        </div>
+        <div class="col-xs-6 col-md-6">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2022-07-06 08:20            </p>
+        </div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script src="../tipuesearch/tipuesearch_content.js"></script>
+    <script src="../tipuesearch/tipuesearch_set.js"></script>
+    <script src="../tipuesearch/tipuesearch.js"></script>
+    
+  </body>
+</html>
