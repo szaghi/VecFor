@@ -1,6 +1,6 @@
 <a name="top"></a>
 
-# VecFor [![GitHub tag](https://img.shields.io/github/tag/szaghi/VecFor.svg)]() [![Join the chat at https://gitter.im/szaghi/VecFor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/szaghi/VecFor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# VecFor [![GitHub tag](https://img.shields.io/github/tag/szaghi/VecFor.svg)](https://github.com/szaghi/VecFor/releases) [![Join the chat at https://gitter.im/szaghi/VecFor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/szaghi/VecFor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![License](https://img.shields.io/badge/license-GNU%20GeneraL%20Public%20License%20v3,%20GPLv3-blue.svg)]()
 [![License](https://img.shields.io/badge/license-BSD2-red.svg)]()
@@ -8,8 +8,8 @@
 [![License](https://img.shields.io/badge/license-MIT-red.svg)]()
 
 [![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)]()
-[![Build Status](https://travis-ci.org/szaghi/VecFor.svg?branch=master)](https://travis-ci.org/szaghi/VecFor)
-[![Coverage Status](https://img.shields.io/codecov/c/github/szaghi/VecFor.svg)](http://codecov.io/github/szaghi/VecFor?branch=master)
+[![CI Status](https://github.com/szaghi/VecFor/actions/workflows/ci.yml/badge.svg)](https://github.com/szaghi/VecFor/actions)
+[![Coverage Status](https://img.shields.io/codecov/c/github/szaghi/VecFor.svg)](https://app.codecov.io/gh/szaghi/VecFor)
 
 ### VecFor, Vector algebra class for Fortran poor people
 
@@ -31,9 +31,6 @@ A KISS pure Fortran OOD class for computing Vectorial (3D) algebra
 #### Issues
 
 [![GitHub issues](https://img.shields.io/github/issues/szaghi/VecFor.svg)]()
-[![Ready in backlog](https://badge.waffle.io/szaghi/VecFor.png?label=ready&title=Ready)](https://waffle.io/szaghi/VecFor)
-[![In Progress](https://badge.waffle.io/szaghi/VecFor.png?label=in%20progress&title=In%20Progress)](https://waffle.io/szaghi/VecFor)
-[![Open bugs](https://badge.waffle.io/szaghi/VecFor.png?label=bug&title=Open%20Bugs)](https://waffle.io/szaghi/VecFor)
 
 #### Compiler Support
 
