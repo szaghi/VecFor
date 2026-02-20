@@ -1,142 +1,88 @@
-<a name="top"></a>
+# VecFor
 
-# VecFor [![GitHub tag](https://img.shields.io/github/tag/szaghi/VecFor.svg)](https://github.com/szaghi/VecFor/releases) [![Join the chat at https://gitter.im/szaghi/VecFor](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/szaghi/VecFor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+**3D Cartesian vector algebra for Fortran** — a pure Fortran 2003+ OOP library for vectorial calculus in a three-dimensional frame of reference.
 
-[![License](https://img.shields.io/badge/license-GNU%20GeneraL%20Public%20License%20v3,%20GPLv3-blue.svg)]()
-[![License](https://img.shields.io/badge/license-BSD2-red.svg)]()
-[![License](https://img.shields.io/badge/license-BSD3-red.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-red.svg)]()
+[![CI](https://github.com/szaghi/VecFor/actions/workflows/ci.yml/badge.svg)](https://github.com/szaghi/VecFor/actions)
+[![Coverage](https://img.shields.io/codecov/c/github/szaghi/VecFor.svg)](https://app.codecov.io/gh/szaghi/VecFor)
+[![GitHub tag](https://img.shields.io/github/tag/szaghi/VecFor.svg)](https://github.com/szaghi/VecFor/releases)
+[![License](https://img.shields.io/badge/license-GPLv3%20%7C%20BSD%20%7C%20MIT-blue.svg)](#copyrights)
 
-[![Status](https://img.shields.io/badge/status-stable-brightgreen.svg)]()
-[![CI Status](https://github.com/szaghi/VecFor/actions/workflows/ci.yml/badge.svg)](https://github.com/szaghi/VecFor/actions)
-[![Coverage Status](https://img.shields.io/codecov/c/github/szaghi/VecFor.svg)](https://app.codecov.io/gh/szaghi/VecFor)
+---
 
-### VecFor, Vector algebra class for Fortran poor people
+## Features
 
-A KISS pure Fortran OOD class for computing Vectorial (3D) algebra
+- `vector` derived type with overloaded arithmetic (`+`, `-`, `*`, `/`) and vectorial operators (`.cross.`, `.dot.`, `.paral.`, `.ortho.`)
+- Mixed-kind operands: vector OP scalar for any integer or real [PENF](https://github.com/szaghi/PENF) kind, resolved at compile time with no runtime overhead
+- Geometry methods: `angle`, `rotate`, `mirror`, `face_normal3/4`, `distance_to_line`, `distance_to_plane`, `projection_onto_plane`
+- Multi-precision: `vector_R4P`, `vector_R8P` (default), `vector_R16P` — all re-exported from a single `use vecfor`
+- All procedures are `pure` or `elemental` — thread-safe, no side effects
+- OOP / TDD designed — one derived type, comprehensive automated doctests
 
-- VecFor is a pure Fortran (KISS) library for building easily nice Command Line Interfaces (CLI) for modern Fortran projects;
-- VecFor is Fortran 2003+ standard compliant;
-- VecFor is OOP designed;
-- VecFor is a Free, Open Source Project.
+**[Documentation](https://szaghi.github.io/VecFor/)** | **[API Reference](https://szaghi.github.io/VecFor/api/)**
 
-#### Table of Contents
+---
 
-- [What is VecFor?](#what-is-vecfor)
-- [Main features](#main-features)
-- [Copyrights](#copyrights)
-- [Documentation](#documentation)
-  - [A Taste of VecFor](#a-taste-of-vecfor)
+## Authors
 
-#### Issues
+- Stefano Zaghi — [@szaghi](https://github.com/szaghi)
 
-[![GitHub issues](https://img.shields.io/github/issues/szaghi/VecFor.svg)]()
-
-#### Compiler Support
-
-[![Compiler](https://img.shields.io/badge/GNU-v4.9.2+-brightgreen.svg)]()
-[![Compiler](https://img.shields.io/badge/Intel-v12.x+-brightgreen.svg)]()
-[![Compiler](https://img.shields.io/badge/IBM%20XL-not%20tested-yellow.svg)]()
-[![Compiler](https://img.shields.io/badge/g95-not%20tested-yellow.svg)]()
-[![Compiler](https://img.shields.io/badge/NAG-not%20tested-yellow.svg)]()
-[![Compiler](https://img.shields.io/badge/PGI-not%20tested-yellow.svg)]()
-
-## What is VecFor?
-
-VecFor is a user-friendly and Object-Oriented designed API for handling *vectors* in a (3D) three dimensional frame of reference. It exposes (among others) the *object* **Vector** that posses a far complete set of overloaded operators for performing vectorial calculus algebra.
-
-VecFor adheres to the [KISS](https://en.wikipedia.org/wiki/KISS_principle) concept: it is a pure Fortran (2003+) library coded into a single module file, `vecfor.F90`.
-
-Go to [Top](#top)
-
-## Main features
-
-+ [x] Pure Fortran implementation;
-+ [x] KISS and user-friendly:
-    + [x] simple API (one main *object* plus few other *helpers*);
-    + [x] easy building and porting on heterogeneous architectures:
-        + [x] the vector components are defined as real with parametrized kind; the default kind parameter is set to be 64-bit-like finite precision (defined by means of the portable `select_real_kind` intrinsic function), but it can be easily changed at compile time;
-+ [x] comprehensive (almost complete set of operators for vectorial calculus algebra);
-    + [x] all operators accept mixed type/kind arguments: vectors can be mixed with integers and reals of any kinds by means of generic interfaces with dynamic dispatch resolved at compile time;
-+ [x] efficient and *non intrusive* (all object methods and operators are *pure* or *elemental*):
-    + [x] threads/processes safe;
-+ [x] Tests-Driven Developed ([TDD](https://en.wikipedia.org/wiki/Test-driven_development));
-+ [x] well documented:
-    + [x] complete [API](http://szaghi.github.io/VecFor/index.html) reference;
-    + [x] comprehensive [wiki](https://github.com/szaghi/VecFor/wiki):
-+ [x] collaborative developed on [GitHub](https://github.com/szaghi/VecFor);
-+ [x] [FOSS licensed](https://github.com/szaghi/VecFor/wiki/Copyrights);
-
-Any feature request is welcome.
-
-Go to [Top](#top)
+Contributions are welcome — see the [Contributing](https://szaghi.github.io/VecFor/guide/contributing) page.
 
 ## Copyrights
 
-VecFor is an open source project, it is distributed under a multi-licensing system:
+This project is distributed under a multi-licensing system:
 
-+ for FOSS projects:
-  - [GPL v3](http://www.gnu.org/licenses/gpl-3.0.html);
-+ for closed source/commercial projects:
-  - [BSD 2-Clause](http://opensource.org/licenses/BSD-2-Clause);
-  - [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause);
-  - [MIT](http://opensource.org/licenses/MIT).
+- **FOSS projects**: [GPL v3](http://www.gnu.org/licenses/gpl-3.0.html)
+- **Closed source / commercial**: [BSD 2-Clause](http://opensource.org/licenses/BSD-2-Clause), [BSD 3-Clause](http://opensource.org/licenses/BSD-3-Clause), or [MIT](http://opensource.org/licenses/MIT)
 
-Anyone is interest to use, to develop or to contribute to VecFor is welcome, feel free to select the license that best matches your soul!
+> Anyone interested in using, developing, or contributing to VecFor is welcome — pick the license that best fits your needs.
 
-More details can be found on [wiki](https://github.com/szaghi/VecFor/wiki/Copyrights).
+---
 
-Go to [Top](#top)
+## Quick start
 
-## Documentation
-
-Besides this README file the VecFor documentation is contained into its own [wiki](https://github.com/szaghi/VecFor/wiki). Detailed documentation of the API is contained into the [GitHub Pages](http://szaghi.github.io/VecFor/index.html) that can also be created locally by means of [ford tool](https://github.com/cmacmackin/ford).
-
-### A Taste of VecFor
-
-VecFor allows a very simple, high-level implementation of vectorial calculus algebra.
-
-#### Import VecFor
+Import VecFor, build vectors from the built-in Cartesian versors, and perform algebra:
 
 ```fortran
-use vecfor ! load vector type and all helpers
+use vecfor
+implicit none
+type(vector) :: point1, point2, distance
+
+point1 = 1 * ex                  ! ex, ey, ez are the Cartesian unit versors
+point2 = 1 * ex + 2 * ey
+
+distance = point2 - point1       ! [0, 2, 0]
+call distance%print              ! Component y +2.000...
+print *, distance%normL2()       ! 2.0
 ```
 
-#### Define some vector variables
+Vectorial operators:
 
 ```fortran
-type(vector) :: point1
-type(vector) :: point2
-type(vector) :: distance
+use vecfor
+use penf, only: R8P
+implicit none
+type(vector) :: v1, v2, cross
+real(R8P)    :: dot
+
+v1 = ex
+v2 = ex + 2 * ey
+cross = v1 .cross. v2   ! [0, 0, 2]
+dot   = v1 .dot.   v2   ! 1.0
 ```
 
-#### Initialize vectors by high-level math-like syntax
-```fortran
-point1 = 1 * ex ! ex is the versor along x direction exposed by VecFor
-point2 = 1 * ex + 2 * ey ! ey is the versor along y direction exposed by VecFor
-```
-Note that *ex*, *ey* and *ez* are the Cartesian versors exposed by VecFor.
+---
 
-#### Perform vectorial calculus algebra
-```fortran
-distance = point2 - point1
-```
+## Install
 
-#### Use helper methods to simplify your life
-```fortran
-print "(A)", " Vectorial distance"
-call distance%printf
-print "(A)", " Distance module"
-print*, distance%normL2()
-! expected output
-!   Vectorial distance
-!   Component x  0.000000000000000E+000
-!   Component y +0.200000000000000E+001
-!   Component z  0.000000000000000E+000
-!   Distance module
-!   +0.200000000000000E+001
+Clone with submodules (PENF dependency) and build:
+
+```sh
+git clone https://github.com/szaghi/VecFor --recursive
+cd VecFor
 ```
 
-As you can see from the above example, defining and using a *vector* become very close to the mathematical formulation. Note that, using the dynamic dispatching resolved at compile time, there is no performance penalty on using a `type(vector)` variable instead of an *hard-coded* `real, dimension(3)` array variable (or even more verbose and less clear `real :: x, y, z` variables for each vector...).
-
-Go to [Top](#top)
+| Tool | Command | Output |
+|------|---------|--------|
+| make | `make` | `static/vecfor.a` |
+| FoBiS.py | `FoBiS.py build -mode vecfor-static-gnu` | `static/libvecfor.a` |

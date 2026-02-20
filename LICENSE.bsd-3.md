@@ -1,7 +1,7 @@
 Modified BSD License
 ====================
 
-Copyright © 2015, Fortran-FOSS-Programmers
+Copyright © 2015-2026, Stefano Zaghi
 
 All rights reserved.
 
