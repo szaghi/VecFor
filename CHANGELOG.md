@@ -1,7 +1,11 @@
 # Changelog
-## [Unreleased]
+## [v1.4.2](https://github.com/szaghi/FLAP/tree/v1.4.2) (2026-02-20)
+[Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.1...v1.4.2)
 ### Miscellaneous
 - Update makefile ([`72f89e3`](https://github.com/szaghi/FLAP/commit/72f89e332ebf4b4a17760dd4c9e9d4d6b0d99e39))
+
+### New features
+- Add vitepress docs site, release pipeline, and cliff changelog ([`67c582c`](https://github.com/szaghi/FLAP/commit/67c582c8ffd5b1cd357826d8c3fbb150897c4d8f))
 
 ## [v1.4.1](https://github.com/szaghi/FLAP/tree/v1.4.1) (2022-07-06)
 [Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.0...v1.4.1)
