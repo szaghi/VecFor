@@ -1,4 +1,9 @@
 # Changelog
+## [v1.4.3](https://github.com/szaghi/FLAP/tree/v1.4.3) (2026-02-20)
+[Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.2...v1.4.3)
+### Bug fixes
+- Preprocess .F90 files to expose INC-embedded doctests ([`cf1fd00`](https://github.com/szaghi/FLAP/commit/cf1fd00c662ca197f1225070374065ca15db12ec))
+
 ## [v1.4.2](https://github.com/szaghi/FLAP/tree/v1.4.2) (2026-02-20)
 [Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.1...v1.4.2)
 ### Miscellaneous
