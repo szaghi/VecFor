@@ -1,4 +1,9 @@
 # Changelog
+## [v1.4.4](https://github.com/szaghi/FLAP/tree/v1.4.4) (2026-02-21)
+[Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.3...v1.4.4)
+### Bug fixes
+- Restrict gcov glob to .F90 to avoid INC filename mismatch ([`6c00de6`](https://github.com/szaghi/FLAP/commit/6c00de6f2bcb782ccf1e6b87d9cdffada96ac270))
+
 ## [v1.4.3](https://github.com/szaghi/FLAP/tree/v1.4.3) (2026-02-20)
 [Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.2...v1.4.3)
 ### Bug fixes
