@@ -1,4 +1,9 @@
 # Changelog
+## [v1.4.5](https://github.com/szaghi/FLAP/tree/v1.4.5) (2026-02-21)
+[Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.4...v1.4.5)
+### Bug fixes
+- Exclude aggregator module from gcov to prevent missing gcda error ([`449c966`](https://github.com/szaghi/FLAP/commit/449c966d2e9d79f43188570c0b543b58f29016ac))
+
 ## [v1.4.4](https://github.com/szaghi/FLAP/tree/v1.4.4) (2026-02-21)
 [Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.3...v1.4.4)
 ### Bug fixes
