@@ -273,7 +273,7 @@ rule = tar --xform="s%^%VecFor/%" -czf VecFor.tar.gz *
 help   = Perform coverage analysis
 rule_1 = FoBiS.py doctests -mode tests-gnu-debug -coverage -inc .F90 .INC .h .H --exclude_from_doctests penf_b_size.F90 penf.F90 penf_global_parameters_variables.F90 penf_stringify.F90 penf_allocatable_memory.F90 -keep_volatile_doctests
 rule_2 = rm -f exe/obj/penf*
-rule_3 = gcov -o exe/obj/ src/lib/vecfor*
+rule_3 = gcov -o exe/obj/ src/lib/vecfor*.F90
 
 [rule-makecoverage-analysis]
 help   = Perform coverage analysis and saving reports in markdown

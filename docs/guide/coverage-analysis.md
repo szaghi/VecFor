@@ -38,7 +38,7 @@ pie showData
 |Executable lines            |1| |
 |Executed lines              |1|100%|
 |Unexecuted lines            |0|0%|
-|Average hits / executed     |2.0| |
+|Average hits / executed     |3.0| |
 
 ```mermaid
 pie showData
@@ -55,7 +55,7 @@ pie showData
 |Executable lines            |1| |
 |Executed lines              |1|100%|
 |Unexecuted lines            |0|0%|
-|Average hits / executed     |2.0| |
+|Average hits / executed     |3.0| |
 
 ```mermaid
 pie showData
@@ -72,7 +72,7 @@ pie showData
 |Executable lines            |1| |
 |Executed lines              |1|100%|
 |Unexecuted lines            |0|0%|
-|Average hits / executed     |2.0| |
+|Average hits / executed     |3.0| |
 
 ```mermaid
 pie showData
@@ -89,7 +89,7 @@ pie showData
 |Executable lines            |1| |
 |Executed lines              |1|100%|
 |Unexecuted lines            |0|0%|
-|Average hits / executed     |2.0| |
+|Average hits / executed     |3.0| |
 
 ```mermaid
 pie showData
