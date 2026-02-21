@@ -1,4 +1,0 @@
-program vecfor_test_front_module
-use vecfor
-implicit none
-endprogram vecfor_test_front_module
