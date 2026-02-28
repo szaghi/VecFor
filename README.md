@@ -1,24 +1,19 @@
 # VecFor
 
-**3D Cartesian vector algebra for Fortran** — a pure Fortran 2003+ OOP library for vectorial calculus in a three-dimensional frame of reference.
+>#### 3D Cartesian vector algebra for Fortran
+>a pure Fortran 2003+ OOP library for vectorial calculus in a three-dimensional frame of reference.
 
-[![CI](https://github.com/szaghi/VecFor/actions/workflows/ci.yml/badge.svg)](https://github.com/szaghi/VecFor/actions)
-[![Coverage](https://img.shields.io/codecov/c/github/szaghi/VecFor.svg)](https://app.codecov.io/gh/szaghi/VecFor)
-[![GitHub tag](https://img.shields.io/github/tag/szaghi/VecFor.svg)](https://github.com/szaghi/VecFor/releases)
+[![GitHub tag](https://img.shields.io/github/v/tag/szaghi/VecFor)](https://github.com/szaghi/VecFor/tags)
+[![GitHub issues](https://img.shields.io/github/issues/szaghi/VecFor)](https://github.com/szaghi/VecFor/issues)
+[![CI](https://github.com/szaghi/VecFor/actions/workflows/ci.yml/badge.svg)](https://github.com/szaghi/VecFor/actions/workflows/ci.yml)
+[![coverage](https://img.shields.io/endpoint?url=https://szaghi.github.io/VecFor/coverage.json)](https://github.com/szaghi/VecFor/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-GPLv3%20%7C%20BSD%20%7C%20MIT-blue.svg)](#copyrights)
 
----
+| 📐 **Rich Operator Set**<br>`+`, `-`, `*`, `/`, `.cross.`, `.dot.`, `.paral.`, `.ortho.` — full Cartesian algebra in operator notation | 🔢 **Mixed-Kind Operands**<br>Vector OP scalar for any integer or real [PENF](https://github.com/szaghi/PENF) kind, resolved at compile time with no runtime overhead | 📏 **Geometry Methods**<br>`angle`, `rotate`, `mirror`, `face_normal3/4`, `distance_to_line`, `distance_to_plane`, `projection_onto_plane` | 🎚️ **Multi-Precision**<br>`vector_R4P`, `vector_R8P` (default), `vector_R16P` — all re-exported from a single `use vecfor` |
+|:---:|:---:|:---:|:---:|
+| ⚡ **Pure & Elemental**<br>All procedures are `pure` or `elemental` — thread-safe, no side effects | 🔓 **Multi-licensed**<br>GPL v3 · BSD 2/3-Clause · MIT | 📦 **Multiple build systems**<br>fpm, FoBiS, CMake, Make | 📖 **OOP / TDD designed**<br>One derived type, comprehensive automated doctests |
 
-## Features
-
-- `vector` derived type with overloaded arithmetic (`+`, `-`, `*`, `/`) and vectorial operators (`.cross.`, `.dot.`, `.paral.`, `.ortho.`)
-- Mixed-kind operands: vector OP scalar for any integer or real [PENF](https://github.com/szaghi/PENF) kind, resolved at compile time with no runtime overhead
-- Geometry methods: `angle`, `rotate`, `mirror`, `face_normal3/4`, `distance_to_line`, `distance_to_plane`, `projection_onto_plane`
-- Multi-precision: `vector_R4P`, `vector_R8P` (default), `vector_R16P` — all re-exported from a single `use vecfor`
-- All procedures are `pure` or `elemental` — thread-safe, no side effects
-- OOP / TDD designed — one derived type, comprehensive automated doctests
-
-**[Documentation](https://szaghi.github.io/VecFor/)** | **[API Reference](https://szaghi.github.io/VecFor/api/)**
+For full documentations (guide, tutorial, examples, etc...) see the [VecFor website](https://szaghi.github.io/VecFor/).
 
 ---
 
@@ -75,14 +70,51 @@ dot   = v1 .dot.   v2   ! 1.0
 
 ## Install
 
-Clone with submodules (PENF dependency) and build:
+### FoBiS
 
-```sh
-git clone https://github.com/szaghi/VecFor --recursive
-cd VecFor
+**Standalone** — clone, build, and install in one command:
+
+```bash
+FoBiS.py install szaghi/VecFor -mode static-gnu
+FoBiS.py install szaghi/VecFor -mode static-gnu --prefix /path/to/prefix
 ```
 
-| Tool | Command | Output |
-|------|---------|--------|
-| make | `make` | `static/vecfor.a` |
-| FoBiS.py | `FoBiS.py build -mode vecfor-static-gnu` | `static/libvecfor.a` |
+**As a project dependency** — declare VecFor in your `fobos` and run `fetch`:
+
+```ini
+[dependencies]
+deps_dir = src/third_party
+PENF     = https://github.com/szaghi/VecFor
+```
+
+```bash
+FoBiS.py fetch           # fetch and build
+FoBiS.py fetch --update  # re-fetch and rebuild
+```
+
+### fpm
+
+Add to your `fpm.toml`:
+
+```toml
+[dependencies]
+VecFor = { git = "https://github.com/szaghi/VecFor" }
+```
+
+```bash
+fpm build
+fpm test
+```
+
+### CMake
+
+```bash
+cmake -B build && cmake --build build
+```
+
+### Makefile
+
+```bash
+make              # static library
+make TESTS=yes    # build and run tests
+```

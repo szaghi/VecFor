@@ -1,3 +1,16 @@
+[project]
+name       = VecFor
+version    = VERSION
+summary    = Vector algebra class for Fortran poor people
+repository = https://github.com/szaghi/VecFor
+website    = https://szaghi.github.io/VecFor
+email      = stefano.zaghi@gmail.it
+authors    = Stefano Zaghi
+
+[dependencies]
+deps_dir = src/third_party
+PENF = https://github.com/szaghi/PENF
+
 [modes]
 modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
         static-intel-debug shared-intel shared-intel-debug static-intel
