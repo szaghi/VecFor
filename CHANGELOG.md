@@ -1,4 +1,10 @@
 # Changelog
+## [v1.4.6](https://github.com/szaghi/FLAP/tree/v1.4.6) (2026-02-28)
+[Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.5...v1.4.6)
+### Miscellaneous
+- Replace PENF submodule with FoBiS dependency fetch ([`a87eab7`](https://github.com/szaghi/FLAP/commit/a87eab77f5c0cb10f2519fb0f5891bdb5b8837e4))
+- Update VERSION file during release bump ([`c43e4e1`](https://github.com/szaghi/FLAP/commit/c43e4e1cdd4e9e4e79db8a51cde942b0d519f24d))
+
 ## [v1.4.5](https://github.com/szaghi/FLAP/tree/v1.4.5) (2026-02-21)
 [Full Changelog](https://github.com/szaghi/FLAP/compare/v1.4.4...v1.4.5)
 ### Bug fixes
