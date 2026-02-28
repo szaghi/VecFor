@@ -84,7 +84,7 @@ FoBiS.py install szaghi/VecFor -mode static-gnu --prefix /path/to/prefix
 ```ini
 [dependencies]
 deps_dir = src/third_party
-PENF     = https://github.com/szaghi/VecFor
+VecFor   = https://github.com/szaghi/VecFor
 ```
 
 ```bash

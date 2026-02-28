@@ -18,17 +18,12 @@ VecFor is developed on GNU/Linux. Windows should work out of the box but is not 
 
 ## Download
 
-VecFor uses **git submodules** for the [PENF](https://github.com/szaghi/PENF) dependency (portable numeric kind parameters). Clone recursively:
+Clone the repository and fetch the [PENF](https://github.com/szaghi/PENF) dependency automatically with FoBiS.py:
 
 ```bash
-git clone https://github.com/szaghi/VecFor --recursive
+git clone https://github.com/szaghi/VecFor
 cd VecFor
-```
-
-If you already have a non-recursive clone:
-
-```bash
-git submodule update --init --recursive
+FoBiS.py fetch   # downloads PENF into src/third_party/
 ```
 
 ### Minimal manual download
@@ -51,7 +46,7 @@ A minimal installation requires only `src/lib/vecfor.F90` (and PENF sources). Th
 │   │   ├── simple.f90      # Basic usage example
 │   │   └── kinds.f90       # Operator coverage test (all numeric kinds)
 │   └── third_party/
-│       └── PENF/           # Kind parameter definitions (git submodule)
+│       └── PENF/           # Kind parameter definitions (fetched by FoBiS.py)
 └── scripts/
     └── run_tests.sh        # Test runner
 ```
