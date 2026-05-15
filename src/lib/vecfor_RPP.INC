@@ -348,6 +348,7 @@ contains
    ! public methods
    ! non TBP
    pure function rotation_matrix_RPP(axis, angle) result(matrix)
+   !$acc routine seq
    !< Return the rotation matrix given axis and angle of ratation.
    !<
    !< Angle must be in radiants.
@@ -375,6 +376,7 @@ contains
    endfunction rotation_matrix_RPP
 
    pure function mirror_matrix_RPP(normal) result(matrix)
+   !$acc routine seq
    !< Return the mirror matrix (Householder's matrix) given normal of the mirroring plane.
    type(vector_RPP), intent(in) :: normal      !< Normal of mirroring plane.
    real(RPP)                    :: matrix(3,3) !< Rotation matrix.
@@ -412,6 +414,7 @@ contains
    /* endfunction dotproduct_RPP */
 
    elemental function crossproduct(lhs, rhs) result(cross)
+   !$acc routine seq
    !< Compute the cross product.
    !<
    !< $$ \vec V=\left({y_1 z_2 - z_1 y_2}\right)\vec i +
@@ -437,6 +440,7 @@ contains
    endfunction crossproduct
 
    elemental function dotproduct(lhs, rhs) result(dot)
+   !$acc routine seq
    !< Compute the scalar (dot) product.
    !<
    !< $$ {\rm D}= x_1 \cdot x_2 + y_1 \cdot y_2 + z_1 \cdot z_2 $$
@@ -457,6 +461,7 @@ contains
    endfunction dotproduct
 
    pure function matrixproduct(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Compute the matrix product.
    !<
    !<```fortran
@@ -484,6 +489,7 @@ contains
    endfunction matrixproduct
 
    elemental function orthogonal(lhs, rhs) result(ortho)
+   !$acc routine seq
    !< Compute the component of `lhs` orthogonal to `rhs`.
    !<
    !<```fortran
@@ -502,6 +508,7 @@ contains
    endfunction orthogonal
 
    elemental function parallel(lhs, rhs) result(paral)
+   !$acc routine seq
    !> Compute the component of `lhs` parallel to `rhs`.
    !<
    !<```fortran
@@ -521,6 +528,7 @@ contains
 
    ! methods
    elemental function angle_RPP(self, other) result(angle_)
+   !$acc routine seq
    !< Calculate the angle (rad) between two vectors.
    !<
    !<```fortran
@@ -558,6 +566,7 @@ contains
    endfunction angle_RPP
 
    elemental function distance_to_line_RPP(self, pt1, pt2) result(distance)
+   !$acc routine seq
    !< Calculate the distance (scalar) to line defined by the 2 points.
    !<
    !< The convention for the points numeration is the following:
@@ -601,6 +610,7 @@ contains
    endfunction distance_to_line_RPP
 
    elemental function distance_to_plane_RPP(self, pt1, pt2, pt3) result(distance)
+   !$acc routine seq
    !< Calculate the distance (signed, scalar) to plane defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -650,6 +660,7 @@ contains
    endfunction distance_to_plane_RPP
 
    elemental function distance_vectorial_to_plane_RPP(self, pt1, pt2, pt3) result(distance)
+   !$acc routine seq
    !< Calculate the distance (vectorial) to plane defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -697,6 +708,7 @@ contains
    endfunction distance_vectorial_to_plane_RPP
 
    elemental function face_normal3_RPP(pt1, pt2, pt3, norm) result(normal)
+   !$acc routine seq
    !< Calculate the normal of the face defined by the 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -750,6 +762,7 @@ contains
    endfunction face_normal3_RPP
 
    elemental function face_normal4_RPP(pt1, pt2, pt3, pt4, norm) result(normal)
+   !$acc routine seq
    !< Calculate the normal of the face defined by 4 points.
    !<
    !< The convention for the points numeration is the following:
@@ -828,6 +841,7 @@ contains
    endfunction iolen_RPP
 
    elemental function is_collinear_RPP(self, pt1, pt2, tolerance) result(is_collinear_)
+   !$acc routine seq
    !< Return true if the point is collinear with other two given points.
    !<
    !<```fortran
@@ -861,6 +875,7 @@ contains
    endfunction is_collinear_RPP
 
    elemental function is_concyclic_RPP(self, pt1, pt2, pt3, tolerance) result(is_concyclic_)
+   !$acc routine seq
    !< Return true if the point is concyclic with other three given points.
    !<
    !< Based on Ptolemy's Theorem.
@@ -944,6 +959,7 @@ contains
    endsubroutine load_from_file
 
    elemental subroutine normalize(self)
+   !$acc routine seq
    !< Normalize vector.
    !<
    !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallRPP the
@@ -969,6 +985,7 @@ contains
    endsubroutine normalize
 
    elemental function normalized_RPP(self) result(norm)
+   !$acc routine seq
    !< Return a normalized copy of vector.
    !<
    !< The normalization is made by means of norm L2. If the norm L2 of the vector is less than the parameter smallRPP the
@@ -997,6 +1014,7 @@ contains
    endfunction normalized_RPP
 
    elemental function normL2_RPP(self) result(norm)
+   !$acc routine seq
    !< Return the norm L2 of vector.
    !<
    !< The norm L2 if defined as \( N = \sqrt {x^2  + y^2  + z^2 } \).
@@ -1056,6 +1074,7 @@ contains
    endsubroutine printf
 
    elemental function projection_onto_plane_RPP(self, pt1, pt2, pt3) result(projection)
+   !$acc routine seq
    !< Calculate the projection of point onto plane defined by 3 points.
    !<
    !< The convention for the points numeration is the following:
@@ -1144,6 +1163,7 @@ contains
    endsubroutine save_into_file
 
    elemental function sq_norm_RPP(self) result(sq)
+   !$acc routine seq
    !< Return the square of the norm of vector.
    !<
    !< The square norm if defined as \( N = x^2  + y^2  + z^2 \).
@@ -1169,6 +1189,7 @@ contains
 
    ! private methods
    pure subroutine mirror_by_normal(self, normal)
+   !$acc routine seq
    !< Mirror vector given normal of mirroring plane.
    class(vector_RPP), intent(inout) :: self   !< Vector.
    type(vector_RPP),  intent(in)    :: normal !< Normal of mirroring plane.
@@ -1177,6 +1198,7 @@ contains
    endsubroutine mirror_by_normal
 
    pure subroutine mirror_by_matrix(self, matrix)
+   !$acc routine seq
    !< Mirror vector given matrix (of mirroring).
    class(vector_RPP), intent(inout) :: self        !< Vector.
    real(RPP),         intent(in)    :: matrix(3,3) !< Mirroring matrix.
@@ -1185,6 +1207,7 @@ contains
    endsubroutine mirror_by_matrix
 
    pure subroutine rotate_by_axis_angle(self, axis, angle)
+   !$acc routine seq
    !< Rotate vector given axis and angle.
    !<
    !< Angle must be in radiants.
@@ -1196,6 +1219,7 @@ contains
    endsubroutine rotate_by_axis_angle
 
    pure subroutine rotate_by_matrix(self, matrix)
+   !$acc routine seq
    !< Rotate vector given matrix (of ratation).
    class(vector_RPP), intent(inout) :: self        !< Vector.
    real(RPP),         intent(in)    :: matrix(3,3) !< Rotation matrix.
@@ -1205,6 +1229,7 @@ contains
 
    ! operator `=`
    pure subroutine assign_vector(lhs, rhs)
+   !$acc routine seq
    !< Operator `=`
    !<
    !<```fortran
@@ -1222,6 +1247,7 @@ contains
    endsubroutine assign_vector
 
    elemental subroutine assign_R16P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= real(R16P)`.
    !<
    !<```fortran
@@ -1239,6 +1265,7 @@ contains
    endsubroutine assign_R16P
 
    elemental subroutine assign_R8P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= real(R8P)`.
    !<
    !<```fortran
@@ -1256,6 +1283,7 @@ contains
    endsubroutine assign_R8P
 
    elemental subroutine assign_R4P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= real(R4P)`.
    !<
    !<```fortran
@@ -1273,6 +1301,7 @@ contains
    endsubroutine assign_R4P
 
    elemental subroutine assign_I8P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= integer(I8P)`.
    !<
    !<```fortran
@@ -1290,6 +1319,7 @@ contains
    endsubroutine assign_I8P
 
    elemental subroutine assign_I4P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
@@ -1307,6 +1337,7 @@ contains
    endsubroutine assign_I4P
 
    elemental subroutine assign_I2P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
@@ -1324,6 +1355,7 @@ contains
    endsubroutine assign_I2P
 
    elemental subroutine assign_I1P(lhs, rhs)
+   !$acc routine seq
    !< Operator `= integer(I4P)`.
    !<
    !<```fortran
@@ -1342,6 +1374,7 @@ contains
 
    ! operator `*`
    elemental function vector_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `*`.
    !<
    !<```fortran
@@ -1362,6 +1395,7 @@ contains
    endfunction vector_mul_vector
 
    elemental function R16P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) *`.
    !<
    !<```fortran
@@ -1381,6 +1415,7 @@ contains
    endfunction R16P_mul_vector
 
    elemental function vector_mul_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* real(R16P)`.
    !<
    !<```fortran
@@ -1400,6 +1435,7 @@ contains
    endfunction vector_mul_R16P
 
    elemental function R8P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) *`.
    !<
    !<```fortran
@@ -1419,6 +1455,7 @@ contains
    endfunction R8P_mul_vector
 
    elemental function vector_mul_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* real(R8P)`.
    !<
    !<```fortran
@@ -1438,6 +1475,7 @@ contains
    endfunction vector_mul_R8P
 
    elemental function R4P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) *`.
    !<
    !<```fortran
@@ -1457,6 +1495,7 @@ contains
    endfunction R4P_mul_vector
 
    elemental function vector_mul_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* real(R4P)`.
    !<
    !<```fortran
@@ -1476,6 +1515,7 @@ contains
    endfunction vector_mul_R4P
 
    elemental function I8P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) *`.
    !<
    !<```fortran
@@ -1495,6 +1535,7 @@ contains
    endfunction I8P_mul_vector
 
    elemental function vector_mul_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* integer(I8P)`.
    !<
    !<```fortran
@@ -1514,6 +1555,7 @@ contains
    endfunction vector_mul_I8P
 
    elemental function I4P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) *`.
    !<
    !<```fortran
@@ -1533,6 +1575,7 @@ contains
    endfunction I4P_mul_vector
 
    elemental function vector_mul_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* integer(I4P)`.
    !<
    !<```fortran
@@ -1552,6 +1595,7 @@ contains
    endfunction vector_mul_I4P
 
    elemental function I2P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) *`.
    !<
    !<```fortran
@@ -1571,6 +1615,7 @@ contains
    endfunction I2P_mul_vector
 
    elemental function vector_mul_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* integer(I2P)`.
    !<
    !<```fortran
@@ -1590,6 +1635,7 @@ contains
    endfunction vector_mul_I2P
 
    elemental function I1P_mul_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) *`.
    !<
    !<```fortran
@@ -1609,6 +1655,7 @@ contains
    endfunction I1P_mul_vector
 
    elemental function vector_mul_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `* integer(I1P)`.
    !<
    !<```fortran
@@ -1629,6 +1676,7 @@ contains
 
    ! operator `/`
    elemental function vector_div_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/`.
    !<
    !<```fortran
@@ -1649,6 +1697,7 @@ contains
    endfunction vector_div_vector
 
    elemental function vector_div_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ real(R16P)`.
    !<
    !<```fortran
@@ -1668,6 +1717,7 @@ contains
    endfunction vector_div_R16P
 
    elemental function vector_div_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ real(R8P)`.
    !<
    !<```fortran
@@ -1687,6 +1737,7 @@ contains
    endfunction vector_div_R8P
 
    elemental function vector_div_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ real(R4P)`.
    !<
    !<```fortran
@@ -1706,6 +1757,7 @@ contains
    endfunction vector_div_R4P
 
    elemental function vector_div_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ integer(I8P)`.
    !<
    !<```fortran
@@ -1725,6 +1777,7 @@ contains
    endfunction vector_div_I8P
 
    elemental function vector_div_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ integer(I4P)`.
    !<
    !<```fortran
@@ -1744,6 +1797,7 @@ contains
    endfunction vector_div_I4P
 
    elemental function vector_div_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ integer(I2P)`.
    !<
    !<```fortran
@@ -1763,6 +1817,7 @@ contains
    endfunction vector_div_I2P
 
    elemental function vector_div_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/ integer(I1P)`.
    !<
    !<```fortran
@@ -1783,6 +1838,7 @@ contains
 
    ! operator `+`
    elemental function positive(rhs) result(opr)
+   !$acc routine seq
    !< Operator `+` unary.
    !<
    !<```fortran
@@ -1801,6 +1857,7 @@ contains
    endfunction positive
 
    elemental function vector_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+`.
    !<
    !<```fortran
@@ -1821,6 +1878,7 @@ contains
    endfunction vector_sum_vector
 
    elemental function R16P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) +`.
    !<
    !<```fortran
@@ -1840,6 +1898,7 @@ contains
    endfunction R16P_sum_vector
 
    elemental function vector_sum_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ real(R16P)`.
    !<
    !<```fortran
@@ -1859,6 +1918,7 @@ contains
    endfunction vector_sum_R16P
 
    elemental function R8P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) +`.
    !<
    !<```fortran
@@ -1878,6 +1938,7 @@ contains
    endfunction R8P_sum_vector
 
    elemental function vector_sum_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ real(R8P)`.
    !<
    !<```fortran
@@ -1897,6 +1958,7 @@ contains
    endfunction vector_sum_R8P
 
    elemental function R4P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) +`.
    !<
    !<```fortran
@@ -1916,6 +1978,7 @@ contains
    endfunction R4P_sum_vector
 
    elemental function vector_sum_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ real(R4P)`.
    !<
    !<```fortran
@@ -1935,6 +1998,7 @@ contains
    endfunction vector_sum_R4P
 
    elemental function I8P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) +`.
    !<
    !<```fortran
@@ -1954,6 +2018,7 @@ contains
    endfunction I8P_sum_vector
 
    elemental function vector_sum_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ integer(I8P)`.
    !<
    !<```fortran
@@ -1973,6 +2038,7 @@ contains
    endfunction vector_sum_I8P
 
    elemental function I4P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) +`.
    !<
    !<```fortran
@@ -1992,6 +2058,7 @@ contains
    endfunction I4P_sum_vector
 
    elemental function vector_sum_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ integer(I4P)`.
    !<
    !<```fortran
@@ -2011,6 +2078,7 @@ contains
    endfunction vector_sum_I4P
 
    elemental function I2P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) +`.
    !<
    !<```fortran
@@ -2030,6 +2098,7 @@ contains
    endfunction I2P_sum_vector
 
    elemental function vector_sum_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ integer(I2P)`.
    !<
    !<```fortran
@@ -2049,6 +2118,7 @@ contains
    endfunction vector_sum_I2P
 
    elemental function I1P_sum_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) +`.
    !<
    !<```fortran
@@ -2068,6 +2138,7 @@ contains
    endfunction I1P_sum_vector
 
    elemental function vector_sum_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `+ integer(I1P)`.
    !<
    !<```fortran
@@ -2088,6 +2159,7 @@ contains
 
    ! operator `-`
    elemental function negative(rhs) result(opr)
+   !$acc routine seq
    !< Operator `-` unary.
    !<
    !<```fortran
@@ -2106,6 +2178,7 @@ contains
    endfunction negative
 
    elemental function vector_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `-`.
    !<
    !<```fortran
@@ -2126,6 +2199,7 @@ contains
    endfunction vector_sub_vector
 
    elemental function R16P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) -`.
    !<
    !<```fortran
@@ -2145,6 +2219,7 @@ contains
    endfunction R16P_sub_vector
 
    elemental function vector_sub_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- real(R16P)`.
    !<
    !<```fortran
@@ -2164,6 +2239,7 @@ contains
    endfunction vector_sub_R16P
 
    elemental function R8P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) -`.
    !<
    !<```fortran
@@ -2183,6 +2259,7 @@ contains
    endfunction R8P_sub_vector
 
    elemental function vector_sub_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- real(R8P)`.
    !<
    !<```fortran
@@ -2206,6 +2283,7 @@ contains
    endfunction vector_sub_R8P
 
    elemental function R4P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) -`.
    !<
    !<```fortran
@@ -2225,6 +2303,7 @@ contains
    endfunction R4P_sub_vector
 
    elemental function vector_sub_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- real(R4P)`.
    !<
    !<```fortran
@@ -2244,6 +2323,7 @@ contains
    endfunction vector_sub_R4P
 
    elemental function I8P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) -`.
    !<
    !<```fortran
@@ -2263,6 +2343,7 @@ contains
    endfunction I8P_sub_vector
 
    elemental function vector_sub_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- integer(I8P)`.
    !<
    !<```fortran
@@ -2286,6 +2367,7 @@ contains
    endfunction vector_sub_I8P
 
    elemental function I4P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) -`.
    !<
    !<```fortran
@@ -2305,6 +2387,7 @@ contains
    endfunction I4P_sub_vector
 
    elemental function vector_sub_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- integer(I4P)`.
    !<
    !<```fortran
@@ -2324,6 +2407,7 @@ contains
    endfunction vector_sub_I4P
 
    elemental function I2P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) -`.
    !<
    !<```fortran
@@ -2343,6 +2427,7 @@ contains
    endfunction I2P_sub_vector
 
    elemental function vector_sub_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- integer(I2P)`.
    !<
    !<```fortran
@@ -2362,6 +2447,7 @@ contains
    endfunction vector_sub_I2P
 
    elemental function I1P_sub_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) -`.
    !<
    !<```fortran
@@ -2381,6 +2467,7 @@ contains
    endfunction I1P_sub_vector
 
    elemental function vector_sub_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `- integer(I1P)`.
    !<
    !<```fortran
@@ -2401,6 +2488,7 @@ contains
 
    ! operator `/=`
    elemental function vector_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/=`.
    !<
    !< The comparison is done with respect normL2 and, secondary, with respect the directions.
@@ -2435,6 +2523,7 @@ contains
    endfunction vector_not_eq_vector
 
    elemental function R16P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) /=`.
    !<
    !<```fortran
@@ -2451,6 +2540,7 @@ contains
    endfunction R16P_not_eq_vector
 
    elemental function vector_not_eq_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= real(R16P)`.
    !<
    !<```fortran
@@ -2467,6 +2557,7 @@ contains
    endfunction vector_not_eq_R16P
 
    elemental function R8P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) /=`.
    !<
    !<```fortran
@@ -2483,6 +2574,7 @@ contains
    endfunction R8P_not_eq_vector
 
    elemental function vector_not_eq_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= real(R8P)`.
    !<
    !<```fortran
@@ -2499,6 +2591,7 @@ contains
    endfunction vector_not_eq_R8P
 
    elemental function R4P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) /=`.
    !<
    !<```fortran
@@ -2515,6 +2608,7 @@ contains
    endfunction R4P_not_eq_vector
 
    elemental function vector_not_eq_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= real(R4P)`.
    !<
    !<```fortran
@@ -2531,6 +2625,7 @@ contains
    endfunction vector_not_eq_R4P
 
    elemental function I8P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) /=`.
    !<
    !<```fortran
@@ -2547,6 +2642,7 @@ contains
    endfunction I8P_not_eq_vector
 
    elemental function vector_not_eq_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= integer(I8P)`.
    !<
    !<```fortran
@@ -2563,6 +2659,7 @@ contains
    endfunction vector_not_eq_I8P
 
    elemental function I4P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) /=`.
    !<
    !<```fortran
@@ -2579,6 +2676,7 @@ contains
    endfunction I4P_not_eq_vector
 
    elemental function vector_not_eq_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= integer(I4P)`.
    !<
    !<```fortran
@@ -2595,6 +2693,7 @@ contains
    endfunction vector_not_eq_I4P
 
    elemental function I2P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) /=`.
    !<
    !<```fortran
@@ -2611,6 +2710,7 @@ contains
    endfunction I2P_not_eq_vector
 
    elemental function vector_not_eq_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= integer(I2P)`.
    !<
    !<```fortran
@@ -2627,6 +2727,7 @@ contains
    endfunction vector_not_eq_I2P
 
    elemental function I1P_not_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) /=`.
    !<
    !<```fortran
@@ -2643,6 +2744,7 @@ contains
    endfunction I1P_not_eq_vector
 
    elemental function vector_not_eq_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `/= integer(I1P)`.
    !<
    !<```fortran
@@ -2660,6 +2762,7 @@ contains
 
    ! operator `<`
    elemental function vector_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<`.
    !<
    !<```fortran
@@ -2677,6 +2780,7 @@ contains
    endfunction vector_low_vector
 
    elemental function R16P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) <`.
    !<
    !<```fortran
@@ -2693,6 +2797,7 @@ contains
    endfunction R16P_low_vector
 
    elemental function vector_low_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< real(R16P)`.
    !<
    !<```fortran
@@ -2709,6 +2814,7 @@ contains
    endfunction vector_low_R16P
 
    elemental function R8P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) <`.
    !<
    !<```fortran
@@ -2725,6 +2831,7 @@ contains
    endfunction R8P_low_vector
 
    elemental function vector_low_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< real(R8P)`.
    !<
    !<```fortran
@@ -2741,6 +2848,7 @@ contains
    endfunction vector_low_R8P
 
    elemental function R4P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) <`.
    !<
    !<```fortran
@@ -2757,6 +2865,7 @@ contains
    endfunction R4P_low_vector
 
    elemental function vector_low_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< real(R4P)`.
    !<
    !<```fortran
@@ -2773,6 +2882,7 @@ contains
    endfunction vector_low_R4P
 
    elemental function I8P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) <`.
    !<
    !<```fortran
@@ -2789,6 +2899,7 @@ contains
    endfunction I8P_low_vector
 
    elemental function vector_low_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< integer(I8P)`.
    !<
    !<```fortran
@@ -2805,6 +2916,7 @@ contains
    endfunction vector_low_I8P
 
    elemental function I4P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) <`.
    !<
    !<```fortran
@@ -2821,6 +2933,7 @@ contains
    endfunction I4P_low_vector
 
    elemental function vector_low_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< integer(I4P)`.
    !<
    !<```fortran
@@ -2837,6 +2950,7 @@ contains
    endfunction vector_low_I4P
 
    elemental function I2P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) <`.
    !<
    !<```fortran
@@ -2853,6 +2967,7 @@ contains
    endfunction I2P_low_vector
 
    elemental function vector_low_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< integer(I2P)`.
    !<
    !<```fortran
@@ -2869,6 +2984,7 @@ contains
    endfunction vector_low_I2P
 
    elemental function I1P_low_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) <`.
    !<
    !<```fortran
@@ -2885,6 +3001,7 @@ contains
    endfunction I1P_low_vector
 
    elemental function vector_low_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `< integer(I1P)`.
    !<
    !<```fortran
@@ -2902,6 +3019,7 @@ contains
 
    ! operator `<=`
    elemental function vector_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<=`.
    !<
    !<```fortran
@@ -2919,6 +3037,7 @@ contains
    endfunction vector_low_eq_vector
 
    elemental function R16P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) <=`.
    !<
    !<```fortran
@@ -2935,6 +3054,7 @@ contains
    endfunction R16P_low_eq_vector
 
    elemental function vector_low_eq_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= real(R16P)`.
    !<
    !<```fortran
@@ -2951,6 +3071,7 @@ contains
    endfunction vector_low_eq_R16P
 
    elemental function R8P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) <=`.
    !<
    !<```fortran
@@ -2967,6 +3088,7 @@ contains
    endfunction R8P_low_eq_vector
 
    elemental function vector_low_eq_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= real(R8P)`.
    !<
    !<```fortran
@@ -2983,6 +3105,7 @@ contains
    endfunction vector_low_eq_R8P
 
    elemental function R4P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) <=`.
    !<
    !<```fortran
@@ -2999,6 +3122,7 @@ contains
    endfunction R4P_low_eq_vector
 
    elemental function vector_low_eq_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= real(R4P)`.
    !<
    !<```fortran
@@ -3015,6 +3139,7 @@ contains
    endfunction vector_low_eq_R4P
 
    elemental function I8P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) <=`.
    !<
    !<```fortran
@@ -3031,6 +3156,7 @@ contains
    endfunction I8P_low_eq_vector
 
    elemental function vector_low_eq_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= integer(I8P)`.
    !<
    !<```fortran
@@ -3047,6 +3173,7 @@ contains
    endfunction vector_low_eq_I8P
 
    elemental function I4P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) <=`.
    !<
    !<```fortran
@@ -3063,6 +3190,7 @@ contains
    endfunction I4P_low_eq_vector
 
    elemental function vector_low_eq_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= integer(I4P)`.
    !<
    !<```fortran
@@ -3079,6 +3207,7 @@ contains
    endfunction vector_low_eq_I4P
 
    elemental function I2P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) <=`.
    !<
    !<```fortran
@@ -3095,6 +3224,7 @@ contains
    endfunction I2P_low_eq_vector
 
    elemental function vector_low_eq_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= integer(I2P)`.
    !<
    !<```fortran
@@ -3111,6 +3241,7 @@ contains
    endfunction vector_low_eq_I2P
 
    elemental function I1P_low_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) <=`.
    !<
    !<```fortran
@@ -3127,6 +3258,7 @@ contains
    endfunction I1P_low_eq_vector
 
    elemental function vector_low_eq_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `<= integer(I1P)`.
    !<
    !<```fortran
@@ -3144,6 +3276,7 @@ contains
 
    ! operator `==`
    elemental function vector_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `==`.
    !<
    !< The comparison is done with respect normL2 and, secondary, with respect the directions.
@@ -3170,6 +3303,7 @@ contains
    endfunction vector_eq_vector
 
    elemental function R16P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) ==`.
    !<
    !<```fortran
@@ -3186,6 +3320,7 @@ contains
    endfunction R16P_eq_vector
 
    elemental function vector_eq_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== real(R16P)`.
    !<
    !<```fortran
@@ -3202,6 +3337,7 @@ contains
    endfunction vector_eq_R16P
 
    elemental function R8P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) ==`.
    !<
    !<```fortran
@@ -3218,6 +3354,7 @@ contains
    endfunction R8P_eq_vector
 
    elemental function vector_eq_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== real(R8P)`.
    !<
    !<```fortran
@@ -3234,6 +3371,7 @@ contains
    endfunction vector_eq_R8P
 
    elemental function R4P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) ==`.
    !<
    !<```fortran
@@ -3250,6 +3388,7 @@ contains
    endfunction R4P_eq_vector
 
    elemental function vector_eq_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== real(R4P)`.
    !<
    !<```fortran
@@ -3266,6 +3405,7 @@ contains
    endfunction vector_eq_R4P
 
    elemental function I8P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) ==`.
    !<
    !<```fortran
@@ -3282,6 +3422,7 @@ contains
    endfunction I8P_eq_vector
 
    elemental function vector_eq_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== integer(I8P)`.
    !<
    !<```fortran
@@ -3298,6 +3439,7 @@ contains
    endfunction vector_eq_I8P
 
    elemental function I4P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) ==`.
    !<
    !<```fortran
@@ -3314,6 +3456,7 @@ contains
    endfunction I4P_eq_vector
 
    elemental function vector_eq_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== integer(I4P)`.
    !<
    !<```fortran
@@ -3330,6 +3473,7 @@ contains
    endfunction vector_eq_I4P
 
    elemental function I2P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) ==`.
    !<
    !<```fortran
@@ -3346,6 +3490,7 @@ contains
    endfunction I2P_eq_vector
 
    elemental function vector_eq_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== integer(I2P)`.
    !<
    !<```fortran
@@ -3362,6 +3507,7 @@ contains
    endfunction vector_eq_I2P
 
    elemental function I1P_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) ==`.
    !<
    !<```fortran
@@ -3378,6 +3524,7 @@ contains
    endfunction I1P_eq_vector
 
    elemental function vector_eq_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `== integer(I1P)`.
    !<
    !<```fortran
@@ -3395,6 +3542,7 @@ contains
 
    ! operator `>=`
    elemental function vector_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>=`.
    !<
    !<```fortran
@@ -3412,6 +3560,7 @@ contains
    endfunction vector_great_eq_vector
 
    elemental function R16P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) >=`.
    !<
    !<```fortran
@@ -3428,6 +3577,7 @@ contains
    endfunction R16P_great_eq_vector
 
    elemental function vector_great_eq_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= real(R16P)`.
    !<
    !<```fortran
@@ -3444,6 +3594,7 @@ contains
    endfunction vector_great_eq_R16P
 
    elemental function R8P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) >=`.
    !<
    !<```fortran
@@ -3460,6 +3611,7 @@ contains
    endfunction R8P_great_eq_vector
 
    elemental function vector_great_eq_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= real(R8P)`.
    !<
    !<```fortran
@@ -3476,6 +3628,7 @@ contains
    endfunction vector_great_eq_R8P
 
    elemental function R4P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) >=`.
    !<
    !<```fortran
@@ -3492,6 +3645,7 @@ contains
    endfunction R4P_great_eq_vector
 
    elemental function vector_great_eq_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= real(R4P)`.
    !<
    !<```fortran
@@ -3508,6 +3662,7 @@ contains
    endfunction vector_great_eq_R4P
 
    elemental function I8P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) >=`.
    !<
    !<```fortran
@@ -3524,6 +3679,7 @@ contains
    endfunction I8P_great_eq_vector
 
    elemental function vector_great_eq_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= integer(I8P)`.
    !<
    !<```fortran
@@ -3540,6 +3696,7 @@ contains
    endfunction vector_great_eq_I8P
 
    elemental function I4P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) >=`.
    !<
    !<```fortran
@@ -3556,6 +3713,7 @@ contains
    endfunction I4P_great_eq_vector
 
    elemental function vector_great_eq_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= integer(I4P)`.
    !<
    !<```fortran
@@ -3572,6 +3730,7 @@ contains
    endfunction vector_great_eq_I4P
 
    elemental function I2P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) >=`.
    !<
    !<```fortran
@@ -3588,6 +3747,7 @@ contains
    endfunction I2P_great_eq_vector
 
    elemental function vector_great_eq_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= integer(I2P)`.
    !<
    !<```fortran
@@ -3604,6 +3764,7 @@ contains
    endfunction vector_great_eq_I2P
 
    elemental function I1P_great_eq_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) >=`.
    !<
    !<```fortran
@@ -3620,6 +3781,7 @@ contains
    endfunction I1P_great_eq_vector
 
    elemental function vector_great_eq_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>= integer(I1P)`.
    !<
    !<```fortran
@@ -3637,6 +3799,7 @@ contains
 
    ! operator `>`
    elemental function vector_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `>`.
    !<
    !<```fortran
@@ -3654,6 +3817,7 @@ contains
    endfunction vector_great_vector
 
    elemental function R16P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R16P) >`.
    !<
    !<```fortran
@@ -3670,6 +3834,7 @@ contains
    endfunction R16P_great_vector
 
    elemental function vector_great_R16P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> real(R16P)`.
    !<
    !<```fortran
@@ -3686,6 +3851,7 @@ contains
    endfunction vector_great_R16P
 
    elemental function R8P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R8P) >`.
    !<
    !<```fortran
@@ -3702,6 +3868,7 @@ contains
    endfunction R8P_great_vector
 
    elemental function vector_great_R8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> real(R8P)`.
    !<
    !<```fortran
@@ -3718,6 +3885,7 @@ contains
    endfunction vector_great_R8P
 
    elemental function R4P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `real(R4P) >`.
    !<
    !<```fortran
@@ -3734,6 +3902,7 @@ contains
    endfunction R4P_great_vector
 
    elemental function vector_great_R4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> real(R4P)`.
    !<
    !<```fortran
@@ -3750,6 +3919,7 @@ contains
    endfunction vector_great_R4P
 
    elemental function I8P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I8P) >`.
    !<
    !<```fortran
@@ -3766,6 +3936,7 @@ contains
    endfunction I8P_great_vector
 
    elemental function vector_great_I8P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> integer(I8P)`.
    !<
    !<```fortran
@@ -3782,6 +3953,7 @@ contains
    endfunction vector_great_I8P
 
    elemental function I4P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I4P) >`.
    !<
    !<```fortran
@@ -3798,6 +3970,7 @@ contains
    endfunction I4P_great_vector
 
    elemental function vector_great_I4P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> integer(I4P)`.
    !<
    !<```fortran
@@ -3814,6 +3987,7 @@ contains
    endfunction vector_great_I4P
 
    elemental function I2P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I2P) >`.
    !<
    !<```fortran
@@ -3830,6 +4004,7 @@ contains
    endfunction I2P_great_vector
 
    elemental function vector_great_I2P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> integer(I2P)`.
    !<
    !<```fortran
@@ -3846,6 +4021,7 @@ contains
    endfunction vector_great_I2P
 
    elemental function I1P_great_vector(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `integer(I1P) >`.
    !<
    !<```fortran
@@ -3862,6 +4038,7 @@ contains
    endfunction I1P_great_vector
 
    elemental function vector_great_I1P(lhs, rhs) result(opr)
+   !$acc routine seq
    !< Operator `> integer(I1P)`.
    !<
    !<```fortran

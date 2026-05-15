@@ -17,6 +17,22 @@ modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
         tests-gnu-debug tests-gnu
         tests-intel-debug tests-intel
         tests-nvf tests-nvf-debug
+        tests-nvf-acc
+
+# Variable sets. The tests-nvf-acc mode (issue szaghi/FOSSIL#20 Step 1) needs
+# nvfortran and a GPU compute-capability target ($NVF_CC). It is NOT in CI and
+# NOT validated on the standard dev host -- manual-only: select local_nvf, e.g.
+#   fobis build --mode tests-nvf-acc --varset local_nvf
+# Default varset is local_gnu, a no-op placeholder, so every existing
+# GNU/Intel/CPU-nvf mode is unaffected. $NVF_CC mirrors ADAM's local_nvf (cc89);
+# override it for a different GPU.
+[varsets]
+default = local_gnu
+
+[varset:local_gnu]
+
+[varset:local_nvf]
+$NVF_CC = cc89
 
 [common-variables]
 $CSHARED_GNU = -c -fPIC -frealloc-lhs
@@ -25,6 +41,8 @@ $LSHARED     = -shared
 $CSTATIC_GNU = -c -frealloc-lhs
 $CSTATIC_INT = -c -assume realloc_lhs -fpp
 $CSTATIC_NVF = -cpp -c
+$CSTATIC_NVF_ACC = -cpp -c -acc -gpu=$NVF_CC -Minfo=accel
+$LSTATIC_NVF_ACC = -acc -gpu=$NVF_CC -Minfo=accel
 $DEBUG_GNU   = -Og -g3 -Warray-bounds -Wcharacter-truncation -Wline-truncation -Wimplicit-interface -Wimplicit-procedure -Wunderflow -Wuninitialized -fcheck=all -fmodule-private -ffree-line-length-132 -fimplicit-none -fbacktrace -fdump-core -finit-real=nan -std=f2008 -fall-intrinsics
 $DEBUG_INT   = -O0 -debug all -check all -warn all -extend-source 132 -traceback -gen-interfaces -fp-stack-check -fstack-protector-all -ftrapuv -no-ftz -std08
 $DEBUG_NVF   = -O0 -g -C
@@ -113,6 +131,12 @@ build_dir = ./exe/
 
 [tests-nvf-debug]
 template  = template-static-nvf-debug
+build_dir = ./exe/
+
+# OpenACC device-target build. Compiles VecFor + tests for the GPU via nvfortran
+# -acc. Manual-only -- needs --varset local_nvf (issue szaghi/FOSSIL#20 Step 1).
+[tests-nvf-acc]
+template  = template-static-nvf-acc
 build_dir = ./exe/
 
 #templates
@@ -250,6 +274,23 @@ cflags       = $CSTATIC_NVF $DEBUG_NVF
 lflags       = $DEBUG_NVF
 exclude_dirs = $EXDIRS
 preproc      = -D_NVF
+mod_dir      = ./mod/
+obj_dir      = ./obj/
+src          = ./src/
+colors       = True
+quiet        = False
+log          = True
+jobs         = 2
+
+# OpenACC device-target. $NVF_CC comes from the local_nvf varset -- the build
+# aborts if no varset providing it is selected, guarding against an accidental
+# device build on a host without nvfortran (issue szaghi/FOSSIL#20 Step 1).
+[template-static-nvf-acc]
+compiler     = nvfortran
+cflags       = $CSTATIC_NVF_ACC $OPTIMIZE
+lflags       = $LSTATIC_NVF_ACC $OPTIMIZE
+exclude_dirs = $EXDIRS
+preproc      = -D_NVF -D_NVF_ACC
 mod_dir      = ./mod/
 obj_dir      = ./obj/
 src          = ./src/
