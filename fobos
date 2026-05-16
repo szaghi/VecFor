@@ -308,7 +308,7 @@ rule_2 = cd docs && npm ci && npm run docs:build
 
 [rule-deldoc]
 help = Delete documentation build artifacts
-rule = rm -rf docs/.vitepress/dist/ docs/.vitepress/cache/ docs/api/
+rule = rm -rf docs/.vitepress/dist/ docs/.vitepress/cache/
 
 [rule-delexe]
 help = Delete exes
