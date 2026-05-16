@@ -20,12 +20,13 @@ modes = static-gnu-debug static-gnu shared-gnu-debug shared-gnu
         tests-nvf-acc
 
 # Variable sets. The tests-nvf-acc mode (issue szaghi/FOSSIL#20 Step 1) needs
-# nvfortran and a GPU compute-capability target ($NVF_CC). It is NOT in CI and
-# NOT validated on the standard dev host -- manual-only: select local_nvf, e.g.
+# nvfortran and a GPU compute-capability target ($NVF_CC). It is NOT in CI but
+# IS validated locally via `module load nvhpc/<ver>` before the build:
+#   module load nvhpc/26
 #   fobis build --mode tests-nvf-acc --varset local_nvf
 # Default varset is local_gnu, a no-op placeholder, so every existing
 # GNU/Intel/CPU-nvf mode is unaffected. $NVF_CC mirrors ADAM's local_nvf (cc89);
-# override it for a different GPU.
+# override for a different GPU.
 [varsets]
 default = local_gnu
 
