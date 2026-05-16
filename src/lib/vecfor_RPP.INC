@@ -19,6 +19,13 @@ public :: normL2_RPP
 public :: projection_onto_plane_RPP
 public :: rotation_matrix_RPP
 public :: sq_norm_RPP
+public :: assign_vector_RPP_oac
+public :: crossproduct_RPP_oac
+public :: dotproduct_RPP_oac
+public :: R8P_mul_vector_RPP_oac
+public :: vector_mul_R8P_RPP_oac
+public :: vector_sub_vector_RPP_oac
+public :: vector_sum_vector_RPP_oac
 public :: I1P, I2P, I4P, I8P, R4P, R8P, R16P, str
 
 type :: vector_RPP
@@ -345,6 +352,113 @@ type(vector_RPP), parameter :: ey_RPP = vector_RPP(0._RPP, 1._RPP, 0._RPP) !< Y 
 type(vector_RPP), parameter :: ez_RPP = vector_RPP(0._RPP, 0._RPP, 1._RPP) !< Z direction versor.
 
 contains
+   ! device-callable free-procedure entry points (`_oac` API)
+   !
+   ! These mirror the TBP-bound operator implementations needed by FOSSIL's
+   ! distance kernel under `!$acc routine seq`. The TBP forms cannot be
+   ! reached from inside an OpenACC device region: nvfortran 26.1 forbids
+   ! indirect (vtable) dispatch, and TBP `pass` arguments must be declared
+   ! `class(...)`, which trips the same restriction. The `_oac` mirrors take
+   ! `type(vector_RPP)` arguments (not `class`).
+   !
+   ! Every vector-producing entry point is a `subroutine` writing the result
+   ! into an `intent(out)` argument -- NOT a function returning `type(...)`.
+   ! Two device-side codegen blockers force this on nvfortran 26.1:
+   !   1. `vector = vector` invokes the user-defined `assign_vector` TBP,
+   !      which nvfortran rejects with NVFORTRAN-F-1252 from any device
+   !      region. The subroutine form sidesteps the assignment entirely.
+   !   2. Even when the LHS uses an explicit `_oac` assignment, a function
+   !      returning `type(vector_RPP)` allocates a single shared temporary
+   !      on the device and all threads read/write through it -- producing
+   !      constant garbage across the parallel loop. The subroutine form
+   !      writes into the caller's storage directly, so no shared temp.
+   ! `dotproduct_RPP_oac` is the only function: it returns a scalar `real`,
+   ! which has no assignment-overload and no derived-type return temp issue.
+   ! See VecFor's CLAUDE.md and szaghi/VecFor#20 for the extension contract.
+   pure function dotproduct_RPP_oac(a, b) result(d)
+   !$acc routine seq
+   !< Device-callable dot product. CPU consumers should keep using `a .dot. b`
+   !< or `a%dotproduct(b)`; this entry point is for device kernel code only.
+   type(vector_RPP), intent(in) :: a !< Left hand side.
+   type(vector_RPP), intent(in) :: b !< Right hand side.
+   real(RPP)                    :: d !< Dot product.
+
+   d = (a%x * b%x) + (a%y * b%y) + (a%z * b%z)
+   endfunction dotproduct_RPP_oac
+
+   pure subroutine crossproduct_RPP_oac(a, b, c)
+   !$acc routine seq
+   !< Device-callable cross product, subroutine form.
+   type(vector_RPP), intent(in)  :: a !< Left hand side.
+   type(vector_RPP), intent(in)  :: b !< Right hand side.
+   type(vector_RPP), intent(out) :: c !< Cross product result.
+
+   c%x = (a%y * b%z) - (a%z * b%y)
+   c%y = (a%z * b%x) - (a%x * b%z)
+   c%z = (a%x * b%y) - (a%y * b%x)
+   endsubroutine crossproduct_RPP_oac
+
+   pure subroutine vector_sum_vector_RPP_oac(a, b, c)
+   !$acc routine seq
+   !< Device-callable vector + vector, subroutine form.
+   type(vector_RPP), intent(in)  :: a !< Left hand side.
+   type(vector_RPP), intent(in)  :: b !< Right hand side.
+   type(vector_RPP), intent(out) :: c !< Sum result.
+
+   c%x = a%x + b%x
+   c%y = a%y + b%y
+   c%z = a%z + b%z
+   endsubroutine vector_sum_vector_RPP_oac
+
+   pure subroutine vector_sub_vector_RPP_oac(a, b, c)
+   !$acc routine seq
+   !< Device-callable vector - vector, subroutine form.
+   type(vector_RPP), intent(in)  :: a !< Left hand side.
+   type(vector_RPP), intent(in)  :: b !< Right hand side.
+   type(vector_RPP), intent(out) :: c !< Difference result.
+
+   c%x = a%x - b%x
+   c%y = a%y - b%y
+   c%z = a%z - b%z
+   endsubroutine vector_sub_vector_RPP_oac
+
+   pure subroutine R8P_mul_vector_RPP_oac(s, a, c)
+   !$acc routine seq
+   !< Device-callable real(R8P) * vector, subroutine form.
+   real(R8P),        intent(in)  :: s !< Left hand side scalar.
+   type(vector_RPP), intent(in)  :: a !< Right hand side.
+   type(vector_RPP), intent(out) :: c !< Scaled vector result.
+
+   c%x = real(s, RPP) * a%x
+   c%y = real(s, RPP) * a%y
+   c%z = real(s, RPP) * a%z
+   endsubroutine R8P_mul_vector_RPP_oac
+
+   pure subroutine vector_mul_R8P_RPP_oac(a, s, c)
+   !$acc routine seq
+   !< Device-callable vector * real(R8P), subroutine form.
+   type(vector_RPP), intent(in)  :: a !< Left hand side.
+   real(R8P),        intent(in)  :: s !< Right hand side scalar.
+   type(vector_RPP), intent(out) :: c !< Scaled vector result.
+
+   c%x = a%x * real(s, RPP)
+   c%y = a%y * real(s, RPP)
+   c%z = a%z * real(s, RPP)
+   endsubroutine vector_mul_R8P_RPP_oac
+
+   pure subroutine assign_vector_RPP_oac(lhs, rhs)
+   !$acc routine seq
+   !< Device-callable vector = vector. Subroutine form is mandatory because
+   !< Fortran assignment overloads must be subroutines, and the user-defined
+   !< `assign_vector` TBP is unreachable from device code.
+   type(vector_RPP), intent(out) :: lhs !< Left hand side.
+   type(vector_RPP), intent(in)  :: rhs !< Right hand side.
+
+   lhs%x = rhs%x
+   lhs%y = rhs%y
+   lhs%z = rhs%z
+   endsubroutine assign_vector_RPP_oac
+
    ! public methods
    ! non TBP
    pure function rotation_matrix_RPP(axis, angle) result(matrix)
@@ -412,7 +526,6 @@ contains
    /* endfunction dotproduct_RPP */
 
    elemental function crossproduct(lhs, rhs) result(cross)
-   !$acc routine seq
    !< Compute the cross product.
    !<
    !< $$ \vec V=\left({y_1 z_2 - z_1 y_2}\right)\vec i +
@@ -438,7 +551,6 @@ contains
    endfunction crossproduct
 
    elemental function dotproduct(lhs, rhs) result(dot)
-   !$acc routine seq
    !< Compute the scalar (dot) product.
    !<
    !< $$ {\rm D}= x_1 \cdot x_2 + y_1 \cdot y_2 + z_1 \cdot z_2 $$
@@ -1207,7 +1319,6 @@ contains
 
    ! operator `=`
    pure subroutine assign_vector(lhs, rhs)
-   !$acc routine seq
    !< Operator `=`
    !<
    !<```fortran
@@ -1403,7 +1514,6 @@ contains
    endfunction vector_mul_R16P
 
    elemental function R8P_mul_vector(lhs, rhs) result(opr)
-   !$acc routine seq
    !< Operator `real(R8P) *`.
    !<
    !<```fortran
@@ -1423,7 +1533,6 @@ contains
    endfunction R8P_mul_vector
 
    elemental function vector_mul_R8P(lhs, rhs) result(opr)
-   !$acc routine seq
    !< Operator `* real(R8P)`.
    !<
    !<```fortran
@@ -1806,7 +1915,6 @@ contains
    endfunction positive
 
    elemental function vector_sum_vector(lhs, rhs) result(opr)
-   !$acc routine seq
    !< Operator `+`.
    !<
    !<```fortran
@@ -2112,7 +2220,6 @@ contains
    endfunction negative
 
    elemental function vector_sub_vector(lhs, rhs) result(opr)
-   !$acc routine seq
    !< Operator `-`.
    !<
    !<```fortran

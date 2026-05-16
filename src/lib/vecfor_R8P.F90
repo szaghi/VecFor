@@ -29,6 +29,14 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define rotation_matrix_RPP rotation_matrix_R8P
 #define sq_norm_RPP sq_norm_R8P
 
+#define assign_vector_RPP_oac assign_vector_R8P_oac
+#define crossproduct_RPP_oac crossproduct_R8P_oac
+#define dotproduct_RPP_oac dotproduct_R8P_oac
+#define R8P_mul_vector_RPP_oac R8P_mul_vector_R8P_oac
+#define vector_mul_R8P_RPP_oac vector_mul_R8P_R8P_oac
+#define vector_sub_vector_RPP_oac vector_sub_vector_R8P_oac
+#define vector_sum_vector_RPP_oac vector_sum_vector_R8P_oac
+
 #include "vecfor_RPP.INC"
 
 endmodule vecfor_R8P

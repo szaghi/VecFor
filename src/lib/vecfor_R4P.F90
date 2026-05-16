@@ -29,6 +29,14 @@ use penf, only : RPP=>R4P, smallRPP=>smallR4P, ZeroRPP=>ZeroR4P
 #define rotation_matrix_RPP rotation_matrix_R4P
 #define sq_norm_RPP sq_norm_R4P
 
+#define assign_vector_RPP_oac assign_vector_R4P_oac
+#define crossproduct_RPP_oac crossproduct_R4P_oac
+#define dotproduct_RPP_oac dotproduct_R4P_oac
+#define R8P_mul_vector_RPP_oac R8P_mul_vector_R4P_oac
+#define vector_mul_R8P_RPP_oac vector_mul_R8P_R4P_oac
+#define vector_sub_vector_RPP_oac vector_sub_vector_R4P_oac
+#define vector_sum_vector_RPP_oac vector_sum_vector_R4P_oac
+
 #include "vecfor_RPP.INC"
 
 endmodule vecfor_R4P

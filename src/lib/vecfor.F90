@@ -12,9 +12,12 @@ module vecfor
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 
 use vecfor_RPP, only : angle,                       &
+                       assign_vector_oac,           &
+                       crossproduct_oac,            &
                        distance_to_line,            &
                        distance_to_plane,           &
                        distance_vectorial_to_plane, &
+                       dotproduct_oac,              &
                        ex,                          &
                        ey,                          &
                        ez,                          &
@@ -27,14 +30,21 @@ use vecfor_RPP, only : angle,                       &
                        normalized,                  &
                        normL2,                      &
                        projection_onto_plane,       &
+                       R8P_mul_vector_oac,          &
                        rotation_matrix,             &
                        sq_norm,                     &
-                       vector
+                       vector,                      &
+                       vector_mul_R8P_oac,          &
+                       vector_sub_vector_oac,       &
+                       vector_sum_vector_oac
 
 use vecfor_R4P, only : angle_R4P,                       &
+                       assign_vector_R4P_oac,           &
+                       crossproduct_R4P_oac,            &
                        distance_to_line_R4P,            &
                        distance_to_plane_R4P,           &
                        distance_vectorial_to_plane_R4P, &
+                       dotproduct_R4P_oac,              &
                        ex_R4P,                          &
                        ey_R4P,                          &
                        ez_R4P,                          &
@@ -47,14 +57,21 @@ use vecfor_R4P, only : angle_R4P,                       &
                        normalized_R4P,                  &
                        normL2_R4P,                      &
                        projection_onto_plane_R4P,       &
+                       R8P_mul_vector_R4P_oac,          &
                        rotation_matrix_R4P,             &
                        sq_norm_R4P,                     &
-                       vector_R4P
+                       vector_R4P,                      &
+                       vector_mul_R8P_R4P_oac,          &
+                       vector_sub_vector_R4P_oac,       &
+                       vector_sum_vector_R4P_oac
 
 use vecfor_R8P, only : angle_R8P,                       &
+                       assign_vector_R8P_oac,           &
+                       crossproduct_R8P_oac,            &
                        distance_to_line_R8P,            &
                        distance_to_plane_R8P,           &
                        distance_vectorial_to_plane_R8P, &
+                       dotproduct_R8P_oac,              &
                        ex_R8P,                          &
                        ey_R8P,                          &
                        ez_R8P,                          &
@@ -67,14 +84,21 @@ use vecfor_R8P, only : angle_R8P,                       &
                        normalized_R8P,                  &
                        normL2_R8P,                      &
                        projection_onto_plane_R8P,       &
+                       R8P_mul_vector_R8P_oac,          &
                        rotation_matrix_R8P,             &
                        sq_norm_R8P,                     &
-                       vector_R8P
+                       vector_R8P,                      &
+                       vector_mul_R8P_R8P_oac,          &
+                       vector_sub_vector_R8P_oac,       &
+                       vector_sum_vector_R8P_oac
 
 use vecfor_R16P, only : angle_R16P,                       &
+                        assign_vector_R16P_oac,           &
+                        crossproduct_R16P_oac,            &
                         distance_to_line_R16P,            &
                         distance_to_plane_R16P,           &
                         distance_vectorial_to_plane_R16P, &
+                        dotproduct_R16P_oac,              &
                         ex_R16P,                          &
                         ey_R16P,                          &
                         ez_R16P,                          &
@@ -87,9 +111,13 @@ use vecfor_R16P, only : angle_R16P,                       &
                         normalized_R16P,                  &
                         normL2_R16P,                      &
                         projection_onto_plane_R16P,       &
+                        R8P_mul_vector_R16P_oac,          &
                         rotation_matrix_R16P,             &
                         sq_norm_R16P,                     &
-                        vector_R16P
+                        vector_R16P,                      &
+                        vector_mul_R8P_R16P_oac,          &
+                        vector_sub_vector_R16P_oac,       &
+                        vector_sum_vector_R16P_oac
 
 public :: angle
 public :: distance_to_line
@@ -107,6 +135,13 @@ public :: projection_onto_plane
 public :: rotation_matrix
 public :: sq_norm
 public :: ex, ey, ez, vector
+public :: assign_vector_oac
+public :: crossproduct_oac
+public :: dotproduct_oac
+public :: R8P_mul_vector_oac
+public :: vector_mul_R8P_oac
+public :: vector_sub_vector_oac
+public :: vector_sum_vector_oac
 
 public :: angle_R4P
 public :: distance_to_line_R4P
@@ -124,6 +159,13 @@ public :: projection_onto_plane_R4P
 public :: rotation_matrix_R4P
 public :: sq_norm_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
+public :: assign_vector_R4P_oac
+public :: crossproduct_R4P_oac
+public :: dotproduct_R4P_oac
+public :: R8P_mul_vector_R4P_oac
+public :: vector_mul_R8P_R4P_oac
+public :: vector_sub_vector_R4P_oac
+public :: vector_sum_vector_R4P_oac
 
 public :: angle_R8P
 public :: distance_to_line_R8P
@@ -141,6 +183,13 @@ public :: projection_onto_plane_R8P
 public :: rotation_matrix_R8P
 public :: sq_norm_R8P
 public :: ex_R8P, ey_R8P, ez_R8P, vector_R8P
+public :: assign_vector_R8P_oac
+public :: crossproduct_R8P_oac
+public :: dotproduct_R8P_oac
+public :: R8P_mul_vector_R8P_oac
+public :: vector_mul_R8P_R8P_oac
+public :: vector_sub_vector_R8P_oac
+public :: vector_sum_vector_R8P_oac
 
 public :: angle_R16P
 public :: distance_to_line_R16P
@@ -158,5 +207,12 @@ public :: projection_onto_plane_R16P
 public :: rotation_matrix_R16P
 public :: sq_norm_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
+public :: assign_vector_R16P_oac
+public :: crossproduct_R16P_oac
+public :: dotproduct_R16P_oac
+public :: R8P_mul_vector_R16P_oac
+public :: vector_mul_R8P_R16P_oac
+public :: vector_sub_vector_R16P_oac
+public :: vector_sum_vector_R16P_oac
 
 endmodule vecfor
