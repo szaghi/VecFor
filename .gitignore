@@ -44,5 +44,6 @@ wiki/
 
 # VitePress
 docs/node_modules/
+docs/package-lock.json
 docs/.vitepress/dist/
 docs/.vitepress/cache/
