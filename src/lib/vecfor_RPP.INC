@@ -1142,7 +1142,7 @@ contains
    !< pt = ex_RPP + ey_RPP
    !< call pt%printf(prefix='[x, y, z] = ', sep=', ')
    !<```
-   !=> [x, y, z] = +0.1E+1, +0.1E+1, 0.0E+0 <<<
+   !=> [x, y, z] = +1.0, +1.0, +0.0 <<<
    class(vector_RPP), intent(in)            :: self    !< Vector.
    integer(I4P),      intent(in),  optional :: unit    !< Logic unit.
    character(*),      intent(in),  optional :: prefix  !< Prefix string.
