@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.5.1] — 2026-10-09
+### Fixed
+- **ci**: Run install smoke test from the release workflow
+
+- **tests**: Update printf doctest for PENF exact compact str and exclude PENF docs/scripts
+
+
 ## [1.5.0] — 2026-10-02
 ### Added
 - **openacc**: Implement device loop testing framework for vecfor library
