@@ -58,6 +58,13 @@ $(DOBJ)penf_stringify.o: src/third_party/PENF/src/lib/penf_stringify.F90 \
 $(DOBJ)penf.o: src/third_party/PENF/src/lib/penf.F90 \
 	$(DOBJ)penf_global_parameters_variables.o \
 	$(DOBJ)penf_b_size.o \
+	$(DOBJ)penf_stringify.o \
+	$(DOBJ)penf_allocatable_memory.o
+	@echo $(COTEXT)
+	@$(FC) $(OPTSC) -Isrc/lib  $< -o $@
+
+$(DOBJ)penf_allocatable_memory.o: src/third_party/PENF/src/lib/penf_allocatable_memory.F90 \
+	$(DOBJ)penf_global_parameters_variables.o \
 	$(DOBJ)penf_stringify.o
 	@echo $(COTEXT)
 	@$(FC) $(OPTSC) -Isrc/lib  $< -o $@
