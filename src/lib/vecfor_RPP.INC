@@ -490,20 +490,34 @@ contains
 
    pure function mirror_matrix_RPP(normal) result(matrix)
    !< Return the mirror matrix (Householder's matrix) given normal of the mirroring plane.
+   !<
+   !< The matrix is \( M = I - 2 \hat n \hat n^T \), \( \hat n \) being the normalized normal.
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: pt
+   !< character(4)     :: res(3)
+   !< pt = ex_RPP
+   !< call pt%mirror(normal=ex_RPP + ey_RPP)
+   !< res(1) = trim(adjustl(str('(F4.1)',abs(pt%x))))
+   !< res(2) = trim(adjustl(str('(F4.1)',pt%y)))
+   !< res(3) = trim(adjustl(str('(F4.1)',abs(pt%z))))
+   !< print "(A3,1X,A4,1X,A3)", res(1), res(2), res(3)
+   !<```
+   !=> 0.0 -1.0 0.0 <<<
    type(vector_RPP), intent(in) :: normal      !< Normal of mirroring plane.
    real(RPP)                    :: matrix(3,3) !< Rotation matrix.
    type(vector_RPP)             :: normal_     !< Normal of mirroring plane, local variable.
 
    normal_ = normalized_RPP(normal)
    matrix(1,1) = 1._RPP - 2._RPP * normal_%x * normal_%x
-   matrix(2,1) =                   normal_%y * normal_%x
-   matrix(3,1) =                   normal_%z * normal_%x
-   matrix(1,2) =                   normal_%x * normal_%y
+   matrix(2,1) =        - 2._RPP * normal_%y * normal_%x
+   matrix(3,1) =        - 2._RPP * normal_%z * normal_%x
+   matrix(1,2) =        - 2._RPP * normal_%x * normal_%y
    matrix(2,2) = 1._RPP - 2._RPP * normal_%y * normal_%y
-   matrix(3,2) =                   normal_%z * normal_%y
-   matrix(1,3) =                   normal_%x * normal_%z  
-   matrix(2,3) =                   normal_%y * normal_%z  
-   matrix(3,3) = 1._RPP - 2._RPP * normal_%z * normal_%z  
+   matrix(3,2) =        - 2._RPP * normal_%z * normal_%y
+   matrix(1,3) =        - 2._RPP * normal_%x * normal_%z
+   matrix(2,3) =        - 2._RPP * normal_%y * normal_%z
+   matrix(3,3) = 1._RPP - 2._RPP * normal_%z * normal_%z
    endfunction mirror_matrix_RPP
 
    ! new operators
