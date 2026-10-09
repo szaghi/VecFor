@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.5.2] — 2026-10-09
+### Documentation
+- Rebuild README and VitePress site with tutorial, cookbook, figures
+
+
+### Fixed
+- **build**: Add penf_allocatable_memory rule to makefile
+
+- **vector**: Add missing -2 factor to mirror_matrix off-diagonal terms
+
+
 ## [1.5.1] — 2026-10-09
 ### Fixed
 - **ci**: Run install smoke test from the release workflow
