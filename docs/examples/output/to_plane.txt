@@ -1,0 +1,6 @@
+$ to_plane
+above:              3.00
+below:             -4.00
+points swapped:    -3.00
+vectorial:        +0.0, +0.0, +3.0
+projection:       +2.0, +3.0, +1.0

@@ -1,0 +1,8 @@
+$ two_spellings
+normL2:             5.0000  5.0000
+sq_norm:           25.0000 25.0000
+angle:              0.9273  0.9273
+distance_to_line:   1.2247  1.2247
+is_collinear:      F F
+normalized:        T
+face_normal3:      T

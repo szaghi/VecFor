@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- VecFor: two vectors, the parallelogram they span and their cross product -->
+  <polygon points="30,94 88,104 118,78 60,68" fill="#179299" fill-opacity="0.2"/>
+  <line x1="30" y1="94" x2="72.2" y2="101.3" stroke="#179299" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="88,104 70.9,109.2 73.6,93.4" fill="#179299"/>
+  <line x1="30" y1="94" x2="47.9" y2="78.5" stroke="#179299" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="60,68 53.1,84.5 42.7,72.4" fill="#179299"/>
+  <line x1="30" y1="94" x2="30" y2="32" stroke="#ea76cb" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="30,14 21,33 39,33" fill="#ea76cb"/>
+</svg>

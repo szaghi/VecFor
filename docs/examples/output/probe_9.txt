@@ -1,0 +1,8 @@
+$ probe
+R4P : digits  6, error of the length  2.42E-08
+R8P : digits 15, error of the length  9.67E-17
+R16P: digits 15, error of the length  9.67E-17
+vector: digits 15
+x of a4 * 0.1     -1.00000001E-01
+length, function   1.41421363E-01
+x of a8           -1.0000000149011612E-01

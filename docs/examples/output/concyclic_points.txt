@@ -1,0 +1,6 @@
+$ concyclic_points
+a, b, c, d in order:         T
+a, c, b, d out of order:     F
+d lifted by 0.1:             F
+a, b, c, (cos 4, sin 4):     F
+the same, within 1e-12:      T

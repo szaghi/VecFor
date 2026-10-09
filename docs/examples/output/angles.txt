@@ -1,0 +1,6 @@
+$ angles
+a%angle(b)         [rad]   0.7854
+angle(a, b)        [deg]  45.0000
+a and 3a           [deg]   0.0000
+a and -a           [deg] 180.0000
+a and ey           [deg]  90.0000

@@ -1,0 +1,5 @@
+$ compare_number
+v == 5        T
+v <  5.5_R8P  T
+4_I4P < v     T
+v >= 6._R4P   F

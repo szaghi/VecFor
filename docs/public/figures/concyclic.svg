@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="420" viewBox="0 0 560 420" font-family="Arial,Helvetica,sans-serif" font-size="12">
+<rect x="0" y="0" width="560" height="420" fill="white" stroke="none" stroke-width="0"/>
+<g class="fs-axes" data-area="89.31 476.69 16 389" data-x="-1.0233e0 1.2804e0" data-y="-8.824e-1 1.3358e0" data-log="0 0" data-grid="0" data-font-size="12" data-xtics="none" data-ytics="none">
+<g class="fs-grid" display="none">
+</g>
+<svg class="fs-plot" x="89.31" y="16" width="387.37" height="373" viewBox="0 0 1 1" preserveAspectRatio="none" overflow="hidden">
+<g class="fs-series" data-series="1">
+<path class="fs-vectors" data-head="1" data-filled="1" fill="none" stroke="#9ca0b0" stroke-width="1" vector-effect="non-scaling-stroke" d="M0.444198,0.6022L0.081467,0.826674M0.444198,0.6022L0.876485,0.790556M0.444198,0.6022L0.444198,0.094656"/>
+</g>
+<g class="fs-series" data-series="2">
+</g>
+<g class="fs-series" data-series="3">
+<path fill="#179299" fill-opacity="0.12" stroke="none" vector-effect="non-scaling-stroke" d="M0.165174,0.774873 0.776726,0.747089 0.444198,0.211782 0.165174,0.774873Z"/>
+</g>
+<g class="fs-series" data-series="4">
+<polyline fill="none" stroke="#ea76cb" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="0.165174,0.774873 0.175629,0.790778 0.186869,0.806099 0.198862,0.820795 0.211577,0.834826 0.224979,0.848152 0.23903,0.860737 0.253693,0.872548
+0.268927,0.883551 0.284689,0.893716 0.300938,0.903015 0.317629,0.911424 0.334715,0.918918 0.352151,0.925477 0.369887,0.931084 0.387876,0.935723
+0.406069,0.939381 0.424414,0.942049 0.442863,0.943718 0.461364,0.944385 0.479868,0.944047 0.498322,0.942706 0.516677,0.940365 0.534882,0.93703
+0.552887,0.932711 0.570644,0.92742 0.588102,0.921171 0.605216,0.913981 0.621936,0.905869 0.638219,0.896859 0.654018,0.886975 0.669291,0.876243
+0.683997,0.864694 0.698093,0.852359 0.711543,0.839271 0.724309,0.825467 0.736356,0.810985 0.747651,0.795864 0.758163,0.780145 0.767864,0.763872
+0.776726,0.747089 0.784726,0.729843 0.791841,0.71218 0.798053,0.69415 0.803343,0.6758 0.807698,0.657183 0.811105,0.638348 0.813556,0.619347
+0.815043,0.600233 0.815562,0.581058 0.815113,0.561874 0.813695,0.542734 0.811314,0.523691 0.807976,0.504796 0.803689,0.486101 0.798466,0.467658
+0.792321,0.449518 0.78527,0.431729 0.777333,0.414341 0.768533,0.397402 0.758892,0.380957 0.748437,0.365052 0.737198,0.34973 0.725204,0.335034
+0.712489,0.321004 0.699087,0.307677 0.685036,0.295092 0.670373,0.283281 0.65514,0.272279 0.639377,0.262114 0.623128,0.252814 0.606437,0.244406
+0.589351,0.236911 0.571915,0.230352 0.554179,0.224745 0.53619,0.220106 0.517998,0.216448 0.499652,0.21378 0.481203,0.212111 0.462702,0.211444
+0.444198,0.211782 0.425744,0.213123 0.407389,0.215464 0.389184,0.218799 0.371179,0.223118 0.353422,0.228409 0.335964,0.234659 0.318851,0.241849
+0.30213,0.24996 0.285848,0.25897 0.270048,0.268855 0.254775,0.279586 0.24007,0.291135 0.225973,0.303471 0.212523,0.316558 0.199757,0.330362
+0.18771,0.344844 0.176415,0.359966 0.165903,0.375684 0.156202,0.391957 0.14734,0.40874 0.13934,0.425986 0.132225,0.443649 0.126013,0.46168
+0.120723,0.480029 0.116368,0.498646 0.112961,0.517481 0.11051,0.536482 0.109023,0.555596 0.108504,0.574771 0.108953,0.593955 0.110371,0.613095
+0.112752,0.632139 0.11609,0.651033 0.120377,0.669728 0.1256,0.688171 0.131746,0.706311 0.138796,0.7241 0.146733,0.741488 0.155534,0.758428
+0.165174,0.774873"/>
+</g>
+<g class="fs-series" data-series="5">
+<path class="fs-pts" data-pt="7" data-size="9" data-lw="1" data-color="#179299" fill="none" stroke="none" d="M0.165174,0.774873 M0.776726,0.747089 M0.444198,0.211782"/>
+</g>
+<g class="fs-series" data-series="6">
+<path class="fs-pts" data-pt="7" data-size="10.8" data-lw="1" data-color="#fe640b" fill="none" stroke="none" d="M0.758892,0.380957"/>
+</g>
+<g class="fs-series" data-series="7">
+</g>
+<g class="fs-series" data-series="8">
+</g>
+</svg>
+<svg class="fs-marks" x="89.31" y="16" width="387.37" height="373" viewBox="0 0 387.37 373" overflow="hidden">
+<path data-series="5" fill="#179299" stroke="#179299" stroke-width="1" d="M59.48,289.03A4.5,4.5 0 1 0 68.48,289.03A4.5,4.5 0 1 0 59.48,289.03ZM296.38,278.66A4.5,4.5 0 1 0 305.38,278.66A4.5,4.5 0 1 0 296.38,278.66ZM167.57,78.99A4.5,4.5 0 1 0 176.57,78.99A4.5,4.5 0 1 0 167.57,78.99Z"/>
+<path data-series="6" fill="#fe640b" stroke="#fe640b" stroke-width="1" d="M288.57,142.1A5.4,5.4 0 1 0 299.37,142.1A5.4,5.4 0 1 0 288.57,142.1Z"/>
+</svg>
+<svg class="fs-heads" x="89.31" y="16" width="387.37" height="373" viewBox="0 0 387.37 373" overflow="hidden">
+<g data-series="1">
+<polygon points="48.88,303.45 31.56,308.35 44.11,295.45" fill="#9ca0b0" stroke="#9ca0b0" stroke-width="1"/>
+<polygon points="325.29,283.85 339.53,294.88 321.69,292.45" fill="#9ca0b0" stroke="#9ca0b0" stroke-width="1"/>
+<polygon points="167.41,52.69 172.07,35.31 176.73,52.69" fill="#9ca0b0" stroke="#9ca0b0" stroke-width="1"/>
+</g>
+</svg>
+<svg class="fs-labels" x="89.31" y="16" width="387.37" height="373" viewBox="0 0 387.37 373" overflow="hidden">
+<text class="fs-label" data-series="2" data-u="0.053565" data-v="0.843942" data-dx="0" data-dy="4.2" x="20.75" y="318.99" text-anchor="middle" fill="#9ca0b0">x</text>
+<text class="fs-label" data-series="2" data-u="0.909737" data-v="0.805045" data-dx="0" data-dy="4.2" x="352.41" y="304.48" text-anchor="middle" fill="#9ca0b0">y</text>
+<text class="fs-label" data-series="2" data-u="0.444198" data-v="0.055615" data-dx="0" data-dy="4.2" x="172.07" y="24.94" text-anchor="middle" fill="#9ca0b0">z</text>
+<text class="fs-label" data-series="7" data-u="0.165174" data-v="0.774873" data-dx="5.76" data-dy="4.2" x="69.74" y="293.23" fill="black">p2</text>
+<text class="fs-label" data-series="7" data-u="0.776726" data-v="0.747089" data-dx="5.76" data-dy="4.2" x="306.64" y="282.86" fill="black">p3</text>
+<text class="fs-label" data-series="7" data-u="0.444198" data-v="0.211782" data-dx="5.76" data-dy="4.2" x="177.83" y="83.19" fill="black">p4</text>
+<text class="fs-label" data-series="8" data-u="0.758892" data-v="0.380957" data-dx="-5.76" data-dy="4.2" x="288.21" y="146.3" text-anchor="end" fill="#fe640b">a</text>
+</svg>
+<g class="fs-xticks">
+</g>
+<g class="fs-yticks">
+</g>
+</g>
+</svg>

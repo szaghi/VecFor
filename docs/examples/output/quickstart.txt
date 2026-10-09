@@ -1,0 +1,6 @@
+$ quickstart
+normal   = +0.5, +0.5, +0.5
+area     =  0.8660
+angle    = 60.0000
+distance =  0.6928
+foot     =  0.4000 0.2000 0.4000

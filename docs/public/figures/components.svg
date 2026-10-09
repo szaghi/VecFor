@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="420" viewBox="0 0 560 420" font-family="Arial,Helvetica,sans-serif" font-size="12">
+<rect x="0" y="0" width="560" height="420" fill="white" stroke="none" stroke-width="0"/>
+<g class="fs-axes" data-area="99.82 466.18 16 389" data-x="-8.61e-2 1.4931e0" data-y="-2.531e-1 1.3548e0" data-log="0 0" data-grid="0" data-font-size="12" data-xtics="none" data-ytics="none">
+<g class="fs-grid" display="none">
+</g>
+<svg class="fs-plot" x="99.82" y="16" width="366.37" height="373" viewBox="0 0 1 1" preserveAspectRatio="none" overflow="hidden">
+<g class="fs-series" data-series="1">
+<path fill="#179299" fill-opacity="0.15" stroke="none" vector-effect="non-scaling-stroke" d="M0.597513,0.946405 0.380316,0.669564 0.054521,0.254304 0.597513,0.946405Z"/>
+</g>
+<g class="fs-series" data-series="2">
+<polyline fill="none" stroke="#179299" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="0.597513,0.946405 0.380316,0.669564 0.054521,0.254304 0.597513,0.946405"/>
+</g>
+<g class="fs-series" data-series="3">
+<path class="fs-vectors" data-head="1" data-filled="1" fill="none" stroke="#ea76cb" stroke-width="2" vector-effect="non-scaling-stroke" d="M0.344117,0.623424L0.594914,0.433621"/>
+</g>
+<g class="fs-series" data-series="4">
+<path class="fs-vectors" data-head="1" data-filled="1" fill="none" stroke="#8839ef" stroke-width="1.5" vector-effect="non-scaling-stroke" d="M0.344117,0.623424L0.069001,0.27276M0.344117,0.623424L0.054521,0.84259"/>
+</g>
+<g class="fs-series" data-series="5">
+<path class="fs-vectors" data-head="1" data-filled="1" fill="none" stroke="#fe640b" stroke-width="2" vector-effect="non-scaling-stroke" d="M0.908829,0.754924L0.344117,0.623424"/>
+</g>
+<g class="fs-series" data-series="6">
+<path class="fs-vectors" data-head="1" data-filled="1" fill="none" stroke="#40a02b" stroke-width="2" vector-effect="non-scaling-stroke" d="M0.344117,0.623424L0.358597,0.053594"/>
+</g>
+<g class="fs-series" data-series="7">
+</g>
+</svg>
+<svg class="fs-heads" x="99.82" y="16" width="366.37" height="373" viewBox="0 0 366.37 373" overflow="hidden">
+<g data-series="3">
+<polygon points="201.34,168.66 217.96,161.74 207.03,176.04" fill="#ea76cb" stroke="#ea76cb" stroke-width="2"/>
+</g>
+<g data-series="4">
+<polygon points="32.2,118.35 25.28,101.74 39.58,112.67" fill="#8839ef" stroke="#8839ef" stroke-width="1.5"/>
+<polygon points="36.59,307.36 19.97,314.29 30.9,299.98" fill="#8839ef" stroke="#8839ef" stroke-width="1.5"/>
+</g>
+<g data-series="5">
+<polygon points="141.92,241.08 126.07,232.54 144.07,232.01" fill="#fe640b" stroke="#fe640b" stroke-width="2"/>
+</g>
+<g data-series="6">
+<polygon points="126.29,37.26 131.38,19.99 135.6,37.49" fill="#40a02b" stroke="#40a02b" stroke-width="2"/>
+</g>
+</svg>
+<svg class="fs-labels" x="99.82" y="16" width="366.37" height="373" viewBox="0 0 366.37 373" overflow="hidden">
+<text class="fs-label" data-series="7" data-u="0.908829" data-v="0.754924" data-dx="5.76" data-dy="4.2" x="338.73" y="285.79" fill="black">v</text>
+<text class="fs-label" data-series="7" data-u="0.069001" data-v="0.27276" data-dx="5.76" data-dy="4.2" x="31.04" y="105.94" fill="black">v .ortho. n</text>
+<text class="fs-label" data-series="7" data-u="0.054521" data-v="0.84259" data-dx="5.76" data-dy="4.2" x="25.73" y="318.49" fill="black">v .paral. n</text>
+<text class="fs-label" data-series="7" data-u="0.358597" data-v="0.053594" data-dx="5.76" data-dy="4.2" x="137.14" y="24.19" fill="black">vt - vn</text>
+<text class="fs-label" data-series="7" data-u="0.594914" data-v="0.433621" data-dx="5.76" data-dy="4.2" x="223.72" y="165.94" fill="black">n</text>
+</svg>
+<g class="fs-xticks">
+</g>
+<g class="fs-yticks">
+</g>
+</g>
+</svg>

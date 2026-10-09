@@ -1,0 +1,5 @@
+$ paral_ortho
+a .paral. d = +2.0, +0.0, +0.0
+a .ortho. d = +0.0, +3.0, +1.0
+their sum   = +2.0, +3.0, +1.0
+a .paral. 0 = NaN, NaN, NaN

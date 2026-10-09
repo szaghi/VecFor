@@ -1,0 +1,4 @@
+$ probe
+distances of 100000 points
+points outside            96820
+largest difference to host  0.0E+00

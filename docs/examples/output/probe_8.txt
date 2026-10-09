@@ -1,0 +1,8 @@
+$ probe
+x of the normals   0.0000  0.0000 -1.0000  0.5774
+their lengths      1.0000  1.0000  1.0000  1.0000
+points inside    10660 of 64000
+volume estimate    0.1666, exact  0.1667
+points within 0.5 of the origin  4194
+the farthest point from the origin  0.9875  0.9875  0.9875
+g(1) shorter than g(2): T

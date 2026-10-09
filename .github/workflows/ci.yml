@@ -27,3 +27,38 @@ jobs:
     - name: Run tests with coverage
       id: cov
       uses: ./.github/actions/run-coverage-analysis
+
+  docs-examples:
+    # the programs of docs/examples are built and run, their snippets and outputs regenerated and the figures redrawn:
+    # the committed ones, included by the documentation, must match what the code produces
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup build environment
+      uses: ./.github/actions/setup-build-env
+
+    - name: Fetch dependencies
+      run: fobis fetch
+
+    - name: Build foresight
+      run: |
+        git clone --depth 1 --branch v0.4.0 https://github.com/szaghi/foresight "$RUNNER_TEMP/foresight"
+        (cd "$RUNNER_TEMP/foresight" && fobis fetch && fobis build --mode foresight-gnu)
+        echo "$RUNNER_TEMP/foresight/bin" >> "$GITHUB_PATH"
+
+    - name: Build and run the examples
+      run: bash scripts/docs_examples.sh
+
+    - name: Check the committed snippets, outputs and figures
+      run: |
+        git add --intent-to-add docs/examples docs/public/figures
+        git diff --exit-code -- docs/examples docs/public/figures || {
+          echo "::error::docs/examples is out of date: run 'bash scripts/docs_examples.sh' and commit the result"
+          exit 1
+        }

@@ -1,0 +1,6 @@
+$ rotate_matrix
+v1 rotated    0.0000  1.0000  0.0000
+v2 rotated    0.0000  0.0000  1.0000
+v3 rotated    1.0000  0.0000  0.0000
+v1 in place   0.0000  1.0000  0.0000
+ex, z then x  0.0000  0.0000  1.0000

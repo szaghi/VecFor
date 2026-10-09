@@ -1,0 +1,17 @@
+$ probe
+q to the faces        -0.8000 -0.6000 -0.8000  0.6928
+q is inside:         F
+centroid to the faces -0.2500 -0.2500 -0.2500 -0.1443
+centroid is inside:  T
+from the face to q     0.4000  0.4000  0.4000
+foot of q              0.4000  0.2000  0.4000
+foot + distance        0.8000  0.6000  0.8000
+q to the line p2 p3    0.8485
+q to the line p1 p4    1.0000
+midpoint on the line p2 p3:   T
+distance of m from the line:   2.0E-17
+m on the line p2 p3:          F
+with a tolerance of 1e-12:    T
+1e-9 off, tolerance of 1e-12: F
+a, p4, p2, p3 on a circle: T
+a, p2, p4, p3 on a circle: F

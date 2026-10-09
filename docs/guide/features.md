@@ -1,95 +1,48 @@
 ---
-title: Features
+title: Feature map
 ---
 
-# Features
+# Feature map
 
-## Vectorial Calculus Algebra
+Every feature of VecFor, where the tutorial teaches it, where the cookbook shows it and where the reference describes
+it.
 
-- Cross product via `.cross.` infix operator
-- Dot product via `.dot.` infix operator
-- Parallel projection via `.paral.` infix operator
-- Orthogonal projection via `.ortho.` infix operator
-- Matrix product via `.matrix.` infix operator
-- Triangle face normals: `face_normal3` (also as stand-alone procedure)
-- Quad face normals: `face_normal4` (also as stand-alone procedure) — norm equals face area
+| Feature | How | Tutorial | Cookbook | Reference |
+|---|---|---|---|---|
+| The vector type | `type(vector)`, components `x`, `y`, `z` | [1](/manual/tutorial/01-first-vectors) | [components](/manual/cookbook#a-vector-from-its-components) | [The vector type](./vector) |
+| Versors | `ex`, `ey`, `ez` | [1](/manual/tutorial/01-first-vectors) | [components](/manual/cookbook#a-vector-from-its-components) | [Versors](./vector#versors) |
+| Structure constructor | `vector(x, y, z)` | [1](/manual/tutorial/01-first-vectors#three-ways-to-build-a-vector) | [components](/manual/cookbook#a-vector-from-its-components) | [Building a vector](./vector#building-a-vector) |
+| Assignment of a number | `v = 2.5_R8P`, any integer or real kind | [1](/manual/tutorial/01-first-vectors#three-ways-to-build-a-vector) | [one number](/manual/cookbook#every-component-set-to-one-number) | [Assignment](./operators#assignment) |
+| Sum, difference, sign | `a + b`, `a - b`, `-a`, `+a` | [2](/manual/tutorial/02-arithmetic) | [sum](/manual/cookbook#sum-difference-negation) | [Arithmetic](./operators#arithmetic) |
+| Scaling | `s * a`, `a * s`, `a / s`, any kind | [2](/manual/tutorial/02-arithmetic#with-numbers) | [scaling](/manual/cookbook#a-vector-times-a-number) | [Arithmetic](./operators#arithmetic) |
+| A number on every component | `a + s`, `s + a`, `a - s`, `s - a` | [2](/manual/tutorial/02-arithmetic#with-numbers) | [plus a number](/manual/cookbook#a-number-added-to-every-component) | [Arithmetic](./operators#arithmetic) |
+| Component-wise product, quotient | `a * b`, `a / b` | [2](/manual/tutorial/02-arithmetic#between-vectors) | [component-wise](/manual/cookbook#the-product-and-the-quotient-of-two-vectors-component-by-component) | [Arithmetic](./operators#arithmetic) |
+| Dot product | `a .dot. b` | [3](/manual/tutorial/03-lengths-angles#dot-product) | [products](/manual/cookbook#dot-cross-and-triple-products) | [Products](./operators#products) |
+| Cross product | `a .cross. b` | [3](/manual/tutorial/03-lengths-angles#cross-product) | [products](/manual/cookbook#dot-cross-and-triple-products) | [Products](./operators#products) |
+| Length | `normL2`, `sq_norm` | [3](/manual/tutorial/03-lengths-angles#lengths) | [length](/manual/cookbook#the-length-of-a-vector) | [Lengths and directions](./geometry#lengths-and-directions) |
+| Unit vector | `normalized`, `normalize` | [3](/manual/tutorial/03-lengths-angles#directions) | [unit vector](/manual/cookbook#a-unit-vector) | [Lengths and directions](./geometry#lengths-and-directions) |
+| Angle | `angle` | [3](/manual/tutorial/03-lengths-angles#angles) | [angle](/manual/cookbook#the-angle-between-two-vectors) | [Angle](./geometry#angle) |
+| Parallel and orthogonal components | `a .paral. n`, `a .ortho. n` | [6](/manual/tutorial/06-components) | [components](/manual/cookbook#the-components-parallel-and-orthogonal-to-a-vector) | [Products](./operators#parallel-and-orthogonal-components) |
+| Face normals and areas | `face_normal3`, `face_normal4`, `norm` | [4](/manual/tutorial/04-faces) | [triangle](/manual/cookbook#the-normal-and-the-area-of-a-triangle), [quadrilateral](/manual/cookbook#the-normal-and-the-area-of-a-quadrilateral) | [Face normals](./geometry#face-normals) |
+| Distance from a line | `distance_to_line` | [5](/manual/tutorial/05-point#lines) | [line](/manual/cookbook#the-distance-of-a-point-from-a-line) | [Distances](./geometry#distances-and-projections) |
+| Distance from a plane | `distance_to_plane`, `distance_vectorial_to_plane` | [5](/manual/tutorial/05-point#inside-or-outside) | [plane](/manual/cookbook#the-distance-of-a-point-from-a-plane) | [Distances](./geometry#distances-and-projections) |
+| Projection onto a plane | `projection_onto_plane` | [5](/manual/tutorial/05-point#the-foot-of-a-point) | [plane](/manual/cookbook#the-distance-of-a-point-from-a-plane) | [Distances](./geometry#distances-and-projections) |
+| Collinear points | `is_collinear`, `tolerance` | [5](/manual/tutorial/05-point#collinear-points-and-tolerances) | [collinear](/manual/cookbook#are-three-points-on-one-line) | [Predicates](./geometry#collinear-and-concyclic-points) |
+| Concyclic points | `is_concyclic`, `tolerance` | [5](/manual/tutorial/05-point#concyclic-points) | [concyclic](/manual/cookbook#are-four-points-on-one-circle) | [Predicates](./geometry#collinear-and-concyclic-points) |
+| Rotation | `rotate(axis=, angle=)`, `rotate(matrix=)`, `rotation_matrix` | [7](/manual/tutorial/07-transforms) | [axis](/manual/cookbook#a-rotation-about-an-axis), [matrix](/manual/cookbook#a-rotation-matrix-applied-many-times) | [Rotations](./transforms#rotations) |
+| Mirror | `mirror(normal=)`, `mirror(matrix=)`, `mirror_matrix` | [7](/manual/tutorial/07-transforms#a-mirror) | [plane](/manual/cookbook#the-mirror-image-across-a-plane), [matrix](/manual/cookbook#a-mirror-matrix-applied-many-times) | [Mirrors](./transforms#mirrors) |
+| Matrix times vector | `m .matrix. a` | [7](/manual/tutorial/07-transforms#a-rotation-matrix) | [any matrix](/manual/cookbook#any-matrix-applied-to-a-vector) | [Products](./operators#products) |
+| Comparisons | `==`, `/=`, `<`, `<=`, `>`, `>=`, with vectors and numbers | [8](/manual/tutorial/08-arrays#comparisons-are-by-length) | [vectors](/manual/cookbook#comparing-two-vectors), [numbers](/manual/cookbook#comparing-the-length-of-a-vector-with-a-number) | [Comparisons](./operators#comparisons) |
+| Arrays of vectors | elemental operators and functions, `p%x` | [8](/manual/tutorial/08-arrays) | [arrays](/manual/cookbook#whole-arrays-of-vectors-at-once) | [Arrays](./vector#arrays-of-vectors) |
+| Methods or free functions | `a%normL2()` or `normL2(a)` | [3](/manual/tutorial/03-lengths-angles#lengths) | [two spellings](/manual/cookbook#a-method-or-a-free-function) | [Names](./vector#methods-and-free-functions) |
+| Precisions | `vector_R4P`, `vector_R8P`, `vector_R16P`, versors and functions of each | [9](/manual/tutorial/09-precision) | [each precision](/manual/cookbook#vectors-of-each-precision) | [Precision and kinds](./precision) |
+| True quadruple precision | `-DPENF_R16P` | [9](/manual/tutorial/09-precision#true-quadruple-precision) | [quadruple](/manual/cookbook#true-quadruple-precision) | [Quadruple](./precision#true-quadruple-precision) |
+| Printing | `printf(prefix=, sep=, suffix=, unit=)` | [10](/manual/tutorial/10-io#printing) | [printing](/manual/cookbook#printing-a-vector) | [printf](./io#printf) |
+| Files | `save_into_file`, `load_from_file`, `fmt`, `pos` | [10](/manual/tutorial/10-io#saving-and-loading) | [binary](/manual/cookbook#a-binary-file-of-vectors), [text](/manual/cookbook#a-text-file-of-vectors), [stream](/manual/cookbook#the-n-th-vector-of-a-stream-file) | [Files](./io#save-into-file-and-load-from-file) |
+| Record length | `iolen` | [10](/manual/tutorial/10-io#stream-files-and-positions) | [direct access](/manual/cookbook#a-direct-access-file-of-vectors) | [iolen](./io#iolen) |
+| I/O errors | `iostat`, `iomsg` | [10](/manual/tutorial/10-io#errors) | [errors](/manual/cookbook#an-i-o-error-caught) | [Errors](./io#errors) |
+| OpenACC device routines | `*_oac` | [11](/manual/tutorial/11-gpu) | [device](/manual/cookbook#the-device-callable-routines-in-an-openacc-loop) | [Device-callable API](./gpu) |
 
-## Arithmetic Operators
-
-All standard operators work between two vectors and between a vector and any scalar:
-
-- `+`, `-`, `*`, `/` between two `vector` objects
-- `+`, `-`, `*`, `/` between a `vector` and a numeric scalar of any supported kind (left and right)
-- Unary `+` and `-`
-- All operators resolved at compile time via generic interfaces — no runtime dispatch overhead
-
-## Comparison Operators
-
-Vectors are compared by their L2 norm:
-
-- `<`, `<=`, `==`, `/=`, `>=`, `>` — work between two vectors and between a vector and any numeric scalar
-
-## Geometry Methods
-
-- `normL2()` — Euclidean (L2) norm
-- `sq_norm()` — squared norm (avoids a square root when only ordering is needed)
-- `normalize()` — normalize the vector in-place (subroutine); falls back to zero vector if norm is zero
-- `normalized()` — return the normalized vector (function)
-- `angle(vec)` — angle between two vectors in radians
-- `rotate(axis, angle)` — rotate the vector around a given axis by the given angle
-- `mirror(plane_normal)` — mirror the vector across a plane defined by its normal
-- `distance_to_line(pt, dir)` — distance from the vector (treated as a point) to a line
-- `distance_to_plane(pt, normal)` — distance from the vector to a plane
-- `projection_onto_plane(normal)` — orthogonal projection onto a plane
-- `is_collinear(v1, v2)` — test collinearity of three vectors (as points)
-- `is_concyclic(v1, v2, v3)` — test whether four vectors lie on a common circle
-
-## I/O and Printing
-
-- `print` — formatted output of x, y, z components to any Fortran unit
-- `save` / `load` — binary I/O for vector data (sequential and stream access)
-- `iolen()` — returns the record length needed for direct-access I/O
-
-## Multi-Precision Support
-
-| Type | Kind | Precision |
-|------|------|-----------|
-| `vector` / `vector_R8P` | `R8P = selected_real_kind(15,307)` | 64-bit, ~15 digits |
-| `vector_R4P` | `R4P = selected_real_kind(6,37)` | 32-bit, ~6 digits |
-| `vector_R16P` | `R16P = selected_real_kind(33,4931)` | 128-bit, ~33 digits (if compiler supports it) |
-
-The single `use vecfor` statement re-exports all precision variants and the corresponding Cartesian versors (`ex`, `ey`, `ez` for each kind).
-
-## Mixed-Kind Operands
-
-All operators accept mixed-kind arguments. Supported scalar kinds:
-
-| Kind | Type | Width |
-|------|------|-------|
-| `R16P` | real | 128-bit |
-| `R8P`  | real | 64-bit |
-| `R4P`  | real | 32-bit |
-| `I8P`  | integer | 64-bit |
-| `I4P`  | integer | 32-bit |
-| `I2P`  | integer | 16-bit |
-| `I1P`  | integer | 8-bit |
-
-## Compiler Support
-
-| Compiler | Status |
-|----------|--------|
-| GNU gfortran ≥ 4.9.2 | Supported |
-| Intel Fortran ≥ 12.x | Supported |
-| NVIDIA nvfortran | Supported |
-| IBM XL Fortran | Not tested |
-| g95 | Not tested |
-| NAG Fortran | Not tested |
-
-## Design Principles
-
-- **Pure Fortran** — no C extensions, no system calls beyond standard I/O
-- **OOP** — a single `vector` derived type exposes all functionality as type-bound procedures and operators
-- **TDD** — every public procedure is exercised by automated doctests in `src/tests/`
-- **KISS** — simple, focused API; the entire library fits in one file
-- **Thread-safe** — all procedures are `pure` or `elemental`
-- **Free & Open Source** — multi-licensed for FOSS and commercial use
+Not available: vectors of other dimensions than three; operations between vectors of two different kinds; `sum`,
+`dot_product` or `matmul` of the intrinsics on vectors; a tolerance in the comparisons (see
+[Behaviour and limitations](./limitations)).

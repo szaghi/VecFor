@@ -1,0 +1,5 @@
+$ kinds
+angle_R4P(a, ex_R4P) =  7.8539819E-01
+normL2_R8P(b)        =  3.0000000E+00
+kinds of a, b, c:         4   8   8
+d = +3.0, +0.0, +0.0

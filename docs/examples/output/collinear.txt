@@ -1,0 +1,5 @@
+$ collinear
+midpoint:                   T
+0.1 a + 0.9 b:              F
+0.1 a + 0.9 b, within 1e-12: T
+2 a, within 1e-12:          F

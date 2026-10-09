@@ -1,0 +1,7 @@
+$ text_file && cat points.txt
+point 1 read back equal: T, difference  0.0E+00
+point 2 read back equal: T, difference  0.0E+00
+point 3 read back equal: F, difference  3.3E-06
+   1.00000   0.00000   0.00000
+   0.00000   2.00000   0.00000
+   1.00000   1.00000   0.33333

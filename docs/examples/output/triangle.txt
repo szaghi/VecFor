@@ -1,0 +1,6 @@
+$ triangle
+normal        = +0.0, +0.0, +6.0
+area          =   6.00
+unit normal   = +0.0, +0.0, +1.0
+b and c swapped = +0.0, +0.0, -1.0
+type-bound    = +0.0, +0.0, +6.0

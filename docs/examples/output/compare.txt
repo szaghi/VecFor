@@ -1,0 +1,8 @@
+$ compare
+a == b  F
+a /= b  T
+a <= b  T
+a >= b  T
+a <  c  T
+c >  b  T
+a == 3 ex T

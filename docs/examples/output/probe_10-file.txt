@@ -1,0 +1,11 @@
+$ probe && cat vertices.txt
+p2 = +1.0, +0.0, +0.0
+p2 = [+1.0; +0.0; +0.0]
+read back equal: T
+bytes per vector: 24
+third vector = +0.0, +1.0, +0.0
+reading past the end: iostat = -1, End of file
+  0.00  0.00  0.00
+  1.00  0.00  0.00
+  0.00  1.00  0.00
+  0.00  0.00  1.00

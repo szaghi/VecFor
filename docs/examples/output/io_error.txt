@@ -1,0 +1,4 @@
+$ io_error
+iostat: 5010
+iomsg:  Bad value during floating point read
+at the end: iostat -1, End of file

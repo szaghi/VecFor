@@ -1,0 +1,5 @@
+$ lengths
+a%normL2()  =   7.00
+normL2(a)   =   7.00
+a%sq_norm() =  49.00
+sq_norm(a)  =  49.00

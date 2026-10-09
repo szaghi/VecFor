@@ -1,0 +1,8 @@
+$ device_routines
+a + b       T
+a - b       T
+a .cross. b T
+2 * a       T
+a * 0.5     T
+h = b       T
+a .dot. b   T

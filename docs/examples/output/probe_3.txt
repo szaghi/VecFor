@@ -1,0 +1,13 @@
+$ probe
+length of p2->p3        1.4142
+squared length          2.0000
+length, free function   1.4142
+direction of p2->p3 = -0.7071067811865475, +0.7071067811865475, +0.0
+its length              1.0000
+a, normalized       = -0.7071067811865475, +0.7071067811865475, +0.0
+a . b                   1.0000
+p1->p2 . p1->p3         0.0000
+angle at p2 [deg]      60.0000
+angle at p1 [deg]      90.0000
+a x b = +1.0, +1.0, +1.0
+area of p2 p3 p4        0.8660
