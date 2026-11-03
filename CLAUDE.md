@@ -189,27 +189,29 @@ broken procedures) and 4229257 (narrowed back to 7). The minimum-set scope
 exists because every entry point must be runtime-validated against at least
 one concrete consumer's needs under nvfortran.
 
-#### Deferred-work hazards
+#### Deferred-work hazard
 
-Two procedures in the current implementation are device-incompatible and
-deliberately stayed out of the `_oac` surface; if you ever try to add them,
-expect these errors:
+One procedure is device-incompatible and deliberately stays out of the `_oac`
+surface; if you ever try to add it, expect this error:
 
-- `rotation_matrix_RPP` and `mirror_matrix_RPP` return their matrix by value;
-  their device forms `rotation_matrix_RPP_oac` and `mirror_matrix_RPP_oac` take it
-  as `intent(out)` (done 2026-11-03). `matrixproduct` was listed here by mistake: its
-  matrix is an `intent(in)` argument; its device obstacles were the `class` dispatch
-  of `.matrix.`, the `type(vector)` result and `matmul` (`matrixproduct_RPP_oac`). Re-probed 2026-11-03: the probe **compiles
-  without diagnostics on 26.1 and 26.9 but returns garbage** (relative errors ~1e3,
-  4096/4096 wrong), which is worse than the W-0155 *"No device symbol"* recorded
-  earlier. The same body with the matrix as an `intent(out)` argument is bit-exact
-  on both: the rewrite to `intent(out)` (no return-by-value) is required.
 - `angle_RPP` builds `versor = [self%normalized(), other%normalized()]` which
   lowers to `pgf90_poly_asn_i8`, a host-only runtime (NVFORTRAN-S-1058 on 26.1 and
   26.9). Body must be rewritten without the polymorphic array constructor and
   without TBP calls through `class` (pattern 2b).
 
-These rewrites are mechanical but out of scope until a device consumer asks.
+The rewrite is mechanical but out of scope until a device consumer asks.
+
+Resolved 2026-11-03, kept for the record:
+
+- `rotation_matrix_RPP` and `mirror_matrix_RPP` return their matrix by value.
+  Re-probed 2026-11-03: such a function **compiles without diagnostics on 26.1 and
+  26.9 but returns garbage** in device code (relative errors ~1e3, 4096/4096 wrong),
+  worse than the W-0155 *"No device symbol"* recorded earlier; the same body with the
+  matrix as an `intent(out)` argument is bit-exact on both. Hence their device forms
+  `rotation_matrix_RPP_oac` and `mirror_matrix_RPP_oac`, the matrix `intent(out)`.
+- `matrixproduct` was once listed with them by mistake: its matrix is an `intent(in)`
+  argument, never returned. Its device obstacles were the `class` dispatch of
+  `.matrix.`, the `type(vector)` result and `matmul`; hence `matrixproduct_RPP_oac`.
 
 ## Coding Conventions
 

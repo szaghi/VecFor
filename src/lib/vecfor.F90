@@ -24,9 +24,9 @@ use vecfor_RPP, only : angle,                       &
                        face_normal3,                &
                        face_normal4,                &
                        iolen,                       &
-                       matrixproduct_oac,           &
                        is_collinear,                &
                        is_concyclic,                &
+                       matrixproduct_oac,           &
                        mirror_matrix,               &
                        mirror_matrix_oac,           &
                        normalized,                  &
@@ -54,9 +54,9 @@ use vecfor_R4P, only : angle_R4P,                       &
                        face_normal3_R4P,                &
                        face_normal4_R4P,                &
                        iolen_R4P,                       &
-                       matrixproduct_R4P_oac,           &
                        is_collinear_R4P,                &
                        is_concyclic_R4P,                &
+                       matrixproduct_R4P_oac,           &
                        mirror_matrix_R4P,               &
                        mirror_matrix_R4P_oac,           &
                        normalized_R4P,                  &
@@ -84,9 +84,9 @@ use vecfor_R8P, only : angle_R8P,                       &
                        face_normal3_R8P,                &
                        face_normal4_R8P,                &
                        iolen_R8P,                       &
-                       matrixproduct_R8P_oac,           &
                        is_collinear_R8P,                &
                        is_concyclic_R8P,                &
+                       matrixproduct_R8P_oac,           &
                        mirror_matrix_R8P,               &
                        mirror_matrix_R8P_oac,           &
                        normalized_R8P,                  &
@@ -114,9 +114,9 @@ use vecfor_R16P, only : angle_R16P,                       &
                         face_normal3_R16P,                &
                         face_normal4_R16P,                &
                         iolen_R16P,                       &
-                        matrixproduct_R16P_oac,           &
                         is_collinear_R16P,                &
                         is_concyclic_R16P,                &
+                        matrixproduct_R16P_oac,           &
                         mirror_matrix_R16P,               &
                         mirror_matrix_R16P_oac,           &
                         normalized_R16P,                  &
