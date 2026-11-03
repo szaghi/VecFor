@@ -4,7 +4,7 @@ version    = VERSION
 summary    = Vector algebra class for Fortran poor people
 repository = https://github.com/szaghi/VecFor
 website    = https://szaghi.github.io/VecFor
-email      = stefano.zaghi@gmail.it
+email      = stefano.zaghi@gmail.com
 authors    = Stefano Zaghi
 
 [dependencies]
