@@ -8,33 +8,43 @@ VecFor is a pure Fortran library for 3D vector algebra using OOP. It provides a 
 
 ## Build Commands
 
+### Dependencies
+```bash
+fobis fetch                              # fetch PENF into src/third_party/ (pinned by src/third_party/fobos.lock)
+```
+
+### FoBiS Build (primary; multiple compilers/modes)
+```bash
+fobis build --mode static-gnu            # GNU static library -> static/libvecfor.a
+fobis build --mode shared-gnu            # GNU shared library -> shared/libvecfor.so
+fobis build --mode static-intel          # Intel static library
+fobis build --lmodes                     # list all modes (gnu/intel/nvf, debug, tests-*)
+fobis rule --ex clean                    # delete docs build, exe/, *.gcov
+```
+
 ### Simple Make Build (produces `static/vecfor.a`)
 ```bash
-make          # Build static library with gfortran
+make          # Build static library with gfortran (compiles PENF sources from src/third_party/ too)
 make clean    # Remove object files
 make cleanall # Full clean
 ```
 
-### FoBiS.py Build (supports multiple compilers/modes)
-```bash
-FoBiS.py build -mode static-gnu          # GNU static library
-FoBiS.py build -mode shared-gnu          # GNU shared library
-FoBiS.py build -mode static-intel        # Intel static library
-FoBiS.py rule -ex clean                  # Clean all build artifacts
-```
-
 ### Running Tests
 ```bash
-FoBiS.py doctests -mode tests-gnu-debug  # Build and generate test executables
-./scripts/run_tests.sh                    # Run all test executables in ./exe/
+fobis doctests --mode tests-gnu-debug    # Build and generate test executables in exe/
+./scripts/run_tests.sh                   # Run all exe/* and compare against <name>.result
+fobis build --mode tests-nvf-acc --varset local_nvf   # OpenACC device test (local only, not in CI)
 ```
 
-Tests are doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/`. Test programs check for the string "Are all tests passed?" in their output.
+Tests are doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/` (the generated snapshots are tracked in git). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
+
+CI (`.github/workflows/ci.yml`) runs on gfortran-14 (default of `.github/actions/setup-build-env`): coverage-driven tests plus a `docs-examples` job that rebuilds `docs/examples/` and diffs the committed snippets/figures.
 
 ### Documentation
 ```bash
-FoBiS.py rule -ex makedoc       # Generate HTML docs with FORD into doc/html/
-FoBiS.py rule -ex makecoverage  # Generate gcov coverage analysis
+fobis rule --ex makedoc          # API docs via `formal` into docs/api/, then VitePress build (docs/)
+fobis rule --ex makecoverage     # gcov coverage analysis
+bash scripts/docs_examples.sh    # rebuild docs/examples programs, snippets, outputs and figures
 ```
 
 ## Architecture
@@ -45,7 +55,7 @@ The library provides the same `vector` type at multiple precisions using C prepr
 - `src/lib/vecfor_RPP.INC` — the actual implementation (~3000 lines), included by each precision-specific module
 - `src/lib/vecfor_R4P.F90` — single precision (`real(R4P)` components)
 - `src/lib/vecfor_R8P.F90` — double precision (`real(R8P)` components)
-- `src/lib/vecfor_R16P.F90` — quad precision, guarded by `-D_R16P_SUPPORTED`
+- `src/lib/vecfor_R16P.F90` — quad precision, guarded by `#ifdef PENF_R16P` in `vecfor_RPP.INC` (the same macro PENF uses). GNU/Intel `fobos` templates and `makefile` pass `-DPENF_R16P`. Without the macro PENF silently aliases `R16P` to double precision, so `vector_R16P` becomes a duplicate R8P type. nvfortran has no real(16) on x86-64 (`real_kinds = [4, 8]`), so the nvf templates must NOT define it
 - `src/lib/vecfor_RPP.F90` — default precision (uses R8P by default)
 - `src/lib/vecfor.F90` — master aggregator module that re-exports all precisions
 
@@ -59,7 +69,7 @@ User code only needs `use vecfor`.
 - **Methods**: `normL2()`, `normalized()`, `normalize()`, `sq_norm()`, `angle()`, `rotate()`, `mirror()`, `distance_to_line()`, `distance_to_plane()`, `projection_onto_plane()`, `is_collinear()`, `is_concyclic()`
 
 ### PENF Dependency
-Kind parameters (R4P, R8P, R16P) come from the PENF submodule at `src/third_party/PENF/`. Always initialize with `git submodule update --init --recursive`. The `fobos` file references PENF sources; the plain `makefile` only needs the PENF `.mod` files pre-built.
+Kind parameters (R4P, R8P, R16P) come from PENF, fetched into `src/third_party/PENF/` by `fobis fetch` (declared in the `[dependencies]` section of `fobos`, pinned by `src/third_party/fobos.lock`). It is not a git submodule. Both `fobos` and `makefile` compile the PENF sources directly; `fobos` excludes PENF's tests/docs/scripts via `$EXDIRS`.
 
 ### All procedures are `pure` or `elemental`
 This is a design invariant — all vector operations are side-effect-free and thread-safe.
@@ -70,7 +80,8 @@ VecFor exposes a parallel set of `_oac`-suffixed free procedures that mirror a
 narrow slice of the TBP-bound operator surface, designed to be reachable from
 inside an `!$acc routine seq` device kernel. The host-side TBP-generic operator
 forms (`a .dot. b`, `a + b`, etc.) are **not** device-callable on the currently
-validated compiler (`nvfortran 26.1`):
+validated compilers (`nvfortran 26.1`; re-validated on `26.9` on an RTX 4070,
+cc89, 2026-11-03; the restrictions below were observed on 26.1 and not re-probed):
 
 1. TBP-generic operator dispatch lowers to a vtable lookup. nvfortran rejects
    indirect procedure calls inside `!$acc routine seq` with NVFORTRAN-W-0155
@@ -161,14 +172,16 @@ These rewrites are mechanical but out of scope until a device consumer asks.
 - Modern Fortran relational operators (`>`, `<`, `==`, not `.gt.`, `.lt.`, `.eq.`)
 - Explicit `intent` on all dummy arguments
 - Documentation comments use FORD docmark syntax (`!<` for trailing comments)
-- Quadruple precision code must be guarded with `#ifdef _R16P_SUPPORTED` preprocessor blocks
+- Quadruple precision code must be guarded with `#ifdef PENF_R16P` preprocessor blocks
 
 ## Build Outputs
 
 | Path | Contents |
 |------|----------|
 | `static/vecfor.a` | Static library (make build) |
+| `static/libvecfor.a`, `shared/libvecfor.so` | Libraries (FoBiS `static-*` / `shared-*` modes) |
 | `static/mod/` | Module files (.mod) |
 | `exe/` | Test executables (FoBiS doctests) |
-| `src/tests/` | Auto-generated test source files |
-| `doc/html/` | FORD-generated documentation |
+| `src/tests/` | Auto-generated doctest sources (tracked in git) |
+| `docs/api/` | API reference generated by `formal` (committed) |
+| `docs/.vitepress/dist/` | Built VitePress site |
