@@ -50,7 +50,7 @@ fobis doctests --mode tests-gnu-debug    # Build and generate test executables i
 fobis build --mode tests-nvf-acc --varset local_nvf   # OpenACC device test (local only, not in CI)
 ```
 
-Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.f90` (`_oac` API), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
+Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.F90` (`_oac` API; under `_OPENACC` it also fails if any iteration ran on the host), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
 
 ### CI and the FoBiS scaffold
 `fobis scaffold status` must report every managed file `OK`. Scaffold-managed (`verbatim`) files such as `.github/workflows/ci.yml`, `docs.yml`, `install.yml` and the scripts in `scripts/` must stay byte-identical to the FoBiS templates: never add project jobs to them, `fobis scaffold sync` would drop them. Project-specific CI goes into project-owned workflows (the StringiFor convention): `.github/workflows/docs-examples.yml` rebuilds `docs/examples/` and diffs the committed snippets/figures. CI runs on gfortran-14 (default of `.github/actions/setup-build-env`).
@@ -95,22 +95,29 @@ VecFor exposes a parallel set of `_oac`-suffixed free procedures that mirror a
 narrow slice of the TBP-bound operator surface, designed to be reachable from
 inside an `!$acc routine seq` device kernel. The host-side TBP-generic operator
 forms (`a .dot. b`, `a + b`, etc.) are **not** device-callable on the currently
-validated compilers (`nvfortran 26.1`; re-validated on `26.9` on an RTX 4070,
-cc89, 2026-11-03; the restrictions below were observed on 26.1 and not re-probed):
+validated compilers (`nvfortran 26.1` and `26.9`). Each restriction below was re-probed on
+2026-11-03 on an RTX 4070 (cc89), with 26.1 as the control: one isolated program per restriction mirroring
+VecFor's shapes, every procedure `!$acc routine seq`, kernel launches counted with `NV_ACC_NOTIFY=1`, results
+compared bit-exact against the host over 4096 elements.
 
-1. TBP-generic operator dispatch lowers to a vtable lookup. nvfortran rejects
-   indirect procedure calls inside `!$acc routine seq` with NVFORTRAN-W-0155
-   *"Accelerator restriction: Indirect function/procedure calls are not
-   supported"*.
-2. TBP `pass` arguments must be declared `class(...)`, which itself trips the
-   same indirect-dispatch restriction even when the procedure is called by
-   its concrete name.
-3. Any `type(vector_RPP) = type(vector_RPP)` assignment resolves to the user-
-   defined `assign_vector` TBP, which nvfortran rejects from device code with
-   NVFORTRAN-F-1252.
-4. A free function returning `type(vector_RPP)` allocates a single shared
-   device temporary that all threads in a parallel loop read/write through,
-   producing constant-garbage output. (Observed bug, nvhpc 26.1.)
+| # | Pattern | nvfortran 26.1 | nvfortran 26.9 |
+|---|---------|----------------|----------------|
+| 1 | TBP-generic operator (`a .dot. b`) in a compute region | W-0155 *indirect call*, then the loop **silently runs on the host** (0 kernel launches; results "correct") | same |
+| 2 | `class(...)` dummy, procedure called by its specific name | works on device, bit-exact | same |
+| 2b | TBP called *through* a `class` dummy inside a `routine seq` procedure (`self%dotproduct(o)`) | W-0155, no device version generated, `nvlink: Undefined reference` | same |
+| 3 | `type(vector) = type(vector)` (defined assignment `assign_vector` TBP) | F-1252, build fails | same |
+| 4 | free function returning a derived type, in a parallel loop | **constant garbage** (shared device temporary) | **fixed**: bit-exact |
+
+Consequences:
+
+1. Pattern 1 is the dangerous one: it compiles, runs and passes a results-only test without touching the GPU.
+   A device test must also prove the kernel launched (`NV_ACC_NOTIFY=1`, or `acc_on_device` inside the loop).
+2. `class` dummies are not the problem in themselves (old claim corrected); dynamic dispatch is. Device entry
+   points take `type(...)` because any TBP call through `class` inside them breaks the device build.
+3. Pattern 3 still forbids `c = f(...)` / `c = a` on `type(vector_RPP)` in device code, so on 26.9 a function
+   returning `type(vector_RPP)` is usable only as an actual argument. The vector-producing `_oac` entry points
+   stay subroutines, which also keeps 26.1 working.
+4. Pattern 4 is fixed on 26.9 only: keep the subroutine convention while 26.1 is supported.
 
 The current `_oac` API covers exactly the 7 operators FOSSIL's distance kernel
 needs. Six are subroutines (intent(out) result argument); only `dotproduct` is
@@ -145,7 +152,7 @@ Every new entry point must follow the same shape:
    each of `vecfor_R4P.F90`, `vecfor_R8P.F90`, `vecfor_R16P.F90`,
    `vecfor_RPP.F90`. Add a `public :: <name>_RPP_oac` line at the top of
    `vecfor_RPP.INC`, and re-export each per-precision name from `vecfor.F90`.
-6. Extend `src/tests/vecfor_test_device_loop.f90` to exercise the new entry
+6. Extend `src/tests/vecfor_test_device_loop.F90` to exercise the new entry
    point inside its `!$acc parallel loop` and bit-exact-compare against the
    host TBP form. The test must run under both `tests-gnu` (serial, !$acc
    inert) and `tests-nvf-acc --varset local_nvf` (real device).
@@ -171,12 +178,15 @@ deliberately stayed out of the `_oac` surface; if you ever try to add them,
 expect these errors:
 
 - `rotation_matrix_RPP`, `mirror_matrix_RPP`, `matrixproduct` return rank-2
-  `real(RPP) :: matrix(3,3)` by value. nvfortran rejects with NVFORTRAN-W-0155
-  *"No device symbol for address reference"*. Body must be rewritten to take
-  the result matrix as an `intent(out)` argument (no return-by-value).
+  `real(RPP) :: matrix(3,3)` by value. Re-probed 2026-11-03: the probe **compiles
+  without diagnostics on 26.1 and 26.9 but returns garbage** (relative errors ~1e3,
+  4096/4096 wrong), which is worse than the W-0155 *"No device symbol"* recorded
+  earlier. The same body with the matrix as an `intent(out)` argument is bit-exact
+  on both: the rewrite to `intent(out)` (no return-by-value) is required.
 - `angle_RPP` builds `versor = [self%normalized(), other%normalized()]` which
-  lowers to `pgf90_poly_asn_i8`, a host-only runtime. Body must be rewritten
-  without the polymorphic array constructor.
+  lowers to `pgf90_poly_asn_i8`, a host-only runtime (NVFORTRAN-S-1058 on 26.1 and
+  26.9). Body must be rewritten without the polymorphic array constructor and
+  without TBP calls through `class` (pattern 2b).
 
 These rewrites are mechanical but out of scope until a device consumer asks.
 

@@ -24,6 +24,9 @@ macros = ["PENF_R16P"]
 [build]
 auto-executables = false
 auto-tests = false
+# openacc is the compiler's module, used by vecfor_test_device_loop under #ifdef _OPENACC: fpm scans `use`
+# statements without preprocessing, so it must be told not to look for its source
+external-modules = ["openacc"]
 
 [fortran]
 implicit-typing = false
@@ -41,4 +44,4 @@ main = "vecfor_test_quad_precision.f90"
 [[test]]
 name = "vecfor_test_device_loop"
 source-dir = "src/tests"
-main = "vecfor_test_device_loop.f90"
+main = "vecfor_test_device_loop.F90"

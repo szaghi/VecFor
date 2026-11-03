@@ -24,9 +24,17 @@
 !< serially there and the device-vs-serial comparison degenerates to
 !< serial-vs-serial. That keeps the test in every test build, not just nvf.
 !<
-!< Acceptance: device run agrees bit-exact with serial reference run.
+!< Acceptance: device run agrees bit-exact with serial reference run and, when
+!< compiled with OpenACC (`_OPENACC`), every iteration of the loop ran on the
+!< device. The second check exists because nvfortran (26.1 and 26.9) compiles
+!< an indirect call in a compute region with a W-0155 warning and then runs the
+!< loop on the host: results stay correct, so a results-only test would pass
+!< without touching the GPU.
 program vecfor_test_device_loop
 use penf, only : R8P, I4P
+#ifdef _OPENACC
+use openacc, only : acc_on_device, acc_device_not_host
+#endif
 use vecfor, only : vector_R8P,                &
                    assign_vector_R8P_oac,     &
                    crossproduct_R8P_oac,      &
@@ -44,9 +52,11 @@ type(vector_R8P)        :: comb_dev(n), comb_ref(n)   !< Outputs: 2.0*a + b - a 
 type(vector_R8P)        :: tmp1, tmp2                 !< Loop-private scratch.
 real(R8P)               :: scalar
 integer(I4P)            :: i
+logical                 :: on_device(n)               !< Where each iteration of the device loop ran.
 logical                 :: all_passed
 
 scalar = 2.0_R8P
+on_device = .false.
 
 ! Initialise inputs with reproducible non-trivial values.
 do i = 1, n
@@ -58,7 +68,7 @@ enddo
 ! `tmp1`/`tmp2` chain the multi-step `comb = 2*a + b - a` expression: each
 ! `_oac` subroutine writes a private scratch, then the next subroutine reads
 ! it. They are `private` to the loop so each thread has its own pair.
-!$acc parallel loop copyin(a, b, scalar) copyout(dot_dev, cross_dev, comb_dev) &
+!$acc parallel loop copyin(a, b, scalar) copyout(dot_dev, cross_dev, comb_dev, on_device) &
 !$acc                private(tmp1, tmp2)
 do i = 1, n
    dot_dev(i) = dotproduct_R8P_oac(a(i), b(i))
@@ -67,6 +77,9 @@ do i = 1, n
    call vector_sum_vector_R8P_oac(tmp1, b(i), tmp2)
    call vector_sub_vector_R8P_oac(tmp2, a(i), tmp1)
    call assign_vector_R8P_oac(comb_dev(i), tmp1)
+#ifdef _OPENACC
+   on_device(i) = acc_on_device(acc_device_not_host)
+#endif
 enddo
 !$acc end parallel loop
 
@@ -93,6 +106,13 @@ do i = 1, n
    if (comb_dev(i)%y  /= comb_ref(i)%y)    all_passed = .false.
    if (comb_dev(i)%z  /= comb_ref(i)%z)    all_passed = .false.
 enddo
+
+#ifdef _OPENACC
+if (.not. all(on_device)) then
+   print "(A,I0,A,I0)", "device loop ran on the host for iterations: ", count(.not. on_device), " of ", n
+   all_passed = .false.
+endif
+#endif
 
 print "(A,L1)", "Are all tests passed? ", all_passed
 if (.not. all_passed) error stop "vecfor_test_device_loop FAILED"
