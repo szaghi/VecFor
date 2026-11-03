@@ -50,3 +50,6 @@ docs/.vitepress/cache/
 
 # documentation examples (scripts/docs_examples.sh)
 build/
+
+# FoBiS 3.8 per-build compiler fingerprint (static/obj, shared/obj, exe/obj)
+.fobis-compiler.json
