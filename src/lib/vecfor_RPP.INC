@@ -24,8 +24,12 @@ public :: crossproduct_RPP_oac
 public :: dotproduct_RPP_oac
 public :: matrixproduct_RPP_oac
 public :: mirror_matrix_RPP_oac
+public :: normalize_RPP_oac
+public :: normalized_RPP_oac
+public :: normL2_RPP_oac
 public :: R8P_mul_vector_RPP_oac
 public :: rotation_matrix_RPP_oac
+public :: sq_norm_RPP_oac
 public :: vector_mul_R8P_RPP_oac
 public :: vector_sub_vector_RPP_oac
 public :: vector_sum_vector_RPP_oac
@@ -550,6 +554,56 @@ contains
    c%y = matrix(2,1) * a%x + matrix(2,2) * a%y + matrix(2,3) * a%z
    c%z = matrix(3,1) * a%x + matrix(3,2) * a%y + matrix(3,3) * a%z
    endsubroutine matrixproduct_RPP_oac
+
+   pure function normL2_RPP_oac(a) result(norm)
+   !$acc routine seq
+   !< Device-callable norm L2: [[normL2_RPP]] open-coded.
+   type(vector_RPP), intent(in) :: a    !< Vector.
+   real(RPP)                    :: norm !< Norm L2.
+
+   norm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
+   endfunction normL2_RPP_oac
+
+   pure function sq_norm_RPP_oac(a) result(sq)
+   !$acc routine seq
+   !< Device-callable square of the norm L2: [[sq_norm_RPP]] open-coded.
+   type(vector_RPP), intent(in) :: a  !< Vector.
+   real(RPP)                    :: sq !< Square of the norm.
+
+   sq = (a%x * a%x) + (a%y * a%y) + (a%z * a%z)
+   endfunction sq_norm_RPP_oac
+
+   pure subroutine normalized_RPP_oac(a, c)
+   !$acc routine seq
+   !< Device-callable normalized copy `c = a%normalized()`: [[normalized_RPP]] open-coded, the norm guarded by
+   !< `smallRPP` as in `normalize`.
+   type(vector_RPP), intent(in)  :: a  !< Vector.
+   type(vector_RPP), intent(out) :: c  !< Normalized copy.
+   real(RPP)                     :: nm !< Norm L2 of the vector.
+
+   nm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
+   if (nm < smallRPP) then
+     nm = nm + smallRPP
+   endif
+   c%x = a%x / nm
+   c%y = a%y / nm
+   c%z = a%z / nm
+   endsubroutine normalized_RPP_oac
+
+   pure subroutine normalize_RPP_oac(a)
+   !$acc routine seq
+   !< Device-callable in-place normalization `call a%normalize()`: [[normalize]] open-coded.
+   type(vector_RPP), intent(inout) :: a  !< Vector, normalized on return.
+   real(RPP)                       :: nm !< Norm L2 of the vector.
+
+   nm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
+   if (nm < smallRPP) then
+     nm = nm + smallRPP
+   endif
+   a%x = a%x / nm
+   a%y = a%y / nm
+   a%z = a%z / nm
+   endsubroutine normalize_RPP_oac
 
    ! public methods
    ! non TBP

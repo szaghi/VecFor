@@ -46,8 +46,12 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define dotproduct_RPP_oac dotproduct_oac
 #define matrixproduct_RPP_oac matrixproduct_oac
 #define mirror_matrix_RPP_oac mirror_matrix_oac
+#define normalize_RPP_oac normalize_oac
+#define normalized_RPP_oac normalized_oac
+#define normL2_RPP_oac normL2_oac
 #define R8P_mul_vector_RPP_oac R8P_mul_vector_oac
 #define rotation_matrix_RPP_oac rotation_matrix_oac
+#define sq_norm_RPP_oac sq_norm_oac
 #define vector_mul_R8P_RPP_oac vector_mul_R8P_oac
 #define vector_sub_vector_RPP_oac vector_sub_vector_oac
 #define vector_sum_vector_RPP_oac vector_sum_vector_oac
