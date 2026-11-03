@@ -30,6 +30,8 @@ public :: face_normal4_RPP_oac
 public :: is_collinear_RPP_oac
 public :: is_concyclic_RPP_oac
 public :: matrixproduct_RPP_oac
+public :: mirror_by_matrix_RPP_oac
+public :: mirror_by_normal_RPP_oac
 public :: mirror_matrix_RPP_oac
 public :: normalize_RPP_oac
 public :: normalized_RPP_oac
@@ -38,6 +40,8 @@ public :: orthogonal_RPP_oac
 public :: parallel_RPP_oac
 public :: projection_onto_plane_RPP_oac
 public :: R8P_mul_vector_RPP_oac
+public :: rotate_by_axis_angle_RPP_oac
+public :: rotate_by_matrix_RPP_oac
 public :: rotation_matrix_RPP_oac
 public :: sq_norm_RPP_oac
 public :: vector_mul_R8P_RPP_oac
@@ -820,6 +824,67 @@ contains
    if (present(tolerance)) tolerance_ = tolerance
    is_concyclic_ = sqrt(p) + sqrt(q) - sqrt(r) <= smallRPP + tolerance_
    endfunction is_concyclic_RPP_oac
+
+   pure subroutine rotate_by_axis_angle_RPP_oac(a, axis, angle)
+   !$acc routine seq
+   !< Device-callable in-place rotation about `axis` by `angle`, `call a%rotate(axis=, angle=)`:
+   !< [[rotate_by_axis_angle]], the rotation_matrix_oac matrix applied with matrixproduct_oac.
+   type(vector_RPP), intent(inout) :: a      !< Vector, rotated on return.
+   type(vector_RPP), intent(in)    :: axis   !< Axis of rotation.
+   real(RPP),        intent(in)    :: angle  !< Angle of rotation (radians).
+   real(RPP)                       :: m(3,3) !< Rotation matrix.
+   type(vector_RPP)                :: t      !< Rotated vector.
+
+   call rotation_matrix_RPP_oac(axis, angle, m)
+   call matrixproduct_RPP_oac(m, a, t)
+   a%x = t%x
+   a%y = t%y
+   a%z = t%z
+   endsubroutine rotate_by_axis_angle_RPP_oac
+
+   pure subroutine rotate_by_matrix_RPP_oac(a, matrix)
+   !$acc routine seq
+   !< Device-callable in-place rotation by `matrix`, `call a%rotate(matrix=)`: [[rotate_by_matrix]],
+   !< matrixproduct_oac applied to `a`.
+   type(vector_RPP), intent(inout) :: a           !< Vector, transformed on return.
+   real(RPP),        intent(in)    :: matrix(3,3) !< Transformation matrix.
+   type(vector_RPP)                :: t           !< Transformed vector.
+
+   call matrixproduct_RPP_oac(matrix, a, t)
+   a%x = t%x
+   a%y = t%y
+   a%z = t%z
+   endsubroutine rotate_by_matrix_RPP_oac
+
+   pure subroutine mirror_by_normal_RPP_oac(a, normal)
+   !$acc routine seq
+   !< Device-callable in-place mirror image across the plane of normal `normal`, `call a%mirror(normal=)`:
+   !< [[mirror_by_normal]], the mirror_matrix_oac matrix applied with matrixproduct_oac.
+   type(vector_RPP), intent(inout) :: a      !< Vector, mirrored on return.
+   type(vector_RPP), intent(in)    :: normal !< Normal of the mirroring plane.
+   real(RPP)                       :: m(3,3) !< Mirror matrix.
+   type(vector_RPP)                :: t      !< Mirrored vector.
+
+   call mirror_matrix_RPP_oac(normal, m)
+   call matrixproduct_RPP_oac(m, a, t)
+   a%x = t%x
+   a%y = t%y
+   a%z = t%z
+   endsubroutine mirror_by_normal_RPP_oac
+
+   pure subroutine mirror_by_matrix_RPP_oac(a, matrix)
+   !$acc routine seq
+   !< Device-callable in-place mirroring by `matrix`, `call a%mirror(matrix=)`: [[mirror_by_matrix]],
+   !< matrixproduct_oac applied to `a`.
+   type(vector_RPP), intent(inout) :: a           !< Vector, transformed on return.
+   real(RPP),        intent(in)    :: matrix(3,3) !< Transformation matrix.
+   type(vector_RPP)                :: t           !< Transformed vector.
+
+   call matrixproduct_RPP_oac(matrix, a, t)
+   a%x = t%x
+   a%y = t%y
+   a%z = t%z
+   endsubroutine mirror_by_matrix_RPP_oac
 
    ! public methods
    ! non TBP

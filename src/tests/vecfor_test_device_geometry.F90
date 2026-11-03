@@ -29,6 +29,9 @@ use vecfor, only : vector_R8P,                          &
                    is_collinear_R8P_oac,                &
                    is_concyclic_R8P,                    &
                    is_concyclic_R8P_oac,                &
+                   mirror_by_matrix_R8P_oac,            &
+                   mirror_by_normal_R8P_oac,            &
+                   mirror_matrix_R8P,                   &
                    normalize_R8P_oac,                   &
                    normalized_R8P,                      &
                    normalized_R8P_oac,                  &
@@ -38,6 +41,9 @@ use vecfor, only : vector_R8P,                          &
                    parallel_R8P_oac,                    &
                    projection_onto_plane_R8P,           &
                    projection_onto_plane_R8P_oac,       &
+                   rotate_by_axis_angle_R8P_oac,        &
+                   rotate_by_matrix_R8P_oac,            &
+                   rotation_matrix_R8P,                 &
                    sq_norm_R8P,                         &
                    sq_norm_R8P_oac
 implicit none
@@ -81,6 +87,12 @@ real(R8P)               :: rad, ctr(3)
 logical                 :: col_dev(n), col_ref(n), col_oac(n), colt_dev(n), colt_ref(n), colt_oac(n)
 logical                 :: ccl_dev(n), ccl_ref(n), ccl_oac(n), cclt_dev(n), cclt_ref(n), cclt_oac(n)
 
+! in-place rotate and mirror (by axis/angle, by normal, by matrix)
+real(R8P)               :: ang(n), rotm(3,3,n), mirm(3,3,n), m(3,3)
+type(vector_R8P)        :: rax_dev(n), rax_ref(n), rax_oac(n), rmx_dev(n), rmx_ref(n), rmx_oac(n)
+type(vector_R8P)        :: mnr_dev(n), mnr_ref(n), mnr_oac(n), mmx_dev(n), mmx_ref(n), mmx_oac(n)
+real(R8P)               :: trf_bnd(3,n), trm_bnd(3,n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -99,11 +111,15 @@ do i = 1, n
    c2(i) = vector_R8P(x=ctr(1) + rad * cos(3.9_R8P), y=ctr(2) + rad * sin(3.9_R8P), z=ctr(3))
    c3(i) = vector_R8P(x=ctr(1) + rad * cos(5.2_R8P), y=ctr(2) + rad * sin(5.2_R8P), z=ctr(3))
    if (mod(i, 2) == 0) c3(i)%x = c3(i)%x + 0.3_R8P
+   ang(i) = 0.0125_R8P * real(i, R8P)
+   rotm(:,:,i) = rotation_matrix_R8P(p1(i), ang(i))
+   mirm(:,:,i) = mirror_matrix_R8P(p2(i))
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3) private(t1) &
+!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
-!$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev)
+!$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
+!$acc         rmx_dev, mnr_dev, mmx_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -125,6 +141,20 @@ do i = 1, n
    colt_dev(i) = is_collinear_R8P_oac(q(i), p1(i), p2(i), tolerance=1e-9_R8P)
    ccl_dev(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i))
    cclt_dev(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
+   call assign_vector_R8P_oac(t1, p0(i))
+   call rotate_by_axis_angle_R8P_oac(t1, p1(i), ang(i))
+   call assign_vector_R8P_oac(rax_dev(i), t1)
+   call assign_vector_R8P_oac(t1, p0(i))
+   m = rotm(:,:,i)
+   call rotate_by_matrix_R8P_oac(t1, m)
+   call assign_vector_R8P_oac(rmx_dev(i), t1)
+   call assign_vector_R8P_oac(t1, p0(i))
+   call mirror_by_normal_R8P_oac(t1, p2(i))
+   call assign_vector_R8P_oac(mnr_dev(i), t1)
+   call assign_vector_R8P_oac(t1, p0(i))
+   m = mirm(:,:,i)
+   call mirror_by_matrix_R8P_oac(t1, m)
+   call assign_vector_R8P_oac(mmx_dev(i), t1)
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -171,6 +201,22 @@ do i = 1, n
    ccl_oac(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i))
    cclt_ref(i) = is_concyclic_R8P(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
    cclt_oac(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
+   rax_ref(i) = p0(i)
+   call rax_ref(i)%rotate(axis=p1(i), angle=ang(i))
+   rax_oac(i) = p0(i)
+   call rotate_by_axis_angle_R8P_oac(rax_oac(i), p1(i), ang(i))
+   rmx_ref(i) = p0(i)
+   call rmx_ref(i)%rotate(matrix=rotm(:,:,i))
+   rmx_oac(i) = p0(i)
+   call rotate_by_matrix_R8P_oac(rmx_oac(i), rotm(:,:,i))
+   mnr_ref(i) = p0(i)
+   call mnr_ref(i)%mirror(normal=p2(i))
+   mnr_oac(i) = p0(i)
+   call mirror_by_normal_R8P_oac(mnr_oac(i), p2(i))
+   mmx_ref(i) = p0(i)
+   call mmx_ref(i)%mirror(matrix=mirm(:,:,i))
+   mmx_oac(i) = p0(i)
+   call mirror_by_matrix_R8P_oac(mmx_oac(i), mirm(:,:,i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -232,6 +278,18 @@ if (count(colt_ref) == 0 .or. count(.not. colt_ref) == 0 .or. count(cclt_ref) ==
    print "(A)", "is_collinear/is_concyclic: the data do not exercise both outcomes"
    all_passed = .false.
 endif
+! rotate/mirror: the host forms apply matmul (summation order the compiler's: 6*eps*sum|m_ij*a_j|) to matrices whose
+! elements are at most 1 in magnitude; by axis/angle the device sin/cos also differ in the last bit (rotation_matrix:
+! at most 1 ulp of 1.0 per element). Bound 16*eps*(|a_x| + |a_y| + |a_z|) with the matrix built inside, 8*eps*(...)
+! with the matrix given.
+do i = 1, n
+   trf_bnd(:,i) = 16 * epsilon(1._R8P) * (abs(p0(i)%x) + abs(p0(i)%y) + abs(p0(i)%z))
+   trm_bnd(:,i) = 8 * epsilon(1._R8P) * (abs(p0(i)%x) + abs(p0(i)%y) + abs(p0(i)%z))
+enddo
+call check_vec_bound('rotate_by_axis_angle_oac', rax_dev, rax_ref, rax_oac, trf_bnd)
+call check_vec_bound('rotate_by_matrix_oac', rmx_dev, rmx_ref, rmx_oac, trm_bnd)
+call check_vec_bound('mirror_by_normal_oac', mnr_dev, mnr_ref, mnr_oac, trf_bnd)
+call check_vec_bound('mirror_by_matrix_oac', mmx_dev, mmx_ref, mmx_oac, trm_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then

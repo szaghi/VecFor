@@ -40,6 +40,8 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define is_collinear_RPP_oac is_collinear_R16P_oac
 #define is_concyclic_RPP_oac is_concyclic_R16P_oac
 #define matrixproduct_RPP_oac matrixproduct_R16P_oac
+#define mirror_by_matrix_RPP_oac mirror_by_matrix_R16P_oac
+#define mirror_by_normal_RPP_oac mirror_by_normal_R16P_oac
 #define mirror_matrix_RPP_oac mirror_matrix_R16P_oac
 #define normalize_RPP_oac normalize_R16P_oac
 #define normalized_RPP_oac normalized_R16P_oac
@@ -48,6 +50,8 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define parallel_RPP_oac parallel_R16P_oac
 #define projection_onto_plane_RPP_oac projection_onto_plane_R16P_oac
 #define R8P_mul_vector_RPP_oac R8P_mul_vector_R16P_oac
+#define rotate_by_axis_angle_RPP_oac rotate_by_axis_angle_R16P_oac
+#define rotate_by_matrix_RPP_oac rotate_by_matrix_R16P_oac
 #define rotation_matrix_RPP_oac rotation_matrix_R16P_oac
 #define sq_norm_RPP_oac sq_norm_R16P_oac
 #define vector_mul_R8P_RPP_oac vector_mul_R8P_R16P_oac

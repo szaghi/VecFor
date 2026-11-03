@@ -34,6 +34,8 @@ use vecfor_RPP, only : angle,                       &
                        is_concyclic,                &
                        is_concyclic_oac,            &
                        matrixproduct_oac,           &
+                       mirror_by_matrix_oac,        &
+                       mirror_by_normal_oac,        &
                        mirror_matrix,               &
                        mirror_matrix_oac,           &
                        normalize_oac,               &
@@ -46,6 +48,8 @@ use vecfor_RPP, only : angle,                       &
                        projection_onto_plane,       &
                        projection_onto_plane_oac,   &
                        R8P_mul_vector_oac,          &
+                       rotate_by_axis_angle_oac,    &
+                       rotate_by_matrix_oac,        &
                        rotation_matrix,             &
                        rotation_matrix_oac,         &
                        sq_norm,                     &
@@ -78,6 +82,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        is_concyclic_R4P,                &
                        is_concyclic_R4P_oac,            &
                        matrixproduct_R4P_oac,           &
+                       mirror_by_matrix_R4P_oac,        &
+                       mirror_by_normal_R4P_oac,        &
                        mirror_matrix_R4P,               &
                        mirror_matrix_R4P_oac,           &
                        normalize_R4P_oac,               &
@@ -90,6 +96,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        projection_onto_plane_R4P,       &
                        projection_onto_plane_R4P_oac,   &
                        R8P_mul_vector_R4P_oac,          &
+                       rotate_by_axis_angle_R4P_oac,    &
+                       rotate_by_matrix_R4P_oac,        &
                        rotation_matrix_R4P,             &
                        rotation_matrix_R4P_oac,         &
                        sq_norm_R4P,                     &
@@ -122,6 +130,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        is_concyclic_R8P,                &
                        is_concyclic_R8P_oac,            &
                        matrixproduct_R8P_oac,           &
+                       mirror_by_matrix_R8P_oac,        &
+                       mirror_by_normal_R8P_oac,        &
                        mirror_matrix_R8P,               &
                        mirror_matrix_R8P_oac,           &
                        normalize_R8P_oac,               &
@@ -134,6 +144,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        projection_onto_plane_R8P,       &
                        projection_onto_plane_R8P_oac,   &
                        R8P_mul_vector_R8P_oac,          &
+                       rotate_by_axis_angle_R8P_oac,    &
+                       rotate_by_matrix_R8P_oac,        &
                        rotation_matrix_R8P,             &
                        rotation_matrix_R8P_oac,         &
                        sq_norm_R8P,                     &
@@ -166,6 +178,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         is_concyclic_R16P,                &
                         is_concyclic_R16P_oac,            &
                         matrixproduct_R16P_oac,           &
+                        mirror_by_matrix_R16P_oac,        &
+                        mirror_by_normal_R16P_oac,        &
                         mirror_matrix_R16P,               &
                         mirror_matrix_R16P_oac,           &
                         normalize_R16P_oac,               &
@@ -178,6 +192,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         projection_onto_plane_R16P,       &
                         projection_onto_plane_R16P_oac,   &
                         R8P_mul_vector_R16P_oac,          &
+                        rotate_by_axis_angle_R16P_oac,    &
+                        rotate_by_matrix_R16P_oac,        &
                         rotation_matrix_R16P,             &
                         rotation_matrix_R16P_oac,         &
                         sq_norm_R16P,                     &
@@ -214,6 +230,8 @@ public :: face_normal4_oac
 public :: is_collinear_oac
 public :: is_concyclic_oac
 public :: matrixproduct_oac
+public :: mirror_by_matrix_oac
+public :: mirror_by_normal_oac
 public :: mirror_matrix_oac
 public :: normalize_oac
 public :: normalized_oac
@@ -222,6 +240,8 @@ public :: orthogonal_oac
 public :: parallel_oac
 public :: projection_onto_plane_oac
 public :: R8P_mul_vector_oac
+public :: rotate_by_axis_angle_oac
+public :: rotate_by_matrix_oac
 public :: rotation_matrix_oac
 public :: distance_to_line_R8P_oac
 public :: distance_to_plane_R8P_oac
@@ -230,12 +250,16 @@ public :: face_normal3_R8P_oac
 public :: face_normal4_R8P_oac
 public :: is_collinear_R8P_oac
 public :: is_concyclic_R8P_oac
+public :: mirror_by_matrix_R8P_oac
+public :: mirror_by_normal_R8P_oac
 public :: normalize_R8P_oac
 public :: normalized_R8P_oac
 public :: normL2_R8P_oac
 public :: orthogonal_R8P_oac
 public :: parallel_R8P_oac
 public :: projection_onto_plane_R8P_oac
+public :: rotate_by_axis_angle_R8P_oac
+public :: rotate_by_matrix_R8P_oac
 public :: sq_norm_R8P_oac
 public :: vector_mul_R8P_oac
 public :: sq_norm_oac
@@ -269,6 +293,8 @@ public :: face_normal4_R4P_oac
 public :: is_collinear_R4P_oac
 public :: is_concyclic_R4P_oac
 public :: matrixproduct_R4P_oac
+public :: mirror_by_matrix_R4P_oac
+public :: mirror_by_normal_R4P_oac
 public :: mirror_matrix_R4P_oac
 public :: normalize_R4P_oac
 public :: normalized_R4P_oac
@@ -277,6 +303,8 @@ public :: orthogonal_R4P_oac
 public :: parallel_R4P_oac
 public :: projection_onto_plane_R4P_oac
 public :: R8P_mul_vector_R4P_oac
+public :: rotate_by_axis_angle_R4P_oac
+public :: rotate_by_matrix_R4P_oac
 public :: rotation_matrix_R4P_oac
 public :: sq_norm_R4P_oac
 public :: vector_mul_R8P_R4P_oac
@@ -337,6 +365,8 @@ public :: face_normal4_R16P_oac
 public :: is_collinear_R16P_oac
 public :: is_concyclic_R16P_oac
 public :: matrixproduct_R16P_oac
+public :: mirror_by_matrix_R16P_oac
+public :: mirror_by_normal_R16P_oac
 public :: mirror_matrix_R16P_oac
 public :: normalize_R16P_oac
 public :: normalized_R16P_oac
@@ -345,6 +375,8 @@ public :: orthogonal_R16P_oac
 public :: parallel_R16P_oac
 public :: projection_onto_plane_R16P_oac
 public :: R8P_mul_vector_R16P_oac
+public :: rotate_by_axis_angle_R16P_oac
+public :: rotate_by_matrix_R16P_oac
 public :: rotation_matrix_R16P_oac
 public :: sq_norm_R16P_oac
 public :: vector_mul_R8P_R16P_oac
