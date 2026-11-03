@@ -32,6 +32,8 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define assign_vector_RPP_oac assign_vector_R16P_oac
 #define crossproduct_RPP_oac crossproduct_R16P_oac
 #define distance_to_line_RPP_oac distance_to_line_R16P_oac
+#define distance_to_plane_RPP_oac distance_to_plane_R16P_oac
+#define distance_vectorial_to_plane_RPP_oac distance_vectorial_to_plane_R16P_oac
 #define dotproduct_RPP_oac dotproduct_R16P_oac
 #define face_normal3_RPP_oac face_normal3_R16P_oac
 #define face_normal4_RPP_oac face_normal4_R16P_oac
@@ -42,6 +44,7 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define normL2_RPP_oac normL2_R16P_oac
 #define orthogonal_RPP_oac orthogonal_R16P_oac
 #define parallel_RPP_oac parallel_R16P_oac
+#define projection_onto_plane_RPP_oac projection_onto_plane_R16P_oac
 #define R8P_mul_vector_RPP_oac R8P_mul_vector_R16P_oac
 #define rotation_matrix_RPP_oac rotation_matrix_R16P_oac
 #define sq_norm_RPP_oac sq_norm_R16P_oac

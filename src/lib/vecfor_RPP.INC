@@ -22,6 +22,8 @@ public :: sq_norm_RPP
 public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: distance_to_line_RPP_oac
+public :: distance_to_plane_RPP_oac
+public :: distance_vectorial_to_plane_RPP_oac
 public :: dotproduct_RPP_oac
 public :: face_normal3_RPP_oac
 public :: face_normal4_RPP_oac
@@ -32,6 +34,7 @@ public :: normalized_RPP_oac
 public :: normL2_RPP_oac
 public :: orthogonal_RPP_oac
 public :: parallel_RPP_oac
+public :: projection_onto_plane_RPP_oac
 public :: R8P_mul_vector_RPP_oac
 public :: rotation_matrix_RPP_oac
 public :: sq_norm_RPP_oac
@@ -718,6 +721,59 @@ contains
      normal%z = 0.5_RPP * w%z
    endif
    endsubroutine face_normal4_RPP_oac
+
+   pure function distance_to_plane_RPP_oac(a, pt1, pt2, pt3) result(distance)
+   !$acc routine seq
+   !< Device-callable signed distance of the point `a` from the plane through `pt1, pt2, pt3`:
+   !< [[distance_to_plane_RPP]], the unit face normal dotted with `a - pt1`, open-coded.
+   type(vector_RPP), intent(in) :: a        !< Point.
+   type(vector_RPP), intent(in) :: pt1      !< First point of the plane.
+   type(vector_RPP), intent(in) :: pt2      !< Second point of the plane.
+   type(vector_RPP), intent(in) :: pt3      !< Third point of the plane.
+   real(RPP)                    :: distance !< Signed distance.
+   type(vector_RPP)             :: normal   !< Unit normal of the plane.
+   type(vector_RPP)             :: r        !< `a - pt1`.
+
+   call face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm='y')
+   call vector_sub_vector_RPP_oac(a, pt1, r)
+   distance = dotproduct_RPP_oac(normal, r)
+   endfunction distance_to_plane_RPP_oac
+
+   pure subroutine distance_vectorial_to_plane_RPP_oac(a, pt1, pt2, pt3, distance)
+   !$acc routine seq
+   !< Device-callable vectorial distance of the point `a` from the plane through `pt1, pt2, pt3`:
+   !< [[distance_vectorial_to_plane_RPP]], `normal * (normal.dot.(a - pt1))` open-coded.
+   type(vector_RPP), intent(in)  :: a        !< Point.
+   type(vector_RPP), intent(in)  :: pt1      !< First point of the plane.
+   type(vector_RPP), intent(in)  :: pt2      !< Second point of the plane.
+   type(vector_RPP), intent(in)  :: pt3      !< Third point of the plane.
+   type(vector_RPP), intent(out) :: distance !< Vectorial distance.
+   type(vector_RPP)              :: normal   !< Unit normal of the plane.
+   type(vector_RPP)              :: r        !< `a - pt1`.
+   real(RPP)                     :: d        !< `normal.dot.r`.
+
+   call face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm='y')
+   call vector_sub_vector_RPP_oac(a, pt1, r)
+   d = dotproduct_RPP_oac(normal, r)
+   distance%x = normal%x * d
+   distance%y = normal%y * d
+   distance%z = normal%z * d
+   endsubroutine distance_vectorial_to_plane_RPP_oac
+
+   pure subroutine projection_onto_plane_RPP_oac(a, pt1, pt2, pt3, projection)
+   !$acc routine seq
+   !< Device-callable projection of the point `a` onto the plane through `pt1, pt2, pt3`:
+   !< [[projection_onto_plane_RPP]], `a - distance_vectorial_to_plane`.
+   type(vector_RPP), intent(in)  :: a          !< Point.
+   type(vector_RPP), intent(in)  :: pt1        !< First point of the plane.
+   type(vector_RPP), intent(in)  :: pt2        !< Second point of the plane.
+   type(vector_RPP), intent(in)  :: pt3        !< Third point of the plane.
+   type(vector_RPP), intent(out) :: projection !< Projection.
+   type(vector_RPP)              :: distance   !< Vectorial distance from the plane.
+
+   call distance_vectorial_to_plane_RPP_oac(a, pt1, pt2, pt3, distance)
+   call vector_sub_vector_RPP_oac(a, distance, projection)
+   endsubroutine projection_onto_plane_RPP_oac
 
    ! public methods
    ! non TBP

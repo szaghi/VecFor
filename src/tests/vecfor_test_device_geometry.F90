@@ -13,22 +13,28 @@ use penf, only : R8P, I4P
 #ifdef _OPENACC
 use openacc, only : acc_on_device, acc_device_not_host
 #endif
-use vecfor, only : vector_R8P,               &
-                   assign_vector_R8P_oac,    &
-                   distance_to_line_R8P,     &
-                   distance_to_line_R8P_oac, &
-                   face_normal3_R8P,         &
-                   face_normal3_R8P_oac,     &
-                   face_normal4_R8P,         &
-                   face_normal4_R8P_oac,     &
-                   normalize_R8P_oac,        &
-                   normalized_R8P,           &
-                   normalized_R8P_oac,       &
-                   normL2_R8P,               &
-                   normL2_R8P_oac,           &
-                   orthogonal_R8P_oac,       &
-                   parallel_R8P_oac,         &
-                   sq_norm_R8P,              &
+use vecfor, only : vector_R8P,                          &
+                   assign_vector_R8P_oac,               &
+                   distance_to_line_R8P,                &
+                   distance_to_line_R8P_oac,            &
+                   distance_to_plane_R8P,               &
+                   distance_to_plane_R8P_oac,           &
+                   distance_vectorial_to_plane_R8P,     &
+                   distance_vectorial_to_plane_R8P_oac, &
+                   face_normal3_R8P,                    &
+                   face_normal3_R8P_oac,                &
+                   face_normal4_R8P,                    &
+                   face_normal4_R8P_oac,                &
+                   normalize_R8P_oac,                   &
+                   normalized_R8P,                      &
+                   normalized_R8P_oac,                  &
+                   normL2_R8P,                          &
+                   normL2_R8P_oac,                      &
+                   orthogonal_R8P_oac,                  &
+                   parallel_R8P_oac,                    &
+                   projection_onto_plane_R8P,           &
+                   projection_onto_plane_R8P_oac,       &
+                   sq_norm_R8P,                         &
                    sq_norm_R8P_oac
 implicit none
 
@@ -59,6 +65,11 @@ type(vector_R8P)        :: f3n_dev(n), f3n_ref(n), f3n_oac(n), f3a_dev(n), f3a_r
 type(vector_R8P)        :: f4n_dev(n), f4n_ref(n), f4n_oac(n), f4a_dev(n), f4a_ref(n), f4a_oac(n)
 real(R8P)               :: f3_bnd(3,n), f3n_bnd(3,n), f4_bnd(3,n), f4n_bnd(3,n), cnd
 
+! distance_to_plane, distance_vectorial_to_plane, projection_onto_plane
+real(R8P)               :: dtp_dev(n), dtp_ref(n), dtp_oac(n)
+type(vector_R8P)        :: dvp_dev(n), dvp_ref(n), dvp_oac(n), prj_dev(n), prj_ref(n), prj_oac(n)
+real(R8P)               :: dtp_bnd(n), dvp_bnd(3,n), prj_bnd(3,n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -72,7 +83,7 @@ enddo
 
 !$acc parallel loop copyin(p0, p1, p2, p3) private(t1) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
-!$acc         f4n_dev, f4a_dev)
+!$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -87,6 +98,9 @@ do i = 1, n
    call face_normal3_R8P_oac(p1(i), p2(i), p3(i), f3a_dev(i))
    call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4n_dev(i), norm='y')
    call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4a_dev(i))
+   dtp_dev(i) = distance_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i))
+   call distance_vectorial_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), dvp_dev(i))
+   call projection_onto_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), prj_dev(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -119,6 +133,12 @@ do i = 1, n
    call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4n_oac(i), norm='y')
    f4a_ref(i) = face_normal4_R8P(pt1=p0(i), pt2=p1(i), pt3=p2(i), pt4=p3(i))
    call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4a_oac(i))
+   dtp_ref(i) = distance_to_plane_R8P(p0(i), p1(i), p2(i), p3(i))
+   dtp_oac(i) = distance_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i))
+   dvp_ref(i) = distance_vectorial_to_plane_R8P(p0(i), p1(i), p2(i), p3(i))
+   call distance_vectorial_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), dvp_oac(i))
+   prj_ref(i) = projection_onto_plane_R8P(p0(i), p1(i), p2(i), p3(i))
+   call projection_onto_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), prj_oac(i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -157,6 +177,17 @@ call check_vec_bound('face_normal3_oac norm', f3n_dev, f3n_ref, f3n_oac, f3n_bnd
 call check_vec_bound('face_normal3_oac', f3a_dev, f3a_ref, f3a_oac, f3_bnd)
 call check_vec_bound('face_normal4_oac norm', f4n_dev, f4n_ref, f4n_oac, f4n_bnd)
 call check_vec_bound('face_normal4_oac', f4a_dev, f4a_ref, f4a_oac, f4_bnd)
+! plane family: d = n.r, r = a - pt1, n the unit normal of the face (error ~16*eps*(1 + cond), see face normals): bound
+! 32*eps*|r|*(1 + cond) on d and on the components of d*n; the projection a - d*n adds one rounding of |a_i|.
+do i = 1, n
+   cnd = cond_cross(p2(i) - p1(i), p3(i) - p1(i))
+   dtp_bnd(i) = 32 * epsilon(1._R8P) * normL2_R8P(p0(i) - p1(i)) * (1._R8P + cnd)
+   dvp_bnd(:,i) = dtp_bnd(i)
+   prj_bnd(:,i) = dtp_bnd(i) + 2 * epsilon(1._R8P) * abs([p0(i)%x, p0(i)%y, p0(i)%z])
+enddo
+call check_real_bound('distance_to_plane_oac', dtp_dev, dtp_ref, dtp_oac, dtp_bnd)
+call check_vec_bound('distance_vectorial_to_plane_oac', dvp_dev, dvp_ref, dvp_oac, dvp_bnd)
+call check_vec_bound('projection_onto_plane_oac', prj_dev, prj_ref, prj_oac, prj_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
