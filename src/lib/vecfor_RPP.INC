@@ -21,6 +21,7 @@ public :: rotation_matrix_RPP
 public :: sq_norm_RPP
 public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
+public :: distance_to_line_RPP_oac
 public :: dotproduct_RPP_oac
 public :: matrixproduct_RPP_oac
 public :: mirror_matrix_RPP_oac
@@ -643,6 +644,26 @@ contains
    c%y = a%y - p%y
    c%z = a%z - p%z
    endsubroutine orthogonal_RPP_oac
+
+   pure function distance_to_line_RPP_oac(a, pt1, pt2) result(distance)
+   !$acc routine seq
+   !< Device-callable distance of the point `a` from the line through `pt1` and `pt2`: [[distance_to_line_RPP]],
+   !< `normL2((a - pt1).cross.(a - pt2)) / normL2(pt2 - pt1)` open-coded.
+   type(vector_RPP), intent(in) :: a        !< Point.
+   type(vector_RPP), intent(in) :: pt1      !< First point of the line.
+   type(vector_RPP), intent(in) :: pt2      !< Second point of the line.
+   real(RPP)                    :: distance !< Distance.
+   type(vector_RPP)             :: u        !< `a - pt1`.
+   type(vector_RPP)             :: v        !< `a - pt2`.
+   type(vector_RPP)             :: w        !< `u .cross. v`.
+   type(vector_RPP)             :: s        !< `pt2 - pt1`.
+
+   call vector_sub_vector_RPP_oac(a, pt1, u)
+   call vector_sub_vector_RPP_oac(a, pt2, v)
+   call crossproduct_RPP_oac(u, v, w)
+   call vector_sub_vector_RPP_oac(pt2, pt1, s)
+   distance = normL2_RPP_oac(w) / normL2_RPP_oac(s)
+   endfunction distance_to_line_RPP_oac
 
    ! public methods
    ! non TBP

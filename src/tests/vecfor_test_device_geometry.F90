@@ -13,16 +13,18 @@ use penf, only : R8P, I4P
 #ifdef _OPENACC
 use openacc, only : acc_on_device, acc_device_not_host
 #endif
-use vecfor, only : vector_R8P,            &
-                   assign_vector_R8P_oac, &
-                   normalize_R8P_oac,     &
-                   normalized_R8P,        &
-                   normalized_R8P_oac,    &
-                   normL2_R8P,            &
-                   normL2_R8P_oac,        &
-                   orthogonal_R8P_oac,    &
-                   parallel_R8P_oac,      &
-                   sq_norm_R8P,           &
+use vecfor, only : vector_R8P,               &
+                   assign_vector_R8P_oac,    &
+                   distance_to_line_R8P,     &
+                   distance_to_line_R8P_oac, &
+                   normalize_R8P_oac,        &
+                   normalized_R8P,           &
+                   normalized_R8P_oac,       &
+                   normL2_R8P,               &
+                   normL2_R8P_oac,           &
+                   orthogonal_R8P_oac,       &
+                   parallel_R8P_oac,         &
+                   sq_norm_R8P,              &
                    sq_norm_R8P_oac
 implicit none
 
@@ -44,6 +46,10 @@ type(vector_R8P)        :: par_dev(n), par_ref(n), par_oac(n)
 type(vector_R8P)        :: ort_dev(n), ort_ref(n), ort_oac(n)
 real(R8P)               :: ort_bnd(3,n)
 
+! distance_to_line
+real(R8P)               :: dtl_dev(n), dtl_ref(n), dtl_oac(n)
+real(R8P)               :: dtl_bnd(n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -56,7 +62,7 @@ do i = 1, n
 enddo
 
 !$acc parallel loop copyin(p0, p1, p2, p3) private(t1) &
-!$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev)
+!$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -66,6 +72,7 @@ do i = 1, n
    call assign_vector_R8P_oac(nze_dev(i), t1)
    call parallel_R8P_oac(p1(i), p2(i), par_dev(i))
    call orthogonal_R8P_oac(p1(i), p2(i), ort_dev(i))
+   dtl_dev(i) = distance_to_line_R8P_oac(p0(i), p1(i), p2(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -88,6 +95,8 @@ do i = 1, n
    call parallel_R8P_oac(p1(i), p2(i), par_oac(i))
    ort_ref(i) = p1(i)%orthogonal(p2(i))
    call orthogonal_R8P_oac(p1(i), p2(i), ort_oac(i))
+   dtl_ref(i) = distance_to_line_R8P(p0(i), p1(i), p2(i))
+   dtl_oac(i) = distance_to_line_R8P_oac(p0(i), p1(i), p2(i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -95,13 +104,22 @@ call check_real('sq_norm_oac', sq_dev, sq_ref, sq_oac)
 call check_vec('normalized_oac', nzd_dev, nzd_ref, nzd_oac)
 call check_vec('normalize_oac', nze_dev, nze_ref, nze_oac)
 ! parallel, orthogonal: nvfortran contracts the dot product of `.paral.` into FMAs differently on the host form and on
-! the `_oac` form, depending on the compilation context (below 1 ulp; gfortran is bit-exact). The dot product changes by at most 2*gamma_3*sum|a_k*b_k|
-! <= 6*eps*|a||b|, that is at most 6*eps*|a| on each component of the parallel part; the subtraction adds one rounding.
+! the `_oac` form, depending on the compilation context (below 1 ulp; gfortran is bit-exact). The dot product changes
+! by at most 2*gamma_3*sum|a_k*b_k| <= 6*eps*|a||b|, that is at most 6*eps*|a| on each component of the parallel part;
+! the subtraction adds one rounding.
 do i = 1, n
    ort_bnd(:,i) = 8 * epsilon(1._R8P) * (normL2_R8P(p1(i)) + abs([par_ref(i)%x, par_ref(i)%y, par_ref(i)%z]))
 enddo
 call check_vec_bound('parallel_oac', par_dev, par_ref, par_oac, ort_bnd)
 call check_vec_bound('orthogonal_oac', ort_dev, ort_ref, ort_oac, ort_bnd)
+! distance_to_line: |u x v| / |s|, u = a - pt1, v = a - pt2, s = pt2 - pt1. The cross product components change by at
+! most ~2*eps*|u||v| when nvfortran contracts them into FMAs (gfortran is bit-exact), the norms and the division add
+! a few roundings: bound 16*eps*(|u||v|/|s| + d).
+do i = 1, n
+   dtl_bnd(i) = 16 * epsilon(1._R8P) * (normL2_R8P(p0(i) - p1(i)) * normL2_R8P(p0(i) - p2(i)) / normL2_R8P(p2(i) - p1(i)) &
+                                        + dtl_ref(i))
+enddo
+call check_real_bound('distance_to_line_oac', dtl_dev, dtl_ref, dtl_oac, dtl_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then

@@ -15,6 +15,7 @@ use vecfor_RPP, only : angle,                       &
                        assign_vector_oac,           &
                        crossproduct_oac,            &
                        distance_to_line,            &
+                       distance_to_line_oac,        &
                        distance_to_plane,           &
                        distance_vectorial_to_plane, &
                        dotproduct_oac,              &
@@ -51,6 +52,7 @@ use vecfor_R4P, only : angle_R4P,                       &
                        assign_vector_R4P_oac,           &
                        crossproduct_R4P_oac,            &
                        distance_to_line_R4P,            &
+                       distance_to_line_R4P_oac,        &
                        distance_to_plane_R4P,           &
                        distance_vectorial_to_plane_R4P, &
                        dotproduct_R4P_oac,              &
@@ -87,6 +89,7 @@ use vecfor_R8P, only : angle_R8P,                       &
                        assign_vector_R8P_oac,           &
                        crossproduct_R8P_oac,            &
                        distance_to_line_R8P,            &
+                       distance_to_line_R8P_oac,        &
                        distance_to_plane_R8P,           &
                        distance_vectorial_to_plane_R8P, &
                        dotproduct_R8P_oac,              &
@@ -123,6 +126,7 @@ use vecfor_R16P, only : angle_R16P,                       &
                         assign_vector_R16P_oac,           &
                         crossproduct_R16P_oac,            &
                         distance_to_line_R16P,            &
+                        distance_to_line_R16P_oac,        &
                         distance_to_plane_R16P,           &
                         distance_vectorial_to_plane_R16P, &
                         dotproduct_R16P_oac,              &
@@ -173,6 +177,7 @@ public :: sq_norm
 public :: ex, ey, ez, vector
 public :: assign_vector_oac
 public :: crossproduct_oac
+public :: distance_to_line_oac
 public :: dotproduct_oac
 public :: matrixproduct_oac
 public :: mirror_matrix_oac
@@ -183,6 +188,7 @@ public :: orthogonal_oac
 public :: parallel_oac
 public :: R8P_mul_vector_oac
 public :: rotation_matrix_oac
+public :: distance_to_line_R8P_oac
 public :: normalize_R8P_oac
 public :: normalized_R8P_oac
 public :: normL2_R8P_oac
@@ -212,6 +218,7 @@ public :: sq_norm_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
 public :: assign_vector_R4P_oac
 public :: crossproduct_R4P_oac
+public :: distance_to_line_R4P_oac
 public :: dotproduct_R4P_oac
 public :: matrixproduct_R4P_oac
 public :: mirror_matrix_R4P_oac
@@ -272,6 +279,7 @@ public :: sq_norm_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
 public :: assign_vector_R16P_oac
 public :: crossproduct_R16P_oac
+public :: distance_to_line_R16P_oac
 public :: dotproduct_R16P_oac
 public :: matrixproduct_R16P_oac
 public :: mirror_matrix_R16P_oac
