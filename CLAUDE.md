@@ -22,6 +22,20 @@ fobis build --lmodes                     # list all modes (gnu/intel/nvf, debug,
 fobis rule --ex clean                    # delete docs build, exe/, *.gcov
 ```
 
+### fpm Build
+```bash
+fpm build --profile release              # library from src/lib only; PENF cloned by fpm into build/dependencies
+fpm test                                 # vecfor_test_quad_precision + vecfor_test_device_loop
+fpm install --prefix <dir>               # libVecFor.a + VecFor and PENF .mod files
+```
+
+`fpm.toml` is project-owned (scaffold category `init-only`); `scripts/release.sh` keeps its `version` aligned with
+`VERSION`. `PENF_R16P` is passed both to VecFor (`[preprocess.cpp]`) and to the PENF dependency
+(`preprocess.cpp.macros` in its inline table): if only VecFor gets it, PENF aliases R16P to R8P and the R16P/R8P
+generic overloads become ambiguous. fpm path is gfortran/ifx only (nvfortran: no real(16), use fobis). Validated
+with fpm 0.12.0 and 0.13.0 (the version pinned by the scaffold's `install.yml`, which runs `fpm build --profile release`
+on release whenever `fpm.toml` exists).
+
 ### Simple Make Build (produces `static/vecfor.a`)
 ```bash
 make          # Build static library with gfortran (compiles PENF sources from src/third_party/ too)
@@ -36,9 +50,10 @@ fobis doctests --mode tests-gnu-debug    # Build and generate test executables i
 fobis build --mode tests-nvf-acc --varset local_nvf   # OpenACC device test (local only, not in CI)
 ```
 
-Tests are doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/` (the generated snapshots are tracked in git). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
+Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.f90` (`_oac` API), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
 
-CI (`.github/workflows/ci.yml`) runs on gfortran-14 (default of `.github/actions/setup-build-env`): coverage-driven tests plus a `docs-examples` job that rebuilds `docs/examples/` and diffs the committed snippets/figures.
+### CI and the FoBiS scaffold
+`fobis scaffold status` must report every managed file `OK`. Scaffold-managed (`verbatim`) files such as `.github/workflows/ci.yml`, `docs.yml`, `install.yml` and the scripts in `scripts/` must stay byte-identical to the FoBiS templates: never add project jobs to them, `fobis scaffold sync` would drop them. Project-specific CI goes into project-owned workflows (the StringiFor convention): `.github/workflows/docs-examples.yml` rebuilds `docs/examples/` and diffs the committed snippets/figures. CI runs on gfortran-14 (default of `.github/actions/setup-build-env`).
 
 ### Documentation
 ```bash

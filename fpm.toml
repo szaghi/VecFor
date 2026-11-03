@@ -1,0 +1,44 @@
+name = "VecFor"
+version = "1.5.2"
+author = "Stefano Zaghi"
+copyright = "Copyright © 2015-2026, Stefano Zaghi"
+license = "GPL-3.0-or-later OR BSD-2-Clause OR BSD-3-Clause OR MIT"
+description = "Vector algebra class for Fortran poor people"
+maintainer = "Stefano Zaghi"
+homepage = "https://github.com/szaghi/VecFor"
+
+# src/ also holds the fobis-fetched copy of PENF (src/third_party) and the generated doctests (src/tests):
+# the library is src/lib only, and PENF comes from the [dependencies] below.
+[library]
+source-dir = "src/lib"
+
+# PENF_R16P enables the quadruple-precision kind. It must reach PENF too: without it PENF aliases R16P to R8P and
+# VecFor's R16P and R8P overloads collide as ambiguous generics. nvfortran has no real(16): build there with fobis.
+[dependencies]
+PENF = { git = "https://github.com/szaghi/PENF", preprocess.cpp.macros = ["PENF_R16P"] }
+
+[preprocess]
+[preprocess.cpp]
+macros = ["PENF_R16P"]
+
+[build]
+auto-executables = false
+auto-tests = false
+
+[fortran]
+implicit-typing = false
+implicit-external = false
+source-form = "free"
+
+[install]
+library = true
+
+[[test]]
+name = "vecfor_test_quad_precision"
+source-dir = "src/tests"
+main = "vecfor_test_quad_precision.f90"
+
+[[test]]
+name = "vecfor_test_device_loop"
+source-dir = "src/tests"
+main = "vecfor_test_device_loop.f90"
