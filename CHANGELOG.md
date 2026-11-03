@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.9.0] — 2026-11-03
+### Changed
+- **dev**: Rename the device-callable suffix _oac to _dev ⚠ BREAKING CHANGE
+
+
+### Documentation
+- **dev**: Document the _dev suffix and its OpenMP motivation
+
+
 ## [1.8.0] — 2026-11-03
 ### Added
 - **oac**: Add device-callable norms and normalization
