@@ -52,6 +52,8 @@ use vecfor_RPP, only : angle,                       &
                        normL2_dev,                  &
                        orthogonal_dev,              &
                        parallel_dev,                &
+                       polygon_vector_area,         &
+                       polygon_vector_area_dev,     &
                        projection_onto_plane,       &
                        projection_onto_plane_dev,   &
                        R8P_mul_vector_dev,          &
@@ -61,6 +63,10 @@ use vecfor_RPP, only : angle,                       &
                        rotation_matrix_dev,         &
                        sq_norm,                     &
                        sq_norm_dev,                 &
+                       tetrahedron_volume,          &
+                       tetrahedron_volume_dev,      &
+                       triangle_area,               &
+                       triangle_area_dev,           &
                        vector,                      &
                        vector_mul_R8P_dev,          &
                        vector_sub_vector_dev,       &
@@ -107,6 +113,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        normL2_R4P_dev,                  &
                        orthogonal_R4P_dev,              &
                        parallel_R4P_dev,                &
+                       polygon_vector_area_R4P,         &
+                       polygon_vector_area_R4P_dev,     &
                        projection_onto_plane_R4P,       &
                        projection_onto_plane_R4P_dev,   &
                        R8P_mul_vector_R4P_dev,          &
@@ -116,6 +124,10 @@ use vecfor_R4P, only : angle_R4P,                       &
                        rotation_matrix_R4P_dev,         &
                        sq_norm_R4P,                     &
                        sq_norm_R4P_dev,                 &
+                       tetrahedron_volume_R4P,          &
+                       tetrahedron_volume_R4P_dev,      &
+                       triangle_area_R4P,               &
+                       triangle_area_R4P_dev,           &
                        vector_R4P,                      &
                        vector_mul_R8P_R4P_dev,          &
                        vector_sub_vector_R4P_dev,       &
@@ -162,6 +174,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        normL2_R8P_dev,                  &
                        orthogonal_R8P_dev,              &
                        parallel_R8P_dev,                &
+                       polygon_vector_area_R8P,         &
+                       polygon_vector_area_R8P_dev,     &
                        projection_onto_plane_R8P,       &
                        projection_onto_plane_R8P_dev,   &
                        R8P_mul_vector_R8P_dev,          &
@@ -171,6 +185,10 @@ use vecfor_R8P, only : angle_R8P,                       &
                        rotation_matrix_R8P_dev,         &
                        sq_norm_R8P,                     &
                        sq_norm_R8P_dev,                 &
+                       tetrahedron_volume_R8P,          &
+                       tetrahedron_volume_R8P_dev,      &
+                       triangle_area_R8P,               &
+                       triangle_area_R8P_dev,           &
                        vector_R8P,                      &
                        vector_mul_R8P_R8P_dev,          &
                        vector_sub_vector_R8P_dev,       &
@@ -217,6 +235,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         normL2_R16P_dev,                  &
                         orthogonal_R16P_dev,              &
                         parallel_R16P_dev,                &
+                        polygon_vector_area_R16P,         &
+                        polygon_vector_area_R16P_dev,     &
                         projection_onto_plane_R16P,       &
                         projection_onto_plane_R16P_dev,   &
                         R8P_mul_vector_R16P_dev,          &
@@ -226,6 +246,10 @@ use vecfor_R16P, only : angle_R16P,                       &
                         rotation_matrix_R16P_dev,         &
                         sq_norm_R16P,                     &
                         sq_norm_R16P_dev,                 &
+                        tetrahedron_volume_R16P,          &
+                        tetrahedron_volume_R16P_dev,      &
+                        triangle_area_R16P,               &
+                        triangle_area_R16P_dev,           &
                         vector_R16P,                      &
                         vector_mul_R8P_R16P_dev,          &
                         vector_sub_vector_R16P_dev,       &
@@ -246,9 +270,12 @@ public :: mirror_matrix
 public :: normalized
 public :: normalized_checked
 public :: normL2
+public :: polygon_vector_area
 public :: projection_onto_plane
 public :: rotation_matrix
 public :: sq_norm
+public :: tetrahedron_volume
+public :: triangle_area
 public :: ex, ey, ez, vector
 public :: angle_dev
 public :: assign_vector_dev
@@ -273,6 +300,7 @@ public :: normalized_dev
 public :: normL2_dev
 public :: orthogonal_dev
 public :: parallel_dev
+public :: polygon_vector_area_dev
 public :: projection_onto_plane_dev
 public :: R8P_mul_vector_dev
 public :: rotate_by_axis_angle_dev
@@ -296,12 +324,17 @@ public :: normalized_R8P_dev
 public :: normL2_R8P_dev
 public :: orthogonal_R8P_dev
 public :: parallel_R8P_dev
+public :: polygon_vector_area_R8P_dev
 public :: projection_onto_plane_R8P_dev
 public :: rotate_by_axis_angle_R8P_dev
 public :: rotate_by_matrix_R8P_dev
 public :: sq_norm_R8P_dev
+public :: tetrahedron_volume_R8P_dev
+public :: triangle_area_R8P_dev
 public :: vector_mul_R8P_dev
 public :: sq_norm_dev
+public :: tetrahedron_volume_dev
+public :: triangle_area_dev
 public :: vector_sub_vector_dev
 public :: vector_sum_vector_dev
 
@@ -320,9 +353,12 @@ public :: mirror_matrix_R4P
 public :: normalized_checked_R4P
 public :: normalized_R4P
 public :: normL2_R4P
+public :: polygon_vector_area_R4P
 public :: projection_onto_plane_R4P
 public :: rotation_matrix_R4P
 public :: sq_norm_R4P
+public :: tetrahedron_volume_R4P
+public :: triangle_area_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
 public :: angle_R4P_dev
 public :: assign_vector_R4P_dev
@@ -347,12 +383,15 @@ public :: normalized_R4P_dev
 public :: normL2_R4P_dev
 public :: orthogonal_R4P_dev
 public :: parallel_R4P_dev
+public :: polygon_vector_area_R4P_dev
 public :: projection_onto_plane_R4P_dev
 public :: R8P_mul_vector_R4P_dev
 public :: rotate_by_axis_angle_R4P_dev
 public :: rotate_by_matrix_R4P_dev
 public :: rotation_matrix_R4P_dev
 public :: sq_norm_R4P_dev
+public :: tetrahedron_volume_R4P_dev
+public :: triangle_area_R4P_dev
 public :: vector_mul_R8P_R4P_dev
 public :: vector_sub_vector_R4P_dev
 public :: vector_sum_vector_R4P_dev
@@ -372,9 +411,12 @@ public :: mirror_matrix_R8P
 public :: normalized_checked_R8P
 public :: normalized_R8P
 public :: normL2_R8P
+public :: polygon_vector_area_R8P
 public :: projection_onto_plane_R8P
 public :: rotation_matrix_R8P
 public :: sq_norm_R8P
+public :: tetrahedron_volume_R8P
+public :: triangle_area_R8P
 public :: ex_R8P, ey_R8P, ez_R8P, vector_R8P
 public :: assign_vector_R8P_dev
 public :: crossproduct_R8P_dev
@@ -402,9 +444,12 @@ public :: mirror_matrix_R16P
 public :: normalized_checked_R16P
 public :: normalized_R16P
 public :: normL2_R16P
+public :: polygon_vector_area_R16P
 public :: projection_onto_plane_R16P
 public :: rotation_matrix_R16P
 public :: sq_norm_R16P
+public :: tetrahedron_volume_R16P
+public :: triangle_area_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
 public :: angle_R16P_dev
 public :: assign_vector_R16P_dev
@@ -429,12 +474,15 @@ public :: normalized_R16P_dev
 public :: normL2_R16P_dev
 public :: orthogonal_R16P_dev
 public :: parallel_R16P_dev
+public :: polygon_vector_area_R16P_dev
 public :: projection_onto_plane_R16P_dev
 public :: R8P_mul_vector_R16P_dev
 public :: rotate_by_axis_angle_R16P_dev
 public :: rotate_by_matrix_R16P_dev
 public :: rotation_matrix_R16P_dev
 public :: sq_norm_R16P_dev
+public :: tetrahedron_volume_R16P_dev
+public :: triangle_area_R16P_dev
 public :: vector_mul_R8P_R16P_dev
 public :: vector_sub_vector_R16P_dev
 public :: vector_sum_vector_R16P_dev

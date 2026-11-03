@@ -27,6 +27,9 @@ use vecfor, only : vector_R8P,                          &
                    distance_vectorial_to_plane_R8P_dev, &
                    dotproduct_accurate_R8P,             &
                    dotproduct_accurate_R8P_dev,         &
+                   ex_R8P,                              &
+                   ey_R8P,                              &
+                   ez_R8P,                              &
                    face_normal3_R8P,                    &
                    face_normal3_R8P_dev,                &
                    face_normal4_R8P,                    &
@@ -47,13 +50,19 @@ use vecfor, only : vector_R8P,                          &
                    normL2_R8P_dev,                      &
                    orthogonal_R8P_dev,                  &
                    parallel_R8P_dev,                    &
+                   polygon_vector_area_R8P,             &
+                   polygon_vector_area_R8P_dev,         &
                    projection_onto_plane_R8P,           &
                    projection_onto_plane_R8P_dev,       &
                    rotate_by_axis_angle_R8P_dev,        &
                    rotate_by_matrix_R8P_dev,            &
                    rotation_matrix_R8P,                 &
                    sq_norm_R8P,                         &
-                   sq_norm_R8P_dev
+                   sq_norm_R8P_dev,                     &
+                   tetrahedron_volume_R8P,              &
+                   tetrahedron_volume_R8P_dev,          &
+                   triangle_area_R8P,                   &
+                   triangle_area_R8P_dev
 implicit none
 
 integer(I4P), parameter :: n = 256              !< Loop length.
@@ -112,6 +121,11 @@ logical                 :: okk_dev(n), okk_ref(n), okk_hst(n), ok5_dev(n), ok5_r
 type(vector_R8P)        :: cxa_dev(n), cxa_ref(n), cxa_hst(n)
 real(R8P)               :: dta_dev(n), dta_ref(n), dta_hst(n)
 
+! triangle_area, tetrahedron_volume, polygon_vector_area; closure of the faces of a tetrahedron
+type(vector_R8P)        :: polys(4,n), pva_dev(n), pva_ref(n), pva_hst(n), clo, fc(3)
+real(R8P)               :: tra_dev(n), tra_ref(n), tra_hst(n), tev_dev(n), tev_ref(n), tev_hst(n)
+real(R8P)               :: tra_bnd(n), tev_bnd(n), pva_bnd(3,n), clo_bnd
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -133,12 +147,17 @@ do i = 1, n
    ang(i) = 0.0125_R8P * real(i, R8P)
    rotm(:,:,i) = rotation_matrix_R8P(p1(i), ang(i))
    mirm(:,:,i) = mirror_matrix_R8P(p2(i))
+   polys(1,i) = p0(i)
+   polys(2,i) = p1(i)
+   polys(3,i) = p2(i)
+   polys(4,i) = p3(i)
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm) private(t1, m) &
+!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm, polys) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
-!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev, cxa_dev, dta_dev)
+!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev, cxa_dev, dta_dev, &
+!$acc         tra_dev, tev_dev, pva_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_dev(p0(i))
    sq_dev(i) = sq_norm_R8P_dev(p0(i))
@@ -179,6 +198,9 @@ do i = 1, n
    call normalized_checked_R8P_dev(p0(i), nc5_dev(i), ok5_dev(i), min_norm=50._R8P)
    call crossproduct_accurate_R8P_dev(p1(i), p2(i), cxa_dev(i))
    dta_dev(i) = dotproduct_accurate_R8P_dev(p1(i), p2(i))
+   tra_dev(i) = triangle_area_R8P_dev(p1(i), p2(i), p3(i))
+   tev_dev(i) = tetrahedron_volume_R8P_dev(p0(i), p1(i), p2(i), p3(i))
+   call polygon_vector_area_R8P_dev(4, polys(:,i), pva_dev(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -251,6 +273,12 @@ do i = 1, n
    call crossproduct_accurate_R8P_dev(p1(i), p2(i), cxa_hst(i))
    dta_ref(i) = dotproduct_accurate_R8P(p1(i), p2(i))
    dta_hst(i) = dotproduct_accurate_R8P_dev(p1(i), p2(i))
+   tra_ref(i) = triangle_area_R8P(p1(i), p2(i), p3(i))
+   tra_hst(i) = triangle_area_R8P_dev(p1(i), p2(i), p3(i))
+   tev_ref(i) = tetrahedron_volume_R8P(p0(i), p1(i), p2(i), p3(i))
+   tev_hst(i) = tetrahedron_volume_R8P_dev(p0(i), p1(i), p2(i), p3(i))
+   pva_ref(i) = polygon_vector_area_R8P(polys(:,i))
+   call polygon_vector_area_R8P_dev(4, polys(:,i), pva_hst(i))
 enddo
 
 call check_real('normL2_dev', nrm_dev, nrm_ref, nrm_hst)
@@ -339,6 +367,46 @@ if (okk_ref(1) .or. count(ok5_ref) == 0 .or. count(.not. ok5_ref) == 0) then
 endif
 call check_vec('crossproduct_accurate_dev', cxa_dev, cxa_ref, cxa_hst)
 call check_real('dotproduct_accurate_dev', dta_dev, dta_ref, dta_hst)
+! measures: sums of products, contracted into FMAs by nvfortran (gfortran is bit-exact): bounds from the products
+! of the edge lengths (each cross/dot component moves by ~2*eps*|u||v|).
+do i = 1, n
+   tra_bnd(i) = 4 * epsilon(1._R8P) * normL2_R8P(p2(i) - p1(i)) * normL2_R8P(p3(i) - p1(i))
+   tev_bnd(i) = 4 * epsilon(1._R8P) * normL2_R8P(p1(i) - p0(i)) * normL2_R8P(p2(i) - p0(i)) * normL2_R8P(p3(i) - p0(i))
+   pva_bnd(:,i) = 4 * epsilon(1._R8P) * (normL2_R8P(p1(i) - p0(i)) * normL2_R8P(p2(i) - p0(i)) + &
+                  normL2_R8P(p2(i) - p0(i)) * normL2_R8P(p3(i) - p0(i)))
+   ! closure: the four consistently oriented face vector areas of a tetrahedron sum to zero
+   ! (named arrays: nvfortran 26.9 crashes on an array constructor of vector passed as an argument)
+   fc(1) = p0(i) ; fc(2) = p2(i) ; fc(3) = p1(i) ; clo = polygon_vector_area_R8P(fc)
+   fc(1) = p0(i) ; fc(2) = p1(i) ; fc(3) = p3(i) ; clo = clo + polygon_vector_area_R8P(fc)
+   fc(1) = p0(i) ; fc(2) = p3(i) ; fc(3) = p2(i) ; clo = clo + polygon_vector_area_R8P(fc)
+   fc(1) = p1(i) ; fc(2) = p2(i) ; fc(3) = p3(i) ; clo = clo + polygon_vector_area_R8P(fc)
+   clo_bnd = 16 * epsilon(1._R8P) * (normL2_R8P(p1(i) - p0(i)) + normL2_R8P(p2(i) - p0(i)) + normL2_R8P(p3(i) - p0(i)))**2
+   if (normL2_R8P(clo) > clo_bnd) then
+      print "(A,I0,A,ES10.3)", "tetrahedron faces do not close, i = ", i, ", |sum| = ", normL2_R8P(clo)
+      all_passed = .false.
+   endif
+enddo
+call check_real_bound('triangle_area_dev', tra_dev, tra_ref, tra_hst, tra_bnd)
+call check_real_bound('tetrahedron_volume_dev', tev_dev, tev_ref, tev_hst, tev_bnd)
+call check_vec_bound('polygon_vector_area_dev', pva_dev, pva_ref, pva_hst, pva_bnd)
+if (abs(tetrahedron_volume_R8P(0 * ex_R8P, ex_R8P, ey_R8P, ez_R8P) - 1._R8P / 6) > epsilon(1._R8P)) then
+   print "(A)", "unit tetrahedron volume wrong"
+   all_passed = .false.
+endif
+! independent references (the host form and the _dev form share their code): triangle area = |face_normal3|,
+! the signed volume by the operators, the vector area of a quad = face_normal4 = (p3 - p1) x (p4 - p2) / 2.
+do i = 1, n
+   if (abs(tra_ref(i) - normL2_R8P(face_normal3_R8P(p1(i), p2(i), p3(i)))) > tra_bnd(i) .or. &
+       abs(tev_ref(i) - tet6(p1(i) - p0(i), p2(i) - p0(i), p3(i) - p0(i)) / 6) > tev_bnd(i)) then
+      print "(A,I0)", "triangle_area or tetrahedron_volume differs from the reference, i = ", i
+      all_passed = .false.
+   endif
+   clo = pva_ref(i) - face_normal4_R8P(p0(i), p1(i), p2(i), p3(i))
+   if (normL2_R8P(clo) > 2 * maxval(pva_bnd(:,i))) then
+      print "(A,I0)", "polygon_vector_area differs from face_normal4, i = ", i
+      all_passed = .false.
+   endif
+enddo
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
@@ -434,6 +502,18 @@ contains
    w = u%crossproduct(v)
    cnd = u%normL2() * v%normL2() / w%normL2()
    endfunction cond_cross
+
+   function tet6(u, v, w) result(t6)
+   !< Six times the signed volume spanned by `u, v, w`: `u . (v x w)`, by the type-bound procedures (reference).
+   type(vector_R8P), intent(in) :: u  !< First edge.
+   type(vector_R8P), intent(in) :: v  !< Second edge.
+   type(vector_R8P), intent(in) :: w  !< Third edge.
+   real(R8P)                    :: t6 !< `u . (v x w)`.
+   type(vector_R8P)             :: vw !< `v x w`.
+
+   vw = v%crossproduct(w)
+   t6 = u%dotproduct(vw)
+   endfunction tet6
 
    subroutine check_logical(label, dev, ref, hst)
    !< Host `_dev` and device equal to the host reference.

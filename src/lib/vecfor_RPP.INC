@@ -3,6 +3,9 @@ private
 public :: crossproduct_accurate_RPP
 public :: dotproduct_accurate_RPP
 public :: normalized_checked_RPP
+public :: polygon_vector_area_RPP
+public :: tetrahedron_volume_RPP
+public :: triangle_area_RPP
 public :: vector_RPP
 public :: ex_RPP
 public :: ey_RPP
@@ -45,12 +48,15 @@ public :: normalized_RPP_dev
 public :: normL2_RPP_dev
 public :: orthogonal_RPP_dev
 public :: parallel_RPP_dev
+public :: polygon_vector_area_RPP_dev
 public :: projection_onto_plane_RPP_dev
 public :: R8P_mul_vector_RPP_dev
 public :: rotate_by_axis_angle_RPP_dev
 public :: rotate_by_matrix_RPP_dev
 public :: rotation_matrix_RPP_dev
 public :: sq_norm_RPP_dev
+public :: tetrahedron_volume_RPP_dev
+public :: triangle_area_RPP_dev
 public :: vector_mul_R8P_RPP_dev
 public :: vector_sub_vector_RPP_dev
 public :: vector_sum_vector_RPP_dev
@@ -982,8 +988,156 @@ contains
    d = p + s
    endfunction dotproduct_accurate_RPP_dev
 
+   pure function triangle_area_RPP_dev(pt1, pt2, pt3) result(area)
+   !$acc routine seq
+   !< Device-callable [[triangle_area_RPP]].
+   type(vector_RPP), intent(in) :: pt1  !< First vertex.
+   type(vector_RPP), intent(in) :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in) :: pt3  !< Third vertex.
+   real(RPP)                    :: area !< Area.
+   type(vector_RPP)             :: u    !< `pt2 - pt1`.
+   type(vector_RPP)             :: v    !< `pt3 - pt1`.
+   type(vector_RPP)             :: w    !< `u .cross. v`.
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, u)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v)
+   call crossproduct_RPP_dev(u, v, w)
+   area = 0.5_RPP * normL2_RPP_dev(w)
+   endfunction triangle_area_RPP_dev
+
+   pure function tetrahedron_volume_RPP_dev(pt1, pt2, pt3, pt4) result(volume)
+   !$acc routine seq
+   !< Device-callable [[tetrahedron_volume_RPP]].
+   type(vector_RPP), intent(in) :: pt1    !< First vertex.
+   type(vector_RPP), intent(in) :: pt2    !< Second vertex.
+   type(vector_RPP), intent(in) :: pt3    !< Third vertex.
+   type(vector_RPP), intent(in) :: pt4    !< Fourth vertex.
+   real(RPP)                    :: volume !< Signed volume.
+   type(vector_RPP)             :: u      !< `pt2 - pt1`.
+   type(vector_RPP)             :: v      !< `pt3 - pt1`.
+   type(vector_RPP)             :: w      !< `pt4 - pt1`.
+   type(vector_RPP)             :: vw     !< `v .cross. w`.
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, u)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v)
+   call vector_sub_vector_RPP_dev(pt4, pt1, w)
+   call crossproduct_RPP_dev(v, w, vw)
+   volume = dotproduct_RPP_dev(u, vw) / 6._RPP
+   endfunction tetrahedron_volume_RPP_dev
+
+   pure subroutine polygon_vector_area_RPP_dev(n, pts, area)
+   !$acc routine seq
+   !< Device-callable [[polygon_vector_area_RPP]], with the number of vertices explicit.
+   integer,          intent(in)  :: n      !< Number of vertices.
+   type(vector_RPP), intent(in)  :: pts(n) !< Vertices.
+   type(vector_RPP), intent(out) :: area   !< Vector area.
+   type(vector_RPP)             :: u    !< `pts(i) - pts(1)`.
+   type(vector_RPP)             :: v    !< `pts(i+1) - pts(1)`.
+   type(vector_RPP)             :: w    !< `u .cross. v`.
+   integer                      :: i    !< Counter.
+
+   area%x = 0._RPP
+   area%y = 0._RPP
+   area%z = 0._RPP
+   do i = 2, n - 1
+     call vector_sub_vector_RPP_dev(pts(i), pts(1), u)
+     call vector_sub_vector_RPP_dev(pts(i + 1), pts(1), v)
+     call crossproduct_RPP_dev(u, v, w)
+     area%x = area%x + w%x
+     area%y = area%y + w%y
+     area%z = area%z + w%z
+   enddo
+   area%x = 0.5_RPP * area%x
+   area%y = 0.5_RPP * area%y
+   area%z = 0.5_RPP * area%z
+   endsubroutine polygon_vector_area_RPP_dev
+
    ! public methods
    ! non TBP
+   pure function polygon_vector_area_RPP(pts) result(area)
+   !< Vector area of the polygon `pts(1), ..., pts(n)` (vertices in order, closed implicitly): half the sum of
+   !< `(pts(i) - pts(1)) .cross. (pts(i+1) - pts(1))`. Its norm is the area of a planar polygon, its direction the
+   !< normal by the right-hand rule; it does not depend on the origin, and the outward vector areas of the faces of a
+   !< closed polyhedron sum to zero (the discrete geometric conservation law of finite volumes).
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: a
+   !< a = polygon_vector_area_RPP([0 * ex_RPP, 2 * ex_RPP, 2 * ex_RPP + ey_RPP, ey_RPP])
+   !< print "(3(F3.1,1X))", a%x, a%y, a%z
+   !<```
+   !=> 0.0 0.0 2.0 <<<
+   type(vector_RPP), intent(in) :: pts(:) !< Vertices.
+   type(vector_RPP)             :: area   !< Vector area.
+   integer                      :: n      !< Number of vertices.
+   type(vector_RPP)             :: u    !< `pts(i) - pts(1)`.
+   type(vector_RPP)             :: v    !< `pts(i+1) - pts(1)`.
+   type(vector_RPP)             :: w    !< `u .cross. v`.
+   integer                      :: i    !< Counter.
+
+   n = size(pts)
+   area%x = 0._RPP
+   area%y = 0._RPP
+   area%z = 0._RPP
+   do i = 2, n - 1
+     call vector_sub_vector_RPP_dev(pts(i), pts(1), u)
+     call vector_sub_vector_RPP_dev(pts(i + 1), pts(1), v)
+     call crossproduct_RPP_dev(u, v, w)
+     area%x = area%x + w%x
+     area%y = area%y + w%y
+     area%z = area%z + w%z
+   enddo
+   area%x = 0.5_RPP * area%x
+   area%y = 0.5_RPP * area%y
+   area%z = 0.5_RPP * area%z
+   endfunction polygon_vector_area_RPP
+
+   elemental function tetrahedron_volume_RPP(pt1, pt2, pt3, pt4) result(volume)
+   !< Signed volume of the tetrahedron `pt1, pt2, pt3, pt4`: `(pt2 - pt1) .dot. ((pt3 - pt1) .cross. (pt4 - pt1)) / 6`,
+   !< positive when `pt4` lies on the side where `(pt2 - pt1) .cross. (pt3 - pt1)` points (right-handed order).
+   !<
+   !<```fortran
+   !< print "(F6.4,1X,F7.4)", tetrahedron_volume_RPP(0 * ex_RPP, ex_RPP, ey_RPP, ez_RPP), &
+   !<                         tetrahedron_volume_RPP(0 * ex_RPP, ey_RPP, ex_RPP, ez_RPP)
+   !<```
+   !=> 0.1667 -0.1667 <<<
+   type(vector_RPP), intent(in) :: pt1    !< First vertex.
+   type(vector_RPP), intent(in) :: pt2    !< Second vertex.
+   type(vector_RPP), intent(in) :: pt3    !< Third vertex.
+   type(vector_RPP), intent(in) :: pt4    !< Fourth vertex.
+   real(RPP)                    :: volume !< Signed volume.
+   type(vector_RPP)             :: u      !< `pt2 - pt1`.
+   type(vector_RPP)             :: v      !< `pt3 - pt1`.
+   type(vector_RPP)             :: w      !< `pt4 - pt1`.
+   type(vector_RPP)             :: vw     !< `v .cross. w`.
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, u)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v)
+   call vector_sub_vector_RPP_dev(pt4, pt1, w)
+   call crossproduct_RPP_dev(v, w, vw)
+   volume = dotproduct_RPP_dev(u, vw) / 6._RPP
+   endfunction tetrahedron_volume_RPP
+
+   elemental function triangle_area_RPP(pt1, pt2, pt3) result(area)
+   !< Area of the triangle `pt1, pt2, pt3`: half the norm of `(pt2 - pt1) .cross. (pt3 - pt1)`.
+   !<
+   !<```fortran
+   !< print "(F4.2)", triangle_area_RPP(0 * ex_RPP, ex_RPP, ey_RPP)
+   !<```
+   !=> 0.50 <<<
+   type(vector_RPP), intent(in) :: pt1  !< First vertex.
+   type(vector_RPP), intent(in) :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in) :: pt3  !< Third vertex.
+   real(RPP)                    :: area !< Area.
+   type(vector_RPP)             :: u    !< `pt2 - pt1`.
+   type(vector_RPP)             :: v    !< `pt3 - pt1`.
+   type(vector_RPP)             :: w    !< `u .cross. v`.
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, u)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v)
+   call crossproduct_RPP_dev(u, v, w)
+   area = 0.5_RPP * normL2_RPP_dev(w)
+   endfunction triangle_area_RPP
+
    elemental function dotproduct_accurate_RPP(a, b) result(d)
    !< Dot product `a .dot. b` as if computed in twice the working precision, then rounded (Ogita, Rump, Oishi 2005,
    !< Dot2: products by TwoProduct with a fused multiply-add, sums by TwoSum). The `.dot.` operator can lose every

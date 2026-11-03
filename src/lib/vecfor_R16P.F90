@@ -28,9 +28,12 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define normalized_checked_RPP normalized_checked_R16P
 #define normalized_RPP normalized_R16P
 #define normL2_RPP normL2_R16P
+#define polygon_vector_area_RPP polygon_vector_area_R16P
 #define projection_onto_plane_RPP projection_onto_plane_R16P
 #define rotation_matrix_RPP rotation_matrix_R16P
 #define sq_norm_RPP sq_norm_R16P
+#define tetrahedron_volume_RPP tetrahedron_volume_R16P
+#define triangle_area_RPP triangle_area_R16P
 
 #define angle_RPP_dev angle_R16P_dev
 #define assign_vector_RPP_dev assign_vector_R16P_dev
@@ -55,12 +58,15 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define normL2_RPP_dev normL2_R16P_dev
 #define orthogonal_RPP_dev orthogonal_R16P_dev
 #define parallel_RPP_dev parallel_R16P_dev
+#define polygon_vector_area_RPP_dev polygon_vector_area_R16P_dev
 #define projection_onto_plane_RPP_dev projection_onto_plane_R16P_dev
 #define R8P_mul_vector_RPP_dev R8P_mul_vector_R16P_dev
 #define rotate_by_axis_angle_RPP_dev rotate_by_axis_angle_R16P_dev
 #define rotate_by_matrix_RPP_dev rotate_by_matrix_R16P_dev
 #define rotation_matrix_RPP_dev rotation_matrix_R16P_dev
 #define sq_norm_RPP_dev sq_norm_R16P_dev
+#define tetrahedron_volume_RPP_dev tetrahedron_volume_R16P_dev
+#define triangle_area_RPP_dev triangle_area_R16P_dev
 #define vector_mul_R8P_RPP_dev vector_mul_R8P_R16P_dev
 #define vector_sub_vector_RPP_dev vector_sub_vector_R16P_dev
 #define vector_sum_vector_RPP_dev vector_sum_vector_R16P_dev

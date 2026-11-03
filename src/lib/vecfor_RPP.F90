@@ -40,9 +40,12 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define normalized_checked_RPP normalized_checked
 #define normalized_RPP normalized
 #define normL2_RPP normL2
+#define polygon_vector_area_RPP polygon_vector_area
 #define projection_onto_plane_RPP projection_onto_plane
 #define rotation_matrix_RPP rotation_matrix
 #define sq_norm_RPP sq_norm
+#define tetrahedron_volume_RPP tetrahedron_volume
+#define triangle_area_RPP triangle_area
 
 #define angle_RPP_dev angle_dev
 #define assign_vector_RPP_dev assign_vector_dev
@@ -67,12 +70,15 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define normL2_RPP_dev normL2_dev
 #define orthogonal_RPP_dev orthogonal_dev
 #define parallel_RPP_dev parallel_dev
+#define polygon_vector_area_RPP_dev polygon_vector_area_dev
 #define projection_onto_plane_RPP_dev projection_onto_plane_dev
 #define R8P_mul_vector_RPP_dev R8P_mul_vector_dev
 #define rotate_by_axis_angle_RPP_dev rotate_by_axis_angle_dev
 #define rotate_by_matrix_RPP_dev rotate_by_matrix_dev
 #define rotation_matrix_RPP_dev rotation_matrix_dev
 #define sq_norm_RPP_dev sq_norm_dev
+#define tetrahedron_volume_RPP_dev tetrahedron_volume_dev
+#define triangle_area_RPP_dev triangle_area_dev
 #define vector_mul_R8P_RPP_dev vector_mul_R8P_dev
 #define vector_sub_vector_RPP_dev vector_sub_vector_dev
 #define vector_sum_vector_RPP_dev vector_sum_vector_dev
