@@ -23,6 +23,7 @@ use penf, only : RPP=>R4P, smallRPP=>smallR4P, ZeroRPP=>ZeroR4P
 #define is_collinear_RPP is_collinear_R4P
 #define is_concyclic_RPP is_concyclic_R4P
 #define mirror_matrix_RPP mirror_matrix_R4P
+#define normalized_checked_RPP normalized_checked_R4P
 #define normalized_RPP normalized_R4P
 #define normL2_RPP normL2_R4P
 #define projection_onto_plane_RPP projection_onto_plane_R4P
@@ -45,6 +46,7 @@ use penf, only : RPP=>R4P, smallRPP=>smallR4P, ZeroRPP=>ZeroR4P
 #define mirror_by_normal_RPP_dev mirror_by_normal_R4P_dev
 #define mirror_matrix_RPP_dev mirror_matrix_R4P_dev
 #define normalize_RPP_dev normalize_R4P_dev
+#define normalized_checked_RPP_dev normalized_checked_R4P_dev
 #define normalized_RPP_dev normalized_R4P_dev
 #define normL2_RPP_dev normL2_R4P_dev
 #define orthogonal_RPP_dev orthogonal_R4P_dev

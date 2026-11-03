@@ -41,6 +41,8 @@ use vecfor_RPP, only : angle,                       &
                        mirror_matrix_dev,           &
                        normalize_dev,               &
                        normalized,                  &
+                       normalized_checked,          &
+                       normalized_checked_dev,      &
                        normalized_dev,              &
                        normL2,                      &
                        normL2_dev,                  &
@@ -89,6 +91,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        mirror_matrix_R4P,               &
                        mirror_matrix_R4P_dev,           &
                        normalize_R4P_dev,               &
+                       normalized_checked_R4P,          &
+                       normalized_checked_R4P_dev,      &
                        normalized_R4P,                  &
                        normalized_R4P_dev,              &
                        normL2_R4P,                      &
@@ -138,6 +142,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        mirror_matrix_R8P,               &
                        mirror_matrix_R8P_dev,           &
                        normalize_R8P_dev,               &
+                       normalized_checked_R8P,          &
+                       normalized_checked_R8P_dev,      &
                        normalized_R8P,                  &
                        normalized_R8P_dev,              &
                        normL2_R8P,                      &
@@ -187,6 +193,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         mirror_matrix_R16P,               &
                         mirror_matrix_R16P_dev,           &
                         normalize_R16P_dev,               &
+                        normalized_checked_R16P,          &
+                        normalized_checked_R16P_dev,      &
                         normalized_R16P,                  &
                         normalized_R16P_dev,              &
                         normL2_R16P,                      &
@@ -218,6 +226,7 @@ public :: is_collinear
 public :: is_concyclic
 public :: mirror_matrix
 public :: normalized
+public :: normalized_checked
 public :: normL2
 public :: projection_onto_plane
 public :: rotation_matrix
@@ -239,6 +248,7 @@ public :: mirror_by_matrix_dev
 public :: mirror_by_normal_dev
 public :: mirror_matrix_dev
 public :: normalize_dev
+public :: normalized_checked_dev
 public :: normalized_dev
 public :: normL2_dev
 public :: orthogonal_dev
@@ -259,6 +269,7 @@ public :: is_concyclic_R8P_dev
 public :: mirror_by_matrix_R8P_dev
 public :: mirror_by_normal_R8P_dev
 public :: normalize_R8P_dev
+public :: normalized_checked_R8P_dev
 public :: normalized_R8P_dev
 public :: normL2_R8P_dev
 public :: orthogonal_R8P_dev
@@ -282,6 +293,7 @@ public :: iolen_R4P
 public :: is_collinear_R4P
 public :: is_concyclic_R4P
 public :: mirror_matrix_R4P
+public :: normalized_checked_R4P
 public :: normalized_R4P
 public :: normL2_R4P
 public :: projection_onto_plane_R4P
@@ -304,6 +316,7 @@ public :: mirror_by_matrix_R4P_dev
 public :: mirror_by_normal_R4P_dev
 public :: mirror_matrix_R4P_dev
 public :: normalize_R4P_dev
+public :: normalized_checked_R4P_dev
 public :: normalized_R4P_dev
 public :: normL2_R4P_dev
 public :: orthogonal_R4P_dev
@@ -328,6 +341,7 @@ public :: iolen_R8P
 public :: is_collinear_R8P
 public :: is_concyclic_R8P
 public :: mirror_matrix_R8P
+public :: normalized_checked_R8P
 public :: normalized_R8P
 public :: normL2_R8P
 public :: projection_onto_plane_R8P
@@ -355,6 +369,7 @@ public :: iolen_R16P
 public :: is_collinear_R16P
 public :: is_concyclic_R16P
 public :: mirror_matrix_R16P
+public :: normalized_checked_R16P
 public :: normalized_R16P
 public :: normL2_R16P
 public :: projection_onto_plane_R16P
@@ -377,6 +392,7 @@ public :: mirror_by_matrix_R16P_dev
 public :: mirror_by_normal_R16P_dev
 public :: mirror_matrix_R16P_dev
 public :: normalize_R16P_dev
+public :: normalized_checked_R16P_dev
 public :: normalized_R16P_dev
 public :: normL2_R16P_dev
 public :: orthogonal_R16P_dev

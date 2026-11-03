@@ -1,5 +1,6 @@
 implicit none
 private
+public :: normalized_checked_RPP
 public :: vector_RPP
 public :: ex_RPP
 public :: ey_RPP
@@ -35,6 +36,7 @@ public :: mirror_by_matrix_RPP_dev
 public :: mirror_by_normal_RPP_dev
 public :: mirror_matrix_RPP_dev
 public :: normalize_RPP_dev
+public :: normalized_checked_RPP_dev
 public :: normalized_RPP_dev
 public :: normL2_RPP_dev
 public :: orthogonal_RPP_dev
@@ -909,8 +911,76 @@ contains
    angle_ = atan2(angle_sin, angle_cos)
    endfunction angle_RPP_dev
 
+   pure subroutine normalized_checked_RPP_dev(a, c, ok, min_norm)
+   !$acc routine seq
+   !< Device-callable [[normalized_checked_RPP]]: same arithmetic, same optional `min_norm`.
+   type(vector_RPP), intent(in)           :: a        !< Vector.
+   type(vector_RPP), intent(out)          :: c        !< Normalized vector, the zero vector if not `ok`.
+   logical,          intent(out)          :: ok       !< True if the norm of `a` is above `min_norm`.
+   real(RPP),        intent(in), optional :: min_norm !< Smallest accepted norm (default `smallRPP`).
+   real(RPP)                              :: nm       !< Norm L2 of `a`.
+   real(RPP)                              :: min_norm_ !< Smallest accepted norm, local variable.
+
+   min_norm_ = smallRPP
+   if (present(min_norm)) min_norm_ = min_norm
+   nm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
+   ok = nm > min_norm_
+   if (ok) then
+     c%x = a%x / nm
+     c%y = a%y / nm
+     c%z = a%z / nm
+   else
+     c%x = 0._RPP
+     c%y = 0._RPP
+     c%z = 0._RPP
+   endif
+   endsubroutine normalized_checked_RPP_dev
+
    ! public methods
    ! non TBP
+   elemental subroutine normalized_checked_RPP(a, c, ok, min_norm)
+   !< Normalize `a` into `c` only when its norm is above `min_norm` (default `smallRPP`): `ok` tells which.
+   !<
+   !< Where [[normalize]] divides a degenerate vector by its norm plus `smallRPP` and returns something small but
+   !< not unit, this reports the degenerate case: with `ok` false, `c` is the zero vector.
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: c
+   !< logical          :: ok
+   !< call normalized_checked_RPP(3 * ex_RPP + 4 * ey_RPP, c, ok)
+   !< print "(L1,3(1X,F4.2))", ok, c%x, c%y, c%z
+   !<```
+   !=> T 0.60 0.80 0.00 <<<
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: c
+   !< logical          :: ok
+   !< call normalized_checked_RPP(1e-3_RPP * ex_RPP, c, ok, min_norm=1e-2_RPP)
+   !< print "(L1,3(1X,F4.2))", ok, c%x, c%y, c%z
+   !<```
+   !=> F 0.00 0.00 0.00 <<<
+   type(vector_RPP), intent(in)           :: a        !< Vector.
+   type(vector_RPP), intent(out)          :: c        !< Normalized vector, the zero vector if not `ok`.
+   logical,          intent(out)          :: ok       !< True if the norm of `a` is above `min_norm`.
+   real(RPP),        intent(in), optional :: min_norm !< Smallest accepted norm (default `smallRPP`).
+   real(RPP)                              :: nm       !< Norm L2 of `a`.
+   real(RPP)                              :: min_norm_ !< Smallest accepted norm, local variable.
+
+   min_norm_ = smallRPP
+   if (present(min_norm)) min_norm_ = min_norm
+   nm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
+   ok = nm > min_norm_
+   if (ok) then
+     c%x = a%x / nm
+     c%y = a%y / nm
+     c%z = a%z / nm
+   else
+     c%x = 0._RPP
+     c%y = 0._RPP
+     c%z = 0._RPP
+   endif
+   endsubroutine normalized_checked_RPP
+
    pure function rotation_matrix_RPP(axis, angle) result(matrix)
    !< Return the rotation matrix given axis and angle of ratation.
    !<

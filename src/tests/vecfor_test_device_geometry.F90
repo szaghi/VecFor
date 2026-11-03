@@ -35,6 +35,8 @@ use vecfor, only : vector_R8P,                          &
                    mirror_by_normal_R8P_dev,            &
                    mirror_matrix_R8P,                   &
                    normalize_R8P_dev,                   &
+                   normalized_checked_R8P,              &
+                   normalized_checked_R8P_dev,          &
                    normalized_R8P,                      &
                    normalized_R8P_dev,                  &
                    normL2_R8P,                          &
@@ -98,6 +100,10 @@ real(R8P)               :: trf_bnd(3,n), trm_bnd(3,n)
 ! angle (p0(1) is the zero vector: atan2(0, 0))
 real(R8P)               :: agl_dev(n), agl_ref(n), agl_hst(n), agl_bnd(n)
 
+! normalized_checked, default threshold and min_norm = 50 (about half of the data below it)
+type(vector_R8P)        :: nck_dev(n), nck_ref(n), nck_hst(n), nc5_dev(n), nc5_ref(n), nc5_hst(n)
+logical                 :: okk_dev(n), okk_ref(n), okk_hst(n), ok5_dev(n), ok5_ref(n), ok5_hst(n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -124,7 +130,7 @@ enddo
 !$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
-!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev)
+!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_dev(p0(i))
    sq_dev(i) = sq_norm_R8P_dev(p0(i))
@@ -161,6 +167,8 @@ do i = 1, n
    call mirror_by_matrix_R8P_dev(t1, m)
    call assign_vector_R8P_dev(mmx_dev(i), t1)
    agl_dev(i) = angle_R8P_dev(p0(i), p1(i))
+   call normalized_checked_R8P_dev(p0(i), nck_dev(i), okk_dev(i))
+   call normalized_checked_R8P_dev(p0(i), nc5_dev(i), ok5_dev(i), min_norm=50._R8P)
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -225,6 +233,10 @@ do i = 1, n
    call mirror_by_matrix_R8P_dev(mmx_hst(i), mirm(:,:,i))
    agl_ref(i) = angle_R8P(p0(i), p1(i))
    agl_hst(i) = angle_R8P_dev(p0(i), p1(i))
+   call normalized_checked_R8P(p0(i), nck_ref(i), okk_ref(i))
+   call normalized_checked_R8P_dev(p0(i), nck_hst(i), okk_hst(i))
+   call normalized_checked_R8P(p0(i), nc5_ref(i), ok5_ref(i), min_norm=50._R8P)
+   call normalized_checked_R8P_dev(p0(i), nc5_hst(i), ok5_hst(i), min_norm=50._R8P)
 enddo
 
 call check_real('normL2_dev', nrm_dev, nrm_ref, nrm_hst)
@@ -303,6 +315,14 @@ call check_vec_bound('mirror_by_matrix_dev', mmx_dev, mmx_ref, mmx_hst, trm_bnd)
 ! absolute bound 16*eps (the angle is at most pi).
 agl_bnd = 16 * epsilon(1._R8P)
 call check_real_bound('angle_dev', agl_dev, agl_ref, agl_hst, agl_bnd)
+call check_vec('normalized_checked_dev', nck_dev, nck_ref, nck_hst)
+call check_logical('normalized_checked_dev ok', okk_dev, okk_ref, okk_hst)
+call check_vec('normalized_checked_dev min_norm', nc5_dev, nc5_ref, nc5_hst)
+call check_logical('normalized_checked_dev min_norm ok', ok5_dev, ok5_ref, ok5_hst)
+if (okk_ref(1) .or. count(ok5_ref) == 0 .or. count(.not. ok5_ref) == 0) then
+   print "(A)", "normalized_checked: the data do not exercise both outcomes"
+   all_passed = .false.
+endif
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
