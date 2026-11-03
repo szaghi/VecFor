@@ -17,6 +17,10 @@ use vecfor, only : vector_R8P,                          &
                    angle_R8P,                           &
                    angle_R8P_dev,                       &
                    assign_vector_R8P_dev,               &
+                   barycentric_tetrahedron_R8P,         &
+                   barycentric_tetrahedron_R8P_dev,     &
+                   barycentric_triangle_R8P,            &
+                   barycentric_triangle_R8P_dev,        &
                    crossproduct_accurate_R8P,           &
                    crossproduct_accurate_R8P_dev,       &
                    distance_to_line_R8P,                &
@@ -126,6 +130,12 @@ type(vector_R8P)        :: polys(4,n), pva_dev(n), pva_ref(n), pva_hst(n), clo, 
 real(R8P)               :: tra_dev(n), tra_ref(n), tra_hst(n), tev_dev(n), tev_ref(n), tev_hst(n)
 real(R8P)               :: tra_bnd(n), tev_bnd(n), pva_bnd(3,n), clo_bnd
 
+! barycentric coordinates of p0 in the triangle p1-p3 and in the tetrahedron p1-p4
+type(vector_R8P)        :: p4(n)
+real(R8P)               :: btl_dev(3,n), btl_ref(3,n), btl_hst(3,n), btl_bnd(3,n)
+real(R8P)               :: bql_dev(4,n), bql_ref(4,n), bql_hst(4,n), bql_bnd(4,n)
+type(vector_R8P)        :: rec, prj, nrm
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -151,13 +161,14 @@ do i = 1, n
    polys(2,i) = p1(i)
    polys(3,i) = p2(i)
    polys(4,i) = p3(i)
+   p4(i) = p1(i) + (1._R8P + 0.01_R8P * real(i, R8P)) * vector_R8P(x=0.3_R8P, y=-0.7_R8P, z=1.1_R8P)
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm, polys) private(t1, m) &
+!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm, polys, p4) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
 !$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev, cxa_dev, dta_dev, &
-!$acc         tra_dev, tev_dev, pva_dev)
+!$acc         tra_dev, tev_dev, pva_dev, btl_dev, bql_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_dev(p0(i))
    sq_dev(i) = sq_norm_R8P_dev(p0(i))
@@ -201,6 +212,8 @@ do i = 1, n
    tra_dev(i) = triangle_area_R8P_dev(p1(i), p2(i), p3(i))
    tev_dev(i) = tetrahedron_volume_R8P_dev(p0(i), p1(i), p2(i), p3(i))
    call polygon_vector_area_R8P_dev(4, polys(:,i), pva_dev(i))
+   call barycentric_triangle_R8P_dev(p0(i), p1(i), p2(i), p3(i), btl_dev(:,i))
+   call barycentric_tetrahedron_R8P_dev(p0(i), p1(i), p2(i), p3(i), p4(i), bql_dev(:,i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -279,6 +292,10 @@ do i = 1, n
    tev_hst(i) = tetrahedron_volume_R8P_dev(p0(i), p1(i), p2(i), p3(i))
    pva_ref(i) = polygon_vector_area_R8P(polys(:,i))
    call polygon_vector_area_R8P_dev(4, polys(:,i), pva_hst(i))
+   btl_ref(:,i) = barycentric_triangle_R8P(p0(i), p1(i), p2(i), p3(i))
+   call barycentric_triangle_R8P_dev(p0(i), p1(i), p2(i), p3(i), btl_hst(:,i))
+   bql_ref(:,i) = barycentric_tetrahedron_R8P(p0(i), p1(i), p2(i), p3(i), p4(i))
+   call barycentric_tetrahedron_R8P_dev(p0(i), p1(i), p2(i), p3(i), p4(i), bql_hst(:,i))
 enddo
 
 call check_real('normL2_dev', nrm_dev, nrm_ref, nrm_hst)
@@ -404,6 +421,43 @@ do i = 1, n
    clo = pva_ref(i) - face_normal4_R8P(p0(i), p1(i), p2(i), p3(i))
    if (normL2_R8P(clo) > 2 * maxval(pva_bnd(:,i))) then
       print "(A,I0)", "polygon_vector_area differs from face_normal4, i = ", i
+      all_passed = .false.
+   endif
+enddo
+! barycentric: dimensionless, amplified by the conditioning of the cell (triangle: |s12||s13|/|s12 x s13|;
+! tetrahedron: |u||v||w|/|6V|) and by the size of the coordinates themselves (points far outside).
+do i = 1, n
+   ! triangle: Cramer's rule on dot products; FMA contraction moves d20, d21 by ~eps*|v2||v_k|, the 2x2 numerators
+   ! carry it, the denominator is |v0 x v1|**2: dl ~ eps*|v2|*(|v0| + |v1|)*cond**2/(|v0||v1|), cond = |v0||v1|/|v0 x v1|
+   ! (first-order constant; measured worst case on nvfortran 26.9: 0.6 of this bound, cond 162, |l| 94)
+   btl_bnd(:,i) = 128 * epsilon(1._R8P) * (normL2_R8P(p0(i) - p1(i)) * (normL2_R8P(p2(i) - p1(i)) + normL2_R8P(p3(i) - p1(i))) * &
+                  cond_cross(p2(i) - p1(i), p3(i) - p1(i))**2 / (normL2_R8P(p2(i) - p1(i)) * normL2_R8P(p3(i) - p1(i))) &
+                  + 1._R8P + maxval(abs(btl_ref(:,i))))
+   bql_bnd(:,i) = 64 * epsilon(1._R8P) * (1._R8P + normL2_R8P(p2(i) - p1(i)) * normL2_R8P(p3(i) - p1(i)) * &
+                  normL2_R8P(p4(i) - p1(i)) / abs(6 * tetrahedron_volume_R8P(p1(i), p2(i), p3(i), p4(i)))) * &
+                  (1._R8P + maxval(abs(bql_ref(:,i))))
+enddo
+call check_real_bound('barycentric_triangle_dev', reshape(btl_dev, [3*n]), reshape(btl_ref, [3*n]), &
+                      reshape(btl_hst, [3*n]), reshape(btl_bnd, [3*n]))
+call check_real_bound('barycentric_tetrahedron_dev', reshape(bql_dev, [4*n]), reshape(bql_ref, [4*n]), &
+                      reshape(bql_hst, [4*n]), reshape(bql_bnd, [4*n]))
+if (any(abs(sum(btl_ref, dim=1) - 1) > 8 * epsilon(1._R8P) * (1 + maxval(abs(btl_ref), dim=1)))) then
+   print "(A)", "barycentric_triangle: coordinates do not sum to 1"
+   all_passed = .false.
+endif
+! independent references: the tetrahedron coordinates rebuild p0, the triangle ones its projection onto the plane
+do i = 1, n
+   rec = bql_ref(1,i) * p1(i) + bql_ref(2,i) * p2(i) + bql_ref(3,i) * p3(i) + bql_ref(4,i) * p4(i)
+   if (normL2_R8P(rec - p0(i)) > maxval(bql_bnd(:,i)) * (normL2_R8P(p0(i)) + normL2_R8P(p4(i) - p1(i)) + 1)) then
+      print "(A,I0)", "barycentric_tetrahedron does not rebuild the point, i = ", i
+      all_passed = .false.
+   endif
+   nrm = normalized_R8P(face_normal3_R8P(p1(i), p2(i), p3(i)))
+   rec = p0(i) - p1(i)
+   prj = p0(i) - rec%dotproduct(nrm) * nrm
+   rec = btl_ref(1,i) * p1(i) + btl_ref(2,i) * p2(i) + btl_ref(3,i) * p3(i)
+   if (normL2_R8P(rec - prj) > maxval(btl_bnd(:,i)) * (normL2_R8P(p0(i)) + normL2_R8P(p3(i) - p1(i)) + 1)) then
+      print "(A,I0)", "barycentric_triangle does not rebuild the projection, i = ", i
       all_passed = .false.
    endif
 enddo

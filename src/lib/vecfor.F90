@@ -14,6 +14,10 @@ module vecfor
 use vecfor_RPP, only : angle,                       &
                        angle_dev,                   &
                        assign_vector_dev,           &
+                       barycentric_tetrahedron,     &
+                       barycentric_tetrahedron_dev, &
+                       barycentric_triangle,        &
+                       barycentric_triangle_dev,    &
                        crossproduct_accurate,       &
                        crossproduct_accurate_dev,   &
                        crossproduct_dev,            &
@@ -75,6 +79,10 @@ use vecfor_RPP, only : angle,                       &
 use vecfor_R4P, only : angle_R4P,                       &
                        angle_R4P_dev,                   &
                        assign_vector_R4P_dev,           &
+                       barycentric_tetrahedron_R4P,     &
+                       barycentric_tetrahedron_R4P_dev, &
+                       barycentric_triangle_R4P,        &
+                       barycentric_triangle_R4P_dev,    &
                        crossproduct_accurate_R4P,       &
                        crossproduct_accurate_R4P_dev,   &
                        crossproduct_R4P_dev,            &
@@ -136,6 +144,10 @@ use vecfor_R4P, only : angle_R4P,                       &
 use vecfor_R8P, only : angle_R8P,                       &
                        angle_R8P_dev,                   &
                        assign_vector_R8P_dev,           &
+                       barycentric_tetrahedron_R8P,     &
+                       barycentric_tetrahedron_R8P_dev, &
+                       barycentric_triangle_R8P,        &
+                       barycentric_triangle_R8P_dev,    &
                        crossproduct_accurate_R8P,       &
                        crossproduct_accurate_R8P_dev,   &
                        crossproduct_R8P_dev,            &
@@ -197,6 +209,10 @@ use vecfor_R8P, only : angle_R8P,                       &
 use vecfor_R16P, only : angle_R16P,                       &
                         angle_R16P_dev,                   &
                         assign_vector_R16P_dev,           &
+                        barycentric_tetrahedron_R16P,     &
+                        barycentric_tetrahedron_R16P_dev, &
+                        barycentric_triangle_R16P,        &
+                        barycentric_triangle_R16P_dev,    &
                         crossproduct_accurate_R16P,       &
                         crossproduct_accurate_R16P_dev,   &
                         crossproduct_R16P_dev,            &
@@ -256,6 +272,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         vector_sum_vector_R16P_dev
 
 public :: angle
+public :: barycentric_tetrahedron
+public :: barycentric_triangle
 public :: crossproduct_accurate
 public :: distance_to_line
 public :: distance_to_plane
@@ -279,6 +297,8 @@ public :: triangle_area
 public :: ex, ey, ez, vector
 public :: angle_dev
 public :: assign_vector_dev
+public :: barycentric_tetrahedron_dev
+public :: barycentric_triangle_dev
 public :: crossproduct_accurate_dev
 public :: crossproduct_dev
 public :: distance_to_line_dev
@@ -307,6 +327,8 @@ public :: rotate_by_axis_angle_dev
 public :: rotate_by_matrix_dev
 public :: rotation_matrix_dev
 public :: angle_R8P_dev
+public :: barycentric_tetrahedron_R8P_dev
+public :: barycentric_triangle_R8P_dev
 public :: crossproduct_accurate_R8P_dev
 public :: distance_to_line_R8P_dev
 public :: distance_to_plane_R8P_dev
@@ -339,6 +361,8 @@ public :: vector_sub_vector_dev
 public :: vector_sum_vector_dev
 
 public :: angle_R4P
+public :: barycentric_tetrahedron_R4P
+public :: barycentric_triangle_R4P
 public :: crossproduct_accurate_R4P
 public :: distance_to_line_R4P
 public :: distance_to_plane_R4P
@@ -362,6 +386,8 @@ public :: triangle_area_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
 public :: angle_R4P_dev
 public :: assign_vector_R4P_dev
+public :: barycentric_tetrahedron_R4P_dev
+public :: barycentric_triangle_R4P_dev
 public :: crossproduct_accurate_R4P_dev
 public :: crossproduct_R4P_dev
 public :: distance_to_line_R4P_dev
@@ -397,6 +423,8 @@ public :: vector_sub_vector_R4P_dev
 public :: vector_sum_vector_R4P_dev
 
 public :: angle_R8P
+public :: barycentric_tetrahedron_R8P
+public :: barycentric_triangle_R8P
 public :: crossproduct_accurate_R8P
 public :: distance_to_line_R8P
 public :: distance_to_plane_R8P
@@ -430,6 +458,8 @@ public :: vector_sub_vector_R8P_dev
 public :: vector_sum_vector_R8P_dev
 
 public :: angle_R16P
+public :: barycentric_tetrahedron_R16P
+public :: barycentric_triangle_R16P
 public :: crossproduct_accurate_R16P
 public :: distance_to_line_R16P
 public :: distance_to_plane_R16P
@@ -453,6 +483,8 @@ public :: triangle_area_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
 public :: angle_R16P_dev
 public :: assign_vector_R16P_dev
+public :: barycentric_tetrahedron_R16P_dev
+public :: barycentric_triangle_R16P_dev
 public :: crossproduct_accurate_R16P_dev
 public :: crossproduct_R16P_dev
 public :: distance_to_line_R16P_dev

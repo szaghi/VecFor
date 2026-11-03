@@ -1,5 +1,7 @@
 implicit none
 private
+public :: barycentric_tetrahedron_RPP
+public :: barycentric_triangle_RPP
 public :: crossproduct_accurate_RPP
 public :: dotproduct_accurate_RPP
 public :: normalized_checked_RPP
@@ -27,6 +29,8 @@ public :: rotation_matrix_RPP
 public :: sq_norm_RPP
 public :: angle_RPP_dev
 public :: assign_vector_RPP_dev
+public :: barycentric_tetrahedron_RPP_dev
+public :: barycentric_triangle_RPP_dev
 public :: crossproduct_accurate_RPP_dev
 public :: crossproduct_RPP_dev
 public :: distance_to_line_RPP_dev
@@ -1052,8 +1056,115 @@ contains
    area%z = 0.5_RPP * area%z
    endsubroutine polygon_vector_area_RPP_dev
 
+   pure subroutine barycentric_triangle_RPP_dev(p, pt1, pt2, pt3, l)
+   !$acc routine seq
+   !< Device-callable [[barycentric_triangle_RPP]], the coordinates as an `intent(out)` argument.
+   type(vector_RPP), intent(in)  :: p    !< Point.
+   type(vector_RPP), intent(in)  :: pt1  !< First vertex.
+   type(vector_RPP), intent(in)  :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in)  :: pt3  !< Third vertex.
+   real(RPP),        intent(out) :: l(3) !< Barycentric coordinates.
+   type(vector_RPP)              :: v0   !< `pt2 - pt1`.
+   type(vector_RPP)              :: v1   !< `pt3 - pt1`.
+   type(vector_RPP)              :: v2   !< `p - pt1`.
+   real(RPP)                     :: d00, d01, d11, d20, d21 !< Dot products of the edges and of `v2`.
+   real(RPP)                     :: den  !< `d00 * d11 - d01**2`, by Kahan's algorithm (skinny triangles cancel it).
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, v0)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v1)
+   call vector_sub_vector_RPP_dev(p, pt1, v2)
+   d00 = dotproduct_RPP_dev(v0, v0)
+   d01 = dotproduct_RPP_dev(v0, v1)
+   d11 = dotproduct_RPP_dev(v1, v1)
+   d20 = dotproduct_RPP_dev(v2, v0)
+   d21 = dotproduct_RPP_dev(v2, v1)
+   den = dop_RPP(d00, d11, d01, d01)
+   l(2) = dop_RPP(d11, d20, d01, d21) / den
+   l(3) = dop_RPP(d00, d21, d01, d20) / den
+   l(1) = 1._RPP - l(2) - l(3)
+   endsubroutine barycentric_triangle_RPP_dev
+
+   pure subroutine barycentric_tetrahedron_RPP_dev(p, pt1, pt2, pt3, pt4, l)
+   !$acc routine seq
+   !< Device-callable [[barycentric_tetrahedron_RPP]], the coordinates as an `intent(out)` argument.
+   type(vector_RPP), intent(in)  :: p    !< Point.
+   type(vector_RPP), intent(in)  :: pt1  !< First vertex.
+   type(vector_RPP), intent(in)  :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in)  :: pt3  !< Third vertex.
+   type(vector_RPP), intent(in)  :: pt4  !< Fourth vertex.
+   real(RPP),        intent(out) :: l(4) !< Barycentric coordinates.
+   real(RPP)                     :: v    !< Signed volume of the tetrahedron.
+
+   v = tetrahedron_volume_RPP_dev(pt1, pt2, pt3, pt4)
+   l(1) = tetrahedron_volume_RPP_dev(p, pt2, pt3, pt4) / v
+   l(2) = tetrahedron_volume_RPP_dev(pt1, p, pt3, pt4) / v
+   l(3) = tetrahedron_volume_RPP_dev(pt1, pt2, p, pt4) / v
+   l(4) = tetrahedron_volume_RPP_dev(pt1, pt2, pt3, p) / v
+   endsubroutine barycentric_tetrahedron_RPP_dev
+
    ! public methods
    ! non TBP
+   pure function barycentric_tetrahedron_RPP(p, pt1, pt2, pt3, pt4) result(l)
+   !< Barycentric coordinates of `p` in the tetrahedron `pt1, pt2, pt3, pt4`: ratios of signed sub-volumes, so
+   !< `p = sum(l(i)*pt(i))`, `sum(l) = 1`, all in `[0, 1]` inside (the point-in-cell test of donor search).
+   !<
+   !<```fortran
+   !< real(RPP) :: l(4)
+   !< l = barycentric_tetrahedron_RPP((ex_RPP + ey_RPP + ez_RPP) / 4, 0 * ex_RPP, ex_RPP, ey_RPP, ez_RPP)
+   !< print "(4(F4.2,1X))", l
+   !<```
+   !=> 0.25 0.25 0.25 0.25 <<<
+   type(vector_RPP), intent(in)  :: p    !< Point.
+   type(vector_RPP), intent(in)  :: pt1  !< First vertex.
+   type(vector_RPP), intent(in)  :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in)  :: pt3  !< Third vertex.
+   type(vector_RPP), intent(in)  :: pt4  !< Fourth vertex.
+   real(RPP)                     :: l(4) !< Barycentric coordinates.
+   real(RPP)                     :: v    !< Signed volume of the tetrahedron.
+
+   v = tetrahedron_volume_RPP_dev(pt1, pt2, pt3, pt4)
+   l(1) = tetrahedron_volume_RPP_dev(p, pt2, pt3, pt4) / v
+   l(2) = tetrahedron_volume_RPP_dev(pt1, p, pt3, pt4) / v
+   l(3) = tetrahedron_volume_RPP_dev(pt1, pt2, p, pt4) / v
+   l(4) = tetrahedron_volume_RPP_dev(pt1, pt2, pt3, p) / v
+   endfunction barycentric_tetrahedron_RPP
+
+   pure function barycentric_triangle_RPP(p, pt1, pt2, pt3) result(l)
+   !< Barycentric coordinates of `p` (of its projection onto the plane) in the triangle `pt1, pt2, pt3`:
+   !< `p = l(1)*pt1 + l(2)*pt2 + l(3)*pt3` with `sum(l) = 1`; all in `[0, 1]` inside the triangle (Ericson's method,
+   !< the 2x2 determinants by Kahan's algorithm).
+   !<
+   !<```fortran
+   !< real(RPP) :: l(3)
+   !< l = barycentric_triangle_RPP((ex_RPP + ey_RPP) / 3, 0 * ex_RPP, ex_RPP, ey_RPP)
+   !< print "(3(F5.3,1X))", l
+   !<```
+   !=> 0.333 0.333 0.333 <<<
+   type(vector_RPP), intent(in)  :: p    !< Point.
+   type(vector_RPP), intent(in)  :: pt1  !< First vertex.
+   type(vector_RPP), intent(in)  :: pt2  !< Second vertex.
+   type(vector_RPP), intent(in)  :: pt3  !< Third vertex.
+   real(RPP)                     :: l(3) !< Barycentric coordinates.
+   type(vector_RPP)              :: v0   !< `pt2 - pt1`.
+   type(vector_RPP)              :: v1   !< `pt3 - pt1`.
+   type(vector_RPP)              :: v2   !< `p - pt1`.
+   real(RPP)                     :: d00, d01, d11, d20, d21 !< Dot products of the edges and of `v2`.
+   real(RPP)                     :: den  !< `d00 * d11 - d01**2`, by Kahan's algorithm (skinny triangles cancel it).
+
+   call vector_sub_vector_RPP_dev(pt2, pt1, v0)
+   call vector_sub_vector_RPP_dev(pt3, pt1, v1)
+   call vector_sub_vector_RPP_dev(p, pt1, v2)
+   d00 = dotproduct_RPP_dev(v0, v0)
+   d01 = dotproduct_RPP_dev(v0, v1)
+   d11 = dotproduct_RPP_dev(v1, v1)
+   d20 = dotproduct_RPP_dev(v2, v0)
+   d21 = dotproduct_RPP_dev(v2, v1)
+   den = dop_RPP(d00, d11, d01, d01)
+   l(2) = dop_RPP(d11, d20, d01, d21) / den
+   l(3) = dop_RPP(d00, d21, d01, d20) / den
+   l(1) = 1._RPP - l(2) - l(3)
+   endfunction barycentric_triangle_RPP
+
    pure function polygon_vector_area_RPP(pts) result(area)
    !< Vector area of the polygon `pts(1), ..., pts(n)` (vertices in order, closed implicitly): half the sum of
    !< `(pts(i) - pts(1)) .cross. (pts(i+1) - pts(1))`. Its norm is the area of a planar polygon, its direction the
