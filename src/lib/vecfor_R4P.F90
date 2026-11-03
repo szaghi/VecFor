@@ -33,6 +33,8 @@ use penf, only : RPP=>R4P, smallRPP=>smallR4P, ZeroRPP=>ZeroR4P
 #define crossproduct_RPP_oac crossproduct_R4P_oac
 #define distance_to_line_RPP_oac distance_to_line_R4P_oac
 #define dotproduct_RPP_oac dotproduct_R4P_oac
+#define face_normal3_RPP_oac face_normal3_R4P_oac
+#define face_normal4_RPP_oac face_normal4_R4P_oac
 #define matrixproduct_RPP_oac matrixproduct_R4P_oac
 #define mirror_matrix_RPP_oac mirror_matrix_R4P_oac
 #define normalize_RPP_oac normalize_R4P_oac

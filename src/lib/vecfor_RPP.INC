@@ -23,6 +23,8 @@ public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: distance_to_line_RPP_oac
 public :: dotproduct_RPP_oac
+public :: face_normal3_RPP_oac
+public :: face_normal4_RPP_oac
 public :: matrixproduct_RPP_oac
 public :: mirror_matrix_RPP_oac
 public :: normalize_RPP_oac
@@ -664,6 +666,58 @@ contains
    call vector_sub_vector_RPP_oac(pt2, pt1, s)
    distance = normL2_RPP_oac(w) / normL2_RPP_oac(s)
    endfunction distance_to_line_RPP_oac
+
+   pure subroutine face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm)
+   !$acc routine seq
+   !< Device-callable normal of the triangle `pt1, pt2, pt3`: [[face_normal3_RPP]] open-coded. With `norm` present
+   !< (any value, as on the host) the normal is normalized, otherwise its length is the area of the triangle.
+   type(vector_RPP), intent(in)           :: pt1    !< First vertex.
+   type(vector_RPP), intent(in)           :: pt2    !< Second vertex.
+   type(vector_RPP), intent(in)           :: pt3    !< Third vertex.
+   type(vector_RPP), intent(out)          :: normal !< Face normal.
+   character(1),     intent(in), optional :: norm   !< If present, normalize the normal.
+   type(vector_RPP)                       :: s12    !< `pt2 - pt1`.
+   type(vector_RPP)                       :: s13    !< `pt3 - pt1`.
+   type(vector_RPP)                       :: w      !< `s12 .cross. s13`.
+
+   call vector_sub_vector_RPP_oac(pt2, pt1, s12)
+   call vector_sub_vector_RPP_oac(pt3, pt1, s13)
+   call crossproduct_RPP_oac(s12, s13, w)
+   if (present(norm)) then
+     call normalized_RPP_oac(w, normal)
+   else
+     normal%x = 0.5_RPP * w%x
+     normal%y = 0.5_RPP * w%y
+     normal%z = 0.5_RPP * w%z
+   endif
+   endsubroutine face_normal3_RPP_oac
+
+   pure subroutine face_normal4_RPP_oac(pt1, pt2, pt3, pt4, normal, norm)
+   !$acc routine seq
+   !< Device-callable normal of the quadrilateral `pt1, pt2, pt3, pt4`: [[face_normal4_RPP]] open-coded (cross product
+   !< of the diagonals). With `norm` present (any value, as on the host) the normal is normalized, otherwise its length
+   !< is the area of the quadrilateral.
+   type(vector_RPP), intent(in)           :: pt1    !< First vertex.
+   type(vector_RPP), intent(in)           :: pt2    !< Second vertex.
+   type(vector_RPP), intent(in)           :: pt3    !< Third vertex.
+   type(vector_RPP), intent(in)           :: pt4    !< Fourth vertex.
+   type(vector_RPP), intent(out)          :: normal !< Face normal.
+   character(1),     intent(in), optional :: norm   !< If present, normalize the normal.
+   type(vector_RPP)                       :: d13    !< `pt3 - pt1`.
+   type(vector_RPP)                       :: d24    !< `pt4 - pt2`.
+   type(vector_RPP)                       :: w      !< `d13 .cross. d24`.
+
+   call vector_sub_vector_RPP_oac(pt3, pt1, d13)
+   call vector_sub_vector_RPP_oac(pt4, pt2, d24)
+   call crossproduct_RPP_oac(d13, d24, w)
+   if (present(norm)) then
+     call normalized_RPP_oac(w, normal)
+   else
+     normal%x = 0.5_RPP * w%x
+     normal%y = 0.5_RPP * w%y
+     normal%z = 0.5_RPP * w%z
+   endif
+   endsubroutine face_normal4_RPP_oac
 
    ! public methods
    ! non TBP

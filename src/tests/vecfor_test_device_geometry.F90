@@ -17,6 +17,10 @@ use vecfor, only : vector_R8P,               &
                    assign_vector_R8P_oac,    &
                    distance_to_line_R8P,     &
                    distance_to_line_R8P_oac, &
+                   face_normal3_R8P,         &
+                   face_normal3_R8P_oac,     &
+                   face_normal4_R8P,         &
+                   face_normal4_R8P_oac,     &
                    normalize_R8P_oac,        &
                    normalized_R8P,           &
                    normalized_R8P_oac,       &
@@ -50,6 +54,11 @@ real(R8P)               :: ort_bnd(3,n)
 real(R8P)               :: dtl_dev(n), dtl_ref(n), dtl_oac(n)
 real(R8P)               :: dtl_bnd(n)
 
+! face_normal3, face_normal4, with and without norm
+type(vector_R8P)        :: f3n_dev(n), f3n_ref(n), f3n_oac(n), f3a_dev(n), f3a_ref(n), f3a_oac(n)
+type(vector_R8P)        :: f4n_dev(n), f4n_ref(n), f4n_oac(n), f4a_dev(n), f4a_ref(n), f4a_oac(n)
+real(R8P)               :: f3_bnd(3,n), f3n_bnd(3,n), f4_bnd(3,n), f4n_bnd(3,n), cnd
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -62,7 +71,8 @@ do i = 1, n
 enddo
 
 !$acc parallel loop copyin(p0, p1, p2, p3) private(t1) &
-!$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev)
+!$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
+!$acc         f4n_dev, f4a_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -73,6 +83,10 @@ do i = 1, n
    call parallel_R8P_oac(p1(i), p2(i), par_dev(i))
    call orthogonal_R8P_oac(p1(i), p2(i), ort_dev(i))
    dtl_dev(i) = distance_to_line_R8P_oac(p0(i), p1(i), p2(i))
+   call face_normal3_R8P_oac(p1(i), p2(i), p3(i), f3n_dev(i), norm='y')
+   call face_normal3_R8P_oac(p1(i), p2(i), p3(i), f3a_dev(i))
+   call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4n_dev(i), norm='y')
+   call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4a_dev(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -97,6 +111,14 @@ do i = 1, n
    call orthogonal_R8P_oac(p1(i), p2(i), ort_oac(i))
    dtl_ref(i) = distance_to_line_R8P(p0(i), p1(i), p2(i))
    dtl_oac(i) = distance_to_line_R8P_oac(p0(i), p1(i), p2(i))
+   f3n_ref(i) = face_normal3_R8P(pt1=p1(i), pt2=p2(i), pt3=p3(i), norm='y')
+   call face_normal3_R8P_oac(p1(i), p2(i), p3(i), f3n_oac(i), norm='y')
+   f3a_ref(i) = face_normal3_R8P(pt1=p1(i), pt2=p2(i), pt3=p3(i))
+   call face_normal3_R8P_oac(p1(i), p2(i), p3(i), f3a_oac(i))
+   f4n_ref(i) = face_normal4_R8P(pt1=p0(i), pt2=p1(i), pt3=p2(i), pt4=p3(i), norm='y')
+   call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4n_oac(i), norm='y')
+   f4a_ref(i) = face_normal4_R8P(pt1=p0(i), pt2=p1(i), pt3=p2(i), pt4=p3(i))
+   call face_normal4_R8P_oac(p0(i), p1(i), p2(i), p3(i), f4a_oac(i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -120,6 +142,21 @@ do i = 1, n
                                         + dtl_ref(i))
 enddo
 call check_real_bound('distance_to_line_oac', dtl_dev, dtl_ref, dtl_oac, dtl_bnd)
+! face normals: w = s12 x s13 (d13 x d24 for face_normal4). Unnormalized, each component changes by at most ~2*eps*
+! |s12||s13| under FMA contraction: bound 4*eps*|s12||s13|. Normalized, the direction of w changes by ~eps times the
+! condition |s12||s13|/|w| of the cross product: bound 16*eps*(1 + |s12||s13|/|w|) on the unit components.
+do i = 1, n
+   f3_bnd(:,i) = 4 * epsilon(1._R8P) * normL2_R8P(p2(i) - p1(i)) * normL2_R8P(p3(i) - p1(i))
+   cnd = cond_cross(p2(i) - p1(i), p3(i) - p1(i))
+   f3n_bnd(:,i) = 16 * epsilon(1._R8P) * (1._R8P + cnd)
+   f4_bnd(:,i) = 4 * epsilon(1._R8P) * normL2_R8P(p2(i) - p0(i)) * normL2_R8P(p3(i) - p1(i))
+   cnd = cond_cross(p2(i) - p0(i), p3(i) - p1(i))
+   f4n_bnd(:,i) = 16 * epsilon(1._R8P) * (1._R8P + cnd)
+enddo
+call check_vec_bound('face_normal3_oac norm', f3n_dev, f3n_ref, f3n_oac, f3n_bnd)
+call check_vec_bound('face_normal3_oac', f3a_dev, f3a_ref, f3a_oac, f3_bnd)
+call check_vec_bound('face_normal4_oac norm', f4n_dev, f4n_ref, f4n_oac, f4n_bnd)
+call check_vec_bound('face_normal4_oac', f4a_dev, f4a_ref, f4a_oac, f4_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
