@@ -3,7 +3,7 @@ name: fpm
 # Project-owned workflow (not managed by `fobis scaffold`): builds and tests VecFor with fpm on every push. The
 # scaffold's ci.yml runs only the doctests (fobis doctests, for the coverage), so the hand-written tests of src/tests
 # run here: vecfor_test_quad_precision (vector_R16P must be true quadruple precision, which catches a dead PENF_R16P
-# macro) and vecfor_test_device_loop (the _oac API, serial here: no OpenACC).
+# macro) and vecfor_test_device_loop (the _dev API, serial here: no OpenACC).
 
 on:
   push:

@@ -19,35 +19,35 @@ public :: normL2_RPP
 public :: projection_onto_plane_RPP
 public :: rotation_matrix_RPP
 public :: sq_norm_RPP
-public :: angle_RPP_oac
-public :: assign_vector_RPP_oac
-public :: crossproduct_RPP_oac
-public :: distance_to_line_RPP_oac
-public :: distance_to_plane_RPP_oac
-public :: distance_vectorial_to_plane_RPP_oac
-public :: dotproduct_RPP_oac
-public :: face_normal3_RPP_oac
-public :: face_normal4_RPP_oac
-public :: is_collinear_RPP_oac
-public :: is_concyclic_RPP_oac
-public :: matrixproduct_RPP_oac
-public :: mirror_by_matrix_RPP_oac
-public :: mirror_by_normal_RPP_oac
-public :: mirror_matrix_RPP_oac
-public :: normalize_RPP_oac
-public :: normalized_RPP_oac
-public :: normL2_RPP_oac
-public :: orthogonal_RPP_oac
-public :: parallel_RPP_oac
-public :: projection_onto_plane_RPP_oac
-public :: R8P_mul_vector_RPP_oac
-public :: rotate_by_axis_angle_RPP_oac
-public :: rotate_by_matrix_RPP_oac
-public :: rotation_matrix_RPP_oac
-public :: sq_norm_RPP_oac
-public :: vector_mul_R8P_RPP_oac
-public :: vector_sub_vector_RPP_oac
-public :: vector_sum_vector_RPP_oac
+public :: angle_RPP_dev
+public :: assign_vector_RPP_dev
+public :: crossproduct_RPP_dev
+public :: distance_to_line_RPP_dev
+public :: distance_to_plane_RPP_dev
+public :: distance_vectorial_to_plane_RPP_dev
+public :: dotproduct_RPP_dev
+public :: face_normal3_RPP_dev
+public :: face_normal4_RPP_dev
+public :: is_collinear_RPP_dev
+public :: is_concyclic_RPP_dev
+public :: matrixproduct_RPP_dev
+public :: mirror_by_matrix_RPP_dev
+public :: mirror_by_normal_RPP_dev
+public :: mirror_matrix_RPP_dev
+public :: normalize_RPP_dev
+public :: normalized_RPP_dev
+public :: normL2_RPP_dev
+public :: orthogonal_RPP_dev
+public :: parallel_RPP_dev
+public :: projection_onto_plane_RPP_dev
+public :: R8P_mul_vector_RPP_dev
+public :: rotate_by_axis_angle_RPP_dev
+public :: rotate_by_matrix_RPP_dev
+public :: rotation_matrix_RPP_dev
+public :: sq_norm_RPP_dev
+public :: vector_mul_R8P_RPP_dev
+public :: vector_sub_vector_RPP_dev
+public :: vector_sum_vector_RPP_dev
 public :: I1P, I2P, I4P, I8P, R4P, R8P, R16P, str
 
 type :: vector_RPP
@@ -374,13 +374,13 @@ type(vector_RPP), parameter :: ey_RPP = vector_RPP(0._RPP, 1._RPP, 0._RPP) !< Y 
 type(vector_RPP), parameter :: ez_RPP = vector_RPP(0._RPP, 0._RPP, 1._RPP) !< Z direction versor.
 
 contains
-   ! device-callable free-procedure entry points (`_oac` API)
+   ! device-callable free-procedure entry points (`_dev` API)
    !
    ! These mirror the TBP-bound operator implementations needed by FOSSIL's
    ! distance kernel under `!$acc routine seq`. The TBP forms cannot be
    ! reached from inside an OpenACC device region: nvfortran 26.1 forbids
    ! indirect (vtable) dispatch, and TBP `pass` arguments must be declared
-   ! `class(...)`, which trips the same restriction. The `_oac` mirrors take
+   ! `class(...)`, which trips the same restriction. The `_dev` mirrors take
    ! `type(vector_RPP)` arguments (not `class`).
    !
    ! Every vector-producing entry point is a `subroutine` writing the result
@@ -389,15 +389,15 @@ contains
    !   1. `vector = vector` invokes the user-defined `assign_vector` TBP,
    !      which nvfortran rejects with NVFORTRAN-F-1252 from any device
    !      region. The subroutine form sidesteps the assignment entirely.
-   !   2. Even when the LHS uses an explicit `_oac` assignment, a function
+   !   2. Even when the LHS uses an explicit `_dev` assignment, a function
    !      returning `type(vector_RPP)` allocates a single shared temporary
    !      on the device and all threads read/write through it -- producing
    !      constant garbage across the parallel loop. The subroutine form
    !      writes into the caller's storage directly, so no shared temp.
-   ! `dotproduct_RPP_oac` is the only function: it returns a scalar `real`,
+   ! `dotproduct_RPP_dev` is the only function: it returns a scalar `real`,
    ! which has no assignment-overload and no derived-type return temp issue.
    ! See VecFor's CLAUDE.md and szaghi/VecFor#20 for the extension contract.
-   pure function dotproduct_RPP_oac(a, b) result(d)
+   pure function dotproduct_RPP_dev(a, b) result(d)
    !$acc routine seq
    !< Device-callable dot product. CPU consumers should keep using `a .dot. b`
    !< or `a%dotproduct(b)`; this entry point is for device kernel code only.
@@ -406,9 +406,9 @@ contains
    real(RPP)                    :: d !< Dot product.
 
    d = (a%x * b%x) + (a%y * b%y) + (a%z * b%z)
-   endfunction dotproduct_RPP_oac
+   endfunction dotproduct_RPP_dev
 
-   pure subroutine crossproduct_RPP_oac(a, b, c)
+   pure subroutine crossproduct_RPP_dev(a, b, c)
    !$acc routine seq
    !< Device-callable cross product, subroutine form.
    type(vector_RPP), intent(in)  :: a !< Left hand side.
@@ -418,9 +418,9 @@ contains
    c%x = (a%y * b%z) - (a%z * b%y)
    c%y = (a%z * b%x) - (a%x * b%z)
    c%z = (a%x * b%y) - (a%y * b%x)
-   endsubroutine crossproduct_RPP_oac
+   endsubroutine crossproduct_RPP_dev
 
-   pure subroutine vector_sum_vector_RPP_oac(a, b, c)
+   pure subroutine vector_sum_vector_RPP_dev(a, b, c)
    !$acc routine seq
    !< Device-callable vector + vector, subroutine form.
    type(vector_RPP), intent(in)  :: a !< Left hand side.
@@ -430,9 +430,9 @@ contains
    c%x = a%x + b%x
    c%y = a%y + b%y
    c%z = a%z + b%z
-   endsubroutine vector_sum_vector_RPP_oac
+   endsubroutine vector_sum_vector_RPP_dev
 
-   pure subroutine vector_sub_vector_RPP_oac(a, b, c)
+   pure subroutine vector_sub_vector_RPP_dev(a, b, c)
    !$acc routine seq
    !< Device-callable vector - vector, subroutine form.
    type(vector_RPP), intent(in)  :: a !< Left hand side.
@@ -442,9 +442,9 @@ contains
    c%x = a%x - b%x
    c%y = a%y - b%y
    c%z = a%z - b%z
-   endsubroutine vector_sub_vector_RPP_oac
+   endsubroutine vector_sub_vector_RPP_dev
 
-   pure subroutine R8P_mul_vector_RPP_oac(s, a, c)
+   pure subroutine R8P_mul_vector_RPP_dev(s, a, c)
    !$acc routine seq
    !< Device-callable real(R8P) * vector, subroutine form.
    real(R8P),        intent(in)  :: s !< Left hand side scalar.
@@ -454,9 +454,9 @@ contains
    c%x = real(s, RPP) * a%x
    c%y = real(s, RPP) * a%y
    c%z = real(s, RPP) * a%z
-   endsubroutine R8P_mul_vector_RPP_oac
+   endsubroutine R8P_mul_vector_RPP_dev
 
-   pure subroutine vector_mul_R8P_RPP_oac(a, s, c)
+   pure subroutine vector_mul_R8P_RPP_dev(a, s, c)
    !$acc routine seq
    !< Device-callable vector * real(R8P), subroutine form.
    type(vector_RPP), intent(in)  :: a !< Left hand side.
@@ -466,9 +466,9 @@ contains
    c%x = a%x * real(s, RPP)
    c%y = a%y * real(s, RPP)
    c%z = a%z * real(s, RPP)
-   endsubroutine vector_mul_R8P_RPP_oac
+   endsubroutine vector_mul_R8P_RPP_dev
 
-   pure subroutine assign_vector_RPP_oac(lhs, rhs)
+   pure subroutine assign_vector_RPP_dev(lhs, rhs)
    !$acc routine seq
    !< Device-callable vector = vector. Subroutine form is mandatory because
    !< Fortran assignment overloads must be subroutines, and the user-defined
@@ -479,9 +479,9 @@ contains
    lhs%x = rhs%x
    lhs%y = rhs%y
    lhs%z = rhs%z
-   endsubroutine assign_vector_RPP_oac
+   endsubroutine assign_vector_RPP_dev
 
-   pure subroutine rotation_matrix_RPP_oac(axis, angle, matrix)
+   pure subroutine rotation_matrix_RPP_dev(axis, angle, matrix)
    !$acc routine seq
    !< Device-callable rotation matrix: [[rotation_matrix_RPP]] with the matrix as an `intent(out)` argument.
    !<
@@ -520,9 +520,9 @@ contains
    matrix(1,3) =     ax * az * one_c + ay * s
    matrix(2,3) =     ay * az * one_c - ax * s
    matrix(3,3) = c + az * az * one_c
-   endsubroutine rotation_matrix_RPP_oac
+   endsubroutine rotation_matrix_RPP_dev
 
-   pure subroutine mirror_matrix_RPP_oac(normal, matrix)
+   pure subroutine mirror_matrix_RPP_dev(normal, matrix)
    !$acc routine seq
    !< Device-callable mirror matrix: [[mirror_matrix_RPP]] with the matrix as an `intent(out)` argument.
    !<
@@ -552,9 +552,9 @@ contains
    matrix(1,3) =        - 2._RPP * nx * nz
    matrix(2,3) =        - 2._RPP * ny * nz
    matrix(3,3) = 1._RPP - 2._RPP * nz * nz
-   endsubroutine mirror_matrix_RPP_oac
+   endsubroutine mirror_matrix_RPP_dev
 
-   pure subroutine matrixproduct_RPP_oac(matrix, a, c)
+   pure subroutine matrixproduct_RPP_dev(matrix, a, c)
    !$acc routine seq
    !< Device-callable matrix product `c = matrix .matrix. a`, subroutine form of [[matrixproduct]].
    !<
@@ -568,27 +568,27 @@ contains
    c%x = matrix(1,1) * a%x + matrix(1,2) * a%y + matrix(1,3) * a%z
    c%y = matrix(2,1) * a%x + matrix(2,2) * a%y + matrix(2,3) * a%z
    c%z = matrix(3,1) * a%x + matrix(3,2) * a%y + matrix(3,3) * a%z
-   endsubroutine matrixproduct_RPP_oac
+   endsubroutine matrixproduct_RPP_dev
 
-   pure function normL2_RPP_oac(a) result(norm)
+   pure function normL2_RPP_dev(a) result(norm)
    !$acc routine seq
    !< Device-callable norm L2: [[normL2_RPP]] open-coded.
    type(vector_RPP), intent(in) :: a    !< Vector.
    real(RPP)                    :: norm !< Norm L2.
 
    norm = sqrt((a%x * a%x) + (a%y * a%y) + (a%z * a%z))
-   endfunction normL2_RPP_oac
+   endfunction normL2_RPP_dev
 
-   pure function sq_norm_RPP_oac(a) result(sq)
+   pure function sq_norm_RPP_dev(a) result(sq)
    !$acc routine seq
    !< Device-callable square of the norm L2: [[sq_norm_RPP]] open-coded.
    type(vector_RPP), intent(in) :: a  !< Vector.
    real(RPP)                    :: sq !< Square of the norm.
 
    sq = (a%x * a%x) + (a%y * a%y) + (a%z * a%z)
-   endfunction sq_norm_RPP_oac
+   endfunction sq_norm_RPP_dev
 
-   pure subroutine normalized_RPP_oac(a, c)
+   pure subroutine normalized_RPP_dev(a, c)
    !$acc routine seq
    !< Device-callable normalized copy `c = a%normalized()`: [[normalized_RPP]] open-coded, the norm guarded by
    !< `smallRPP` as in `normalize`.
@@ -603,9 +603,9 @@ contains
    c%x = a%x / nm
    c%y = a%y / nm
    c%z = a%z / nm
-   endsubroutine normalized_RPP_oac
+   endsubroutine normalized_RPP_dev
 
-   pure subroutine normalize_RPP_oac(a)
+   pure subroutine normalize_RPP_dev(a)
    !$acc routine seq
    !< Device-callable in-place normalization `call a%normalize()`: [[normalize]] open-coded.
    type(vector_RPP), intent(inout) :: a  !< Vector, normalized on return.
@@ -618,9 +618,9 @@ contains
    a%x = a%x / nm
    a%y = a%y / nm
    a%z = a%z / nm
-   endsubroutine normalize_RPP_oac
+   endsubroutine normalize_RPP_dev
 
-   pure subroutine parallel_RPP_oac(a, b, c)
+   pure subroutine parallel_RPP_dev(a, b, c)
    !$acc routine seq
    !< Device-callable component of `a` parallel to `b`, `c = a .paral. b`: [[parallel]] open-coded,
    !< `(a.dot.b) * normalized(b) / normL2(b)` in the same order (the normalization guarded by `smallRPP`, the divisor
@@ -641,9 +641,9 @@ contains
    c%x = (d * (b%x / nmg)) / nm
    c%y = (d * (b%y / nmg)) / nm
    c%z = (d * (b%z / nmg)) / nm
-   endsubroutine parallel_RPP_oac
+   endsubroutine parallel_RPP_dev
 
-   pure subroutine orthogonal_RPP_oac(a, b, c)
+   pure subroutine orthogonal_RPP_dev(a, b, c)
    !$acc routine seq
    !< Device-callable component of `a` orthogonal to `b`, `c = a .ortho. b`: [[orthogonal]], `a - (a .paral. b)`.
    type(vector_RPP), intent(in)  :: a !< Vector.
@@ -651,13 +651,13 @@ contains
    type(vector_RPP), intent(out) :: c !< Component of `a` orthogonal to `b`.
    type(vector_RPP)              :: p !< Component of `a` parallel to `b`.
 
-   call parallel_RPP_oac(a, b, p)
+   call parallel_RPP_dev(a, b, p)
    c%x = a%x - p%x
    c%y = a%y - p%y
    c%z = a%z - p%z
-   endsubroutine orthogonal_RPP_oac
+   endsubroutine orthogonal_RPP_dev
 
-   pure function distance_to_line_RPP_oac(a, pt1, pt2) result(distance)
+   pure function distance_to_line_RPP_dev(a, pt1, pt2) result(distance)
    !$acc routine seq
    !< Device-callable distance of the point `a` from the line through `pt1` and `pt2`: [[distance_to_line_RPP]],
    !< `normL2((a - pt1).cross.(a - pt2)) / normL2(pt2 - pt1)` open-coded.
@@ -670,14 +670,14 @@ contains
    type(vector_RPP)             :: w        !< `u .cross. v`.
    type(vector_RPP)             :: s        !< `pt2 - pt1`.
 
-   call vector_sub_vector_RPP_oac(a, pt1, u)
-   call vector_sub_vector_RPP_oac(a, pt2, v)
-   call crossproduct_RPP_oac(u, v, w)
-   call vector_sub_vector_RPP_oac(pt2, pt1, s)
-   distance = normL2_RPP_oac(w) / normL2_RPP_oac(s)
-   endfunction distance_to_line_RPP_oac
+   call vector_sub_vector_RPP_dev(a, pt1, u)
+   call vector_sub_vector_RPP_dev(a, pt2, v)
+   call crossproduct_RPP_dev(u, v, w)
+   call vector_sub_vector_RPP_dev(pt2, pt1, s)
+   distance = normL2_RPP_dev(w) / normL2_RPP_dev(s)
+   endfunction distance_to_line_RPP_dev
 
-   pure subroutine face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm)
+   pure subroutine face_normal3_RPP_dev(pt1, pt2, pt3, normal, norm)
    !$acc routine seq
    !< Device-callable normal of the triangle `pt1, pt2, pt3`: [[face_normal3_RPP]] open-coded. With `norm` present
    !< (any value, as on the host) the normal is normalized, otherwise its length is the area of the triangle.
@@ -690,19 +690,19 @@ contains
    type(vector_RPP)                       :: s13    !< `pt3 - pt1`.
    type(vector_RPP)                       :: w      !< `s12 .cross. s13`.
 
-   call vector_sub_vector_RPP_oac(pt2, pt1, s12)
-   call vector_sub_vector_RPP_oac(pt3, pt1, s13)
-   call crossproduct_RPP_oac(s12, s13, w)
+   call vector_sub_vector_RPP_dev(pt2, pt1, s12)
+   call vector_sub_vector_RPP_dev(pt3, pt1, s13)
+   call crossproduct_RPP_dev(s12, s13, w)
    if (present(norm)) then
-     call normalized_RPP_oac(w, normal)
+     call normalized_RPP_dev(w, normal)
    else
      normal%x = 0.5_RPP * w%x
      normal%y = 0.5_RPP * w%y
      normal%z = 0.5_RPP * w%z
    endif
-   endsubroutine face_normal3_RPP_oac
+   endsubroutine face_normal3_RPP_dev
 
-   pure subroutine face_normal4_RPP_oac(pt1, pt2, pt3, pt4, normal, norm)
+   pure subroutine face_normal4_RPP_dev(pt1, pt2, pt3, pt4, normal, norm)
    !$acc routine seq
    !< Device-callable normal of the quadrilateral `pt1, pt2, pt3, pt4`: [[face_normal4_RPP]] open-coded (cross product
    !< of the diagonals). With `norm` present (any value, as on the host) the normal is normalized, otherwise its length
@@ -717,19 +717,19 @@ contains
    type(vector_RPP)                       :: d24    !< `pt4 - pt2`.
    type(vector_RPP)                       :: w      !< `d13 .cross. d24`.
 
-   call vector_sub_vector_RPP_oac(pt3, pt1, d13)
-   call vector_sub_vector_RPP_oac(pt4, pt2, d24)
-   call crossproduct_RPP_oac(d13, d24, w)
+   call vector_sub_vector_RPP_dev(pt3, pt1, d13)
+   call vector_sub_vector_RPP_dev(pt4, pt2, d24)
+   call crossproduct_RPP_dev(d13, d24, w)
    if (present(norm)) then
-     call normalized_RPP_oac(w, normal)
+     call normalized_RPP_dev(w, normal)
    else
      normal%x = 0.5_RPP * w%x
      normal%y = 0.5_RPP * w%y
      normal%z = 0.5_RPP * w%z
    endif
-   endsubroutine face_normal4_RPP_oac
+   endsubroutine face_normal4_RPP_dev
 
-   pure function distance_to_plane_RPP_oac(a, pt1, pt2, pt3) result(distance)
+   pure function distance_to_plane_RPP_dev(a, pt1, pt2, pt3) result(distance)
    !$acc routine seq
    !< Device-callable signed distance of the point `a` from the plane through `pt1, pt2, pt3`:
    !< [[distance_to_plane_RPP]], the unit face normal dotted with `a - pt1`, open-coded.
@@ -741,12 +741,12 @@ contains
    type(vector_RPP)             :: normal   !< Unit normal of the plane.
    type(vector_RPP)             :: r        !< `a - pt1`.
 
-   call face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm='y')
-   call vector_sub_vector_RPP_oac(a, pt1, r)
-   distance = dotproduct_RPP_oac(normal, r)
-   endfunction distance_to_plane_RPP_oac
+   call face_normal3_RPP_dev(pt1, pt2, pt3, normal, norm='y')
+   call vector_sub_vector_RPP_dev(a, pt1, r)
+   distance = dotproduct_RPP_dev(normal, r)
+   endfunction distance_to_plane_RPP_dev
 
-   pure subroutine distance_vectorial_to_plane_RPP_oac(a, pt1, pt2, pt3, distance)
+   pure subroutine distance_vectorial_to_plane_RPP_dev(a, pt1, pt2, pt3, distance)
    !$acc routine seq
    !< Device-callable vectorial distance of the point `a` from the plane through `pt1, pt2, pt3`:
    !< [[distance_vectorial_to_plane_RPP]], `normal * (normal.dot.(a - pt1))` open-coded.
@@ -759,15 +759,15 @@ contains
    type(vector_RPP)              :: r        !< `a - pt1`.
    real(RPP)                     :: d        !< `normal.dot.r`.
 
-   call face_normal3_RPP_oac(pt1, pt2, pt3, normal, norm='y')
-   call vector_sub_vector_RPP_oac(a, pt1, r)
-   d = dotproduct_RPP_oac(normal, r)
+   call face_normal3_RPP_dev(pt1, pt2, pt3, normal, norm='y')
+   call vector_sub_vector_RPP_dev(a, pt1, r)
+   d = dotproduct_RPP_dev(normal, r)
    distance%x = normal%x * d
    distance%y = normal%y * d
    distance%z = normal%z * d
-   endsubroutine distance_vectorial_to_plane_RPP_oac
+   endsubroutine distance_vectorial_to_plane_RPP_dev
 
-   pure subroutine projection_onto_plane_RPP_oac(a, pt1, pt2, pt3, projection)
+   pure subroutine projection_onto_plane_RPP_dev(a, pt1, pt2, pt3, projection)
    !$acc routine seq
    !< Device-callable projection of the point `a` onto the plane through `pt1, pt2, pt3`:
    !< [[projection_onto_plane_RPP]], `a - distance_vectorial_to_plane`.
@@ -778,11 +778,11 @@ contains
    type(vector_RPP), intent(out) :: projection !< Projection.
    type(vector_RPP)              :: distance   !< Vectorial distance from the plane.
 
-   call distance_vectorial_to_plane_RPP_oac(a, pt1, pt2, pt3, distance)
-   call vector_sub_vector_RPP_oac(a, distance, projection)
-   endsubroutine projection_onto_plane_RPP_oac
+   call distance_vectorial_to_plane_RPP_dev(a, pt1, pt2, pt3, distance)
+   call vector_sub_vector_RPP_dev(a, distance, projection)
+   endsubroutine projection_onto_plane_RPP_dev
 
-   pure function is_collinear_RPP_oac(a, pt1, pt2, tolerance) result(is_collinear_)
+   pure function is_collinear_RPP_dev(a, pt1, pt2, tolerance) result(is_collinear_)
    !$acc routine seq
    !< Device-callable test of the point `a` on the line through `pt1` and `pt2`: [[is_collinear_RPP]], the distance
    !< from the line not above `ZeroRPP + tolerance` (0 when absent).
@@ -795,10 +795,10 @@ contains
 
    tolerance_ = 0._RPP
    if (present(tolerance)) tolerance_ = tolerance
-   is_collinear_ = distance_to_line_RPP_oac(a, pt1, pt2) <= ZeroRPP + tolerance_
-   endfunction is_collinear_RPP_oac
+   is_collinear_ = distance_to_line_RPP_dev(a, pt1, pt2) <= ZeroRPP + tolerance_
+   endfunction is_collinear_RPP_dev
 
-   pure function is_concyclic_RPP_oac(a, pt1, pt2, pt3, tolerance) result(is_concyclic_)
+   pure function is_concyclic_RPP_dev(a, pt1, pt2, pt3, tolerance) result(is_concyclic_)
    !$acc routine seq
    !< Device-callable test of the points `a, pt1, pt2, pt3` on one circle: [[is_concyclic_RPP]] (Ptolemy's
    !< inequality) open-coded, against `smallRPP + tolerance` (0 when absent).
@@ -812,86 +812,86 @@ contains
    real(RPP)                              :: p, q, r       !< Products of the squared distances.
    type(vector_RPP)                       :: u, v          !< Differences of points.
 
-   call vector_sub_vector_RPP_oac(a, pt1, u)
-   call vector_sub_vector_RPP_oac(pt2, pt3, v)
-   p = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
-   call vector_sub_vector_RPP_oac(pt1, pt2, u)
-   call vector_sub_vector_RPP_oac(pt3, a, v)
-   q = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
-   call vector_sub_vector_RPP_oac(a, pt2, u)
-   call vector_sub_vector_RPP_oac(pt1, pt3, v)
-   r = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
+   call vector_sub_vector_RPP_dev(a, pt1, u)
+   call vector_sub_vector_RPP_dev(pt2, pt3, v)
+   p = sq_norm_RPP_dev(u) * sq_norm_RPP_dev(v)
+   call vector_sub_vector_RPP_dev(pt1, pt2, u)
+   call vector_sub_vector_RPP_dev(pt3, a, v)
+   q = sq_norm_RPP_dev(u) * sq_norm_RPP_dev(v)
+   call vector_sub_vector_RPP_dev(a, pt2, u)
+   call vector_sub_vector_RPP_dev(pt1, pt3, v)
+   r = sq_norm_RPP_dev(u) * sq_norm_RPP_dev(v)
    tolerance_ = 0._RPP
    if (present(tolerance)) tolerance_ = tolerance
    is_concyclic_ = sqrt(p) + sqrt(q) - sqrt(r) <= smallRPP + tolerance_
-   endfunction is_concyclic_RPP_oac
+   endfunction is_concyclic_RPP_dev
 
-   pure subroutine rotate_by_axis_angle_RPP_oac(a, axis, angle)
+   pure subroutine rotate_by_axis_angle_RPP_dev(a, axis, angle)
    !$acc routine seq
    !< Device-callable in-place rotation about `axis` by `angle`, `call a%rotate(axis=, angle=)`:
-   !< [[rotate_by_axis_angle]], the rotation_matrix_oac matrix applied with matrixproduct_oac.
+   !< [[rotate_by_axis_angle]], the rotation_matrix_dev matrix applied with matrixproduct_dev.
    type(vector_RPP), intent(inout) :: a      !< Vector, rotated on return.
    type(vector_RPP), intent(in)    :: axis   !< Axis of rotation.
    real(RPP),        intent(in)    :: angle  !< Angle of rotation (radians).
    real(RPP)                       :: m(3,3) !< Rotation matrix.
    type(vector_RPP)                :: t      !< Rotated vector.
 
-   call rotation_matrix_RPP_oac(axis, angle, m)
-   call matrixproduct_RPP_oac(m, a, t)
+   call rotation_matrix_RPP_dev(axis, angle, m)
+   call matrixproduct_RPP_dev(m, a, t)
    a%x = t%x
    a%y = t%y
    a%z = t%z
-   endsubroutine rotate_by_axis_angle_RPP_oac
+   endsubroutine rotate_by_axis_angle_RPP_dev
 
-   pure subroutine rotate_by_matrix_RPP_oac(a, matrix)
+   pure subroutine rotate_by_matrix_RPP_dev(a, matrix)
    !$acc routine seq
    !< Device-callable in-place rotation by `matrix`, `call a%rotate(matrix=)`: [[rotate_by_matrix]],
-   !< matrixproduct_oac applied to `a`.
+   !< matrixproduct_dev applied to `a`.
    type(vector_RPP), intent(inout) :: a           !< Vector, transformed on return.
    real(RPP),        intent(in)    :: matrix(3,3) !< Transformation matrix.
    type(vector_RPP)                :: t           !< Transformed vector.
 
-   call matrixproduct_RPP_oac(matrix, a, t)
+   call matrixproduct_RPP_dev(matrix, a, t)
    a%x = t%x
    a%y = t%y
    a%z = t%z
-   endsubroutine rotate_by_matrix_RPP_oac
+   endsubroutine rotate_by_matrix_RPP_dev
 
-   pure subroutine mirror_by_normal_RPP_oac(a, normal)
+   pure subroutine mirror_by_normal_RPP_dev(a, normal)
    !$acc routine seq
    !< Device-callable in-place mirror image across the plane of normal `normal`, `call a%mirror(normal=)`:
-   !< [[mirror_by_normal]], the mirror_matrix_oac matrix applied with matrixproduct_oac.
+   !< [[mirror_by_normal]], the mirror_matrix_dev matrix applied with matrixproduct_dev.
    type(vector_RPP), intent(inout) :: a      !< Vector, mirrored on return.
    type(vector_RPP), intent(in)    :: normal !< Normal of the mirroring plane.
    real(RPP)                       :: m(3,3) !< Mirror matrix.
    type(vector_RPP)                :: t      !< Mirrored vector.
 
-   call mirror_matrix_RPP_oac(normal, m)
-   call matrixproduct_RPP_oac(m, a, t)
+   call mirror_matrix_RPP_dev(normal, m)
+   call matrixproduct_RPP_dev(m, a, t)
    a%x = t%x
    a%y = t%y
    a%z = t%z
-   endsubroutine mirror_by_normal_RPP_oac
+   endsubroutine mirror_by_normal_RPP_dev
 
-   pure subroutine mirror_by_matrix_RPP_oac(a, matrix)
+   pure subroutine mirror_by_matrix_RPP_dev(a, matrix)
    !$acc routine seq
    !< Device-callable in-place mirroring by `matrix`, `call a%mirror(matrix=)`: [[mirror_by_matrix]],
-   !< matrixproduct_oac applied to `a`.
+   !< matrixproduct_dev applied to `a`.
    type(vector_RPP), intent(inout) :: a           !< Vector, transformed on return.
    real(RPP),        intent(in)    :: matrix(3,3) !< Transformation matrix.
    type(vector_RPP)                :: t           !< Transformed vector.
 
-   call matrixproduct_RPP_oac(matrix, a, t)
+   call matrixproduct_RPP_dev(matrix, a, t)
    a%x = t%x
    a%y = t%y
    a%z = t%z
-   endsubroutine mirror_by_matrix_RPP_oac
+   endsubroutine mirror_by_matrix_RPP_dev
 
-   pure function angle_RPP_oac(a, b) result(angle_)
+   pure function angle_RPP_dev(a, b) result(angle_)
    !$acc routine seq
    !< Device-callable angle (radians) between `a` and `b`: [[angle_RPP]] without its polymorphic array constructor
    !< (`[self%normalized(), other%normalized()]`, a host-only runtime call on the device): both versors by
-   !< normalized_oac, then `atan2(normL2(v1.cross.v2), v1.dot.v2)` as on the host.
+   !< normalized_dev, then `atan2(normL2(v1.cross.v2), v1.dot.v2)` as on the host.
    type(vector_RPP), intent(in) :: a         !< First vector.
    type(vector_RPP), intent(in) :: b         !< Second vector.
    real(RPP)                    :: angle_    !< Angle between the vectors, in radians.
@@ -901,13 +901,13 @@ contains
    type(vector_RPP)             :: v2        !< `b` normalized.
    type(vector_RPP)             :: w         !< `v1 .cross. v2`.
 
-   call normalized_RPP_oac(a, v1)
-   call normalized_RPP_oac(b, v2)
-   angle_cos = dotproduct_RPP_oac(v1, v2)
-   call crossproduct_RPP_oac(v1, v2, w)
-   angle_sin = normL2_RPP_oac(w)
+   call normalized_RPP_dev(a, v1)
+   call normalized_RPP_dev(b, v2)
+   angle_cos = dotproduct_RPP_dev(v1, v2)
+   call crossproduct_RPP_dev(v1, v2, w)
+   angle_sin = normL2_RPP_dev(w)
    angle_ = atan2(angle_sin, angle_cos)
-   endfunction angle_RPP_oac
+   endfunction angle_RPP_dev
 
    ! public methods
    ! non TBP
