@@ -22,6 +22,7 @@ public :: sq_norm_RPP
 public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: dotproduct_RPP_oac
+public :: matrixproduct_RPP_oac
 public :: mirror_matrix_RPP_oac
 public :: R8P_mul_vector_RPP_oac
 public :: rotation_matrix_RPP_oac
@@ -533,6 +534,22 @@ contains
    matrix(2,3) =        - 2._RPP * ny * nz
    matrix(3,3) = 1._RPP - 2._RPP * nz * nz
    endsubroutine mirror_matrix_RPP_oac
+
+   pure subroutine matrixproduct_RPP_oac(matrix, a, c)
+   !$acc routine seq
+   !< Device-callable matrix product `c = matrix .matrix. a`, subroutine form of [[matrixproduct]].
+   !<
+   !< `matrixproduct` is reached through the `.matrix.` generic of a `class` dummy (an indirect call on the device),
+   !< returns a `type(vector_RPP)` and calls `matmul`; here the product is open-coded, row by row in the order of the
+   !< columns.
+   real(RPP),        intent(in)  :: matrix(3,3) !< Matrix.
+   type(vector_RPP), intent(in)  :: a           !< Vector.
+   type(vector_RPP), intent(out) :: c           !< Matrix product.
+
+   c%x = matrix(1,1) * a%x + matrix(1,2) * a%y + matrix(1,3) * a%z
+   c%y = matrix(2,1) * a%x + matrix(2,2) * a%y + matrix(2,3) * a%z
+   c%z = matrix(3,1) * a%x + matrix(3,2) * a%y + matrix(3,3) * a%z
+   endsubroutine matrixproduct_RPP_oac
 
    ! public methods
    ! non TBP

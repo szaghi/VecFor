@@ -120,7 +120,8 @@ Consequences:
 4. Pattern 4 is fixed on 26.9 only: keep the subroutine convention while 26.1 is supported.
 
 The current `_oac` API covers the 7 operators FOSSIL's distance kernel needs,
-plus the rotation and mirror matrices (added 2026-11-03 on request). Eight are subroutines
+plus the rotation and mirror matrices and the matrix product (added 2026-11-03 on
+request). Nine are subroutines
 (intent(out) result argument); only `dotproduct` is a function because it
 returns a scalar `real` with no overload entanglement:
 
@@ -135,6 +136,7 @@ returns a scalar `real` with no overload entanglement:
 | `a = b` (vector)   | `assign_vector`           | `call assign_vector_<KIND>_oac(lhs, rhs)`                 |
 | rotation matrix    | `rotation_matrix_<KIND>`  | `call rotation_matrix_<KIND>_oac(axis, angle, matrix)`    |
 | mirror matrix      | `mirror_matrix_<KIND>`    | `call mirror_matrix_<KIND>_oac(normal, matrix)`           |
+| `m .matrix. a`     | `matrixproduct`           | `call matrixproduct_<KIND>_oac(matrix, a, c)`             |
 
 `<KIND>` is one of `R4P`, `R8P`, `R16P` (the per-precision template expansion
 of `vecfor_RPP.INC`). The default-kind `vecfor_RPP` module exports the same
@@ -167,16 +169,20 @@ Every new entry point must follow the same shape:
    vs host within a tolerance derived from measurement (rotation matrix: at
    most 1 ulp of 1.0 measured, tested at `4*epsilon`). Without transcendentals
    keep bit-exact and measure before assuming FMA breaks it: the mirror matrix
-   (`1 - 2*n*n`) is bit-exact device vs host on 26.1 and 26.9.
+   (`1 - 2*n*n`) is bit-exact device vs host on 26.1 and 26.9. When the host
+   form calls an intrinsic whose order of operations is the compiler's
+   (`matmul`, `sum`, `dot_product`), compare against the rounding bound of the
+   two orders instead: `matrixproduct` vs its open-coded `_oac` form differs on
+   gfortran 16.2 (below 1 ulp), is bit-exact on nvfortran; the test bounds it by
+   `6*epsilon*sum(|m_ij*a_j|)`.
 
 #### Scope statement
 
 Today the `_oac` API covers the FOSSIL distance-kernel needs (the 7 operators
-above) and the rotation and mirror matrices. Other operators (the full +/-/*//, comparisons, full
+above), the rotation and mirror matrices and the matrix product. Other operators (the full +/-/*//, comparisons, full
 real/integer mixed-kind matrix), TBP-bound methods (`normL2`, `normalize`,
 `angle`, `face_normal3`, `distance_to_*`, `projection_*`, `is_collinear`,
-`is_concyclic`), and `matrixproduct` (`.matrix.`, matrix by value) are **not** in the `_oac`
-surface. Add them
+`is_concyclic`), are **not** in the `_oac` surface. Add them
 on request from a real device consumer, one operator at a time, following the
 convention above. Speculative annotation is what produced commits 7e76258 (177
 broken procedures) and 4229257 (narrowed back to 7). The minimum-set scope
@@ -189,9 +195,11 @@ Two procedures in the current implementation are device-incompatible and
 deliberately stayed out of the `_oac` surface; if you ever try to add them,
 expect these errors:
 
-- `matrixproduct` takes a rank-2 `real(RPP) :: matrix(3,3)` by value
-  (`rotation_matrix_RPP` and `mirror_matrix_RPP` return one; their device forms
-  `rotation_matrix_RPP_oac` and `mirror_matrix_RPP_oac` are the template). Re-probed 2026-11-03: the probe **compiles
+- `rotation_matrix_RPP` and `mirror_matrix_RPP` return their matrix by value;
+  their device forms `rotation_matrix_RPP_oac` and `mirror_matrix_RPP_oac` take it
+  as `intent(out)` (done 2026-11-03). `matrixproduct` was listed here by mistake: its
+  matrix is an `intent(in)` argument; its device obstacles were the `class` dispatch
+  of `.matrix.`, the `type(vector)` result and `matmul` (`matrixproduct_RPP_oac`). Re-probed 2026-11-03: the probe **compiles
   without diagnostics on 26.1 and 26.9 but returns garbage** (relative errors ~1e3,
   4096/4096 wrong), which is worse than the W-0155 *"No device symbol"* recorded
   earlier. The same body with the matrix as an `intent(out)` argument is bit-exact

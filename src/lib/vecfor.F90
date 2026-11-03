@@ -24,6 +24,7 @@ use vecfor_RPP, only : angle,                       &
                        face_normal3,                &
                        face_normal4,                &
                        iolen,                       &
+                       matrixproduct_oac,           &
                        is_collinear,                &
                        is_concyclic,                &
                        mirror_matrix,               &
@@ -53,6 +54,7 @@ use vecfor_R4P, only : angle_R4P,                       &
                        face_normal3_R4P,                &
                        face_normal4_R4P,                &
                        iolen_R4P,                       &
+                       matrixproduct_R4P_oac,           &
                        is_collinear_R4P,                &
                        is_concyclic_R4P,                &
                        mirror_matrix_R4P,               &
@@ -82,6 +84,7 @@ use vecfor_R8P, only : angle_R8P,                       &
                        face_normal3_R8P,                &
                        face_normal4_R8P,                &
                        iolen_R8P,                       &
+                       matrixproduct_R8P_oac,           &
                        is_collinear_R8P,                &
                        is_concyclic_R8P,                &
                        mirror_matrix_R8P,               &
@@ -111,6 +114,7 @@ use vecfor_R16P, only : angle_R16P,                       &
                         face_normal3_R16P,                &
                         face_normal4_R16P,                &
                         iolen_R16P,                       &
+                        matrixproduct_R16P_oac,           &
                         is_collinear_R16P,                &
                         is_concyclic_R16P,                &
                         mirror_matrix_R16P,               &
@@ -146,6 +150,7 @@ public :: ex, ey, ez, vector
 public :: assign_vector_oac
 public :: crossproduct_oac
 public :: dotproduct_oac
+public :: matrixproduct_oac
 public :: mirror_matrix_oac
 public :: R8P_mul_vector_oac
 public :: rotation_matrix_oac
@@ -172,6 +177,7 @@ public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
 public :: assign_vector_R4P_oac
 public :: crossproduct_R4P_oac
 public :: dotproduct_R4P_oac
+public :: matrixproduct_R4P_oac
 public :: mirror_matrix_R4P_oac
 public :: R8P_mul_vector_R4P_oac
 public :: rotation_matrix_R4P_oac
@@ -198,6 +204,7 @@ public :: ex_R8P, ey_R8P, ez_R8P, vector_R8P
 public :: assign_vector_R8P_oac
 public :: crossproduct_R8P_oac
 public :: dotproduct_R8P_oac
+public :: matrixproduct_R8P_oac
 public :: mirror_matrix_R8P_oac
 public :: R8P_mul_vector_R8P_oac
 public :: rotation_matrix_R8P_oac
@@ -224,6 +231,7 @@ public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
 public :: assign_vector_R16P_oac
 public :: crossproduct_R16P_oac
 public :: dotproduct_R16P_oac
+public :: matrixproduct_R16P_oac
 public :: mirror_matrix_R16P_oac
 public :: R8P_mul_vector_R16P_oac
 public :: rotation_matrix_R16P_oac

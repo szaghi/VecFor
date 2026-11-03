@@ -67,7 +67,7 @@ loop over arrays. Every other operator and function, and `normalize`, are elemen
 
 ## Not on the device
 
-Only the nine routines of the [device-callable API](./gpu) run inside an OpenACC kernel.
+Only the ten routines of the [device-callable API](./gpu) run inside an OpenACC kernel.
 
 ## Not available
 

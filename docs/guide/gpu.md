@@ -5,7 +5,7 @@ title: Device-callable API
 # Device-callable API
 
 A small set of plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They
-mirror seven operators of the vector, the rotation matrix and the mirror matrix; everything else of VecFor runs on the host only.
+mirror seven operators of the vector, the matrix product, the rotation matrix and the mirror matrix; everything else of VecFor runs on the host only.
 
 ## The routines
 
@@ -20,9 +20,10 @@ mirror seven operators of the vector, the rotation matrix and the mirror matrix;
 | `call assign_vector_oac(lhs, rhs)` | `lhs = rhs` | subroutine |
 | `call rotation_matrix_oac(axis, angle, matrix)` | `matrix = rotation_matrix(axis, angle)` | subroutine |
 | `call mirror_matrix_oac(normal, matrix)` | `matrix = mirror_matrix(normal)` | subroutine |
+| `call matrixproduct_oac(matrix, a, c)` | `c = matrix .matrix. a` | subroutine |
 
 `a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
-of the kind of the vector, are `intent(out)`. `s` is `real(R8P)` for
+of the kind of the vector, are `intent(out)` (`matrix` is `intent(in)` in `matrixproduct_oac`). `s` is `real(R8P)` for
 every kind of vector. `dotproduct_oac` returns a real of the kind of the vectors. Each kind has its set, with the
 suffix of the kind before `_oac`: `vector_sum_vector_R4P_oac`, `crossproduct_R16P_oac`, ...; the names without a kind
 are those of the default `vector`. All are exported by `use vecfor`.
@@ -31,7 +32,9 @@ The routines do the arithmetic of the operators in the same order, with the same
 are identical, as the [cookbook](/manual/cookbook#the-device-callable-routines-in-an-openacc-loop) checks. On a GPU the
 compiler may fuse a product and a sum into one instruction (FMA), which can change the last bit of a cross or dot
 product. The rotation matrix differs from the host one in the last bit on a GPU also because the device `sin` and
-`cos` do (at most one unit in the last place of 1.0, measured with nvfortran 26.1 and 26.9).
+`cos` do (at most one unit in the last place of 1.0, measured with nvfortran 26.1 and 26.9). `.matrix.` calls
+`matmul`, whose order of summation is the compiler's: with gfortran `matrixproduct_oac` can differ from it in the last
+bit; with nvfortran they agree.
 
 ## Why not the operators
 
@@ -71,12 +74,10 @@ are comments and the same source runs on the host: the [tutorial](/manual/tutori
 
 ## Outside the API
 
-Not device-callable: the other operators (`/`, numbers of other kinds, `.paral.`, `.ortho.`, `.matrix.`, the
-comparisons), every method (`normL2`, `normalize`, `angle`, `face_normal3`, the distances, the projections, the
-predicates, `rotate`, `mirror`). Two of them need more than a new wrapper:
+Not device-callable: the other operators (`/`, numbers of other kinds, `.paral.`, `.ortho.`, the comparisons), every
+method (`normL2`, `normalize`, `angle`, `face_normal3`, the distances, the projections, the predicates, `rotate`,
+`mirror`). One of them needs more than a new wrapper:
 
-- `.matrix.` takes a `(3, 3)` array by value, which nvfortran compiles in device code but gets wrong; a device version
-  must pass the matrix as an argument, as `rotation_matrix_oac` and `mirror_matrix_oac` do.
 - `angle` builds an array of two polymorphic vectors, which lowers to a host-only runtime call.
 
 The API grows one routine at a time, when a device code needs it, following the convention of the existing ones (see

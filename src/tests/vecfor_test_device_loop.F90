@@ -2,7 +2,8 @@
 !<
 !< Exercises the 7 operators FOSSIL's distance kernel needs (.dot., .cross.,
 !< +, -, scalar *, assignment), the rotation matrix (`rotation_matrix_oac`) and
-!< the mirror matrix (`mirror_matrix_oac`)
+!< the mirror matrix (`mirror_matrix_oac`) and the matrix product
+!< (`matrixproduct_oac`)
 !< inside an `!$acc parallel loop`, calling them
 !< via the device-callable `_oac` entry points (not via TBP-generic operator
 !< syntax) and asserting the device results are bit-exact against a serial
@@ -43,6 +44,7 @@ use vecfor, only : vector_R8P,                &
                    assign_vector_R8P_oac,     &
                    crossproduct_R8P_oac,      &
                    dotproduct_R8P_oac,        &
+                   matrixproduct_R8P_oac,     &
                    mirror_matrix_R8P,         &
                    mirror_matrix_R8P_oac,     &
                    R8P_mul_vector_R8P_oac,    &
@@ -67,6 +69,12 @@ real(R8P)               :: m(3,3)                     !< Loop-private matrix.
 real(R8P)               :: mir_dev(3,3,n)             !< Outputs: mirror matrices across the plane of normal b(i).
 real(R8P)               :: mir_ref(3,3,n)             !< Reference mirror matrices (host function).
 real(R8P)               :: mir_oac_host(3,3,n)        !< Mirror matrices of the `_oac` subroutine run on the host.
+real(R8P)               :: mat(3,3,n)                 !< Matrices of the matrix product.
+type(vector_R8P)        :: matp_dev(n)                !< Outputs: mat(:,:,i) .matrix. a(i).
+type(vector_R8P)        :: matp_ref(n)                !< Reference matrix products (host TBP).
+type(vector_R8P)        :: matp_oac_host(n)           !< Matrix products of the `_oac` subroutine run on the host.
+integer(I4P)            :: j                          !< Counter.
+real(R8P)               :: matp_bound(3,n)            !< Rounding bound of each component of the matrix products.
 real(R8P)               :: scalar
 integer(I4P)            :: i
 logical                 :: on_device(n)               !< Where each iteration of the device loop ran.
@@ -80,13 +88,17 @@ do i = 1, n
    a(i) = vector_R8P(x=real(i, R8P), y=real(i + 1, R8P), z=real(i + 2, R8P))
    b(i) = vector_R8P(x=real(n - i, R8P), y=real(n - i + 1, R8P), z=real(n - i + 2, R8P))
    angle(i) = 0.0125_R8P * real(i, R8P)
+   do j = 1, 9
+      mat(mod(j - 1, 3) + 1, (j - 1) / 3 + 1, i) = real(j, R8P) / real(i + 3, R8P) - 0.5_R8P
+   enddo
 enddo
 
 ! --- Device run (or serial if -acc absent: directives are inert) ---
 ! `tmp1`/`tmp2` chain the multi-step `comb = 2*a + b - a` expression: each
 ! `_oac` subroutine writes a private scratch, then the next subroutine reads
 ! it. They are `private` to the loop so each thread has its own pair.
-!$acc parallel loop copyin(a, b, scalar, angle) copyout(dot_dev, cross_dev, comb_dev, rot_dev, mir_dev, on_device) &
+!$acc parallel loop copyin(a, b, scalar, angle, mat) &
+!$acc                copyout(dot_dev, cross_dev, comb_dev, rot_dev, mir_dev, matp_dev, on_device) &
 !$acc                private(tmp1, tmp2, m)
 do i = 1, n
    dot_dev(i) = dotproduct_R8P_oac(a(i), b(i))
@@ -99,6 +111,9 @@ do i = 1, n
    rot_dev(:,:,i) = m
    call mirror_matrix_R8P_oac(b(i), m)
    mir_dev(:,:,i) = m
+   m = mat(:,:,i)
+   call matrixproduct_R8P_oac(m, a(i), tmp1)
+   call assign_vector_R8P_oac(matp_dev(i), tmp1)
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -119,6 +134,8 @@ do i = 1, n
    call rotation_matrix_R8P_oac(a(i), angle(i), rot_oac_host(:,:,i))
    mir_ref(:,:,i) = mirror_matrix_R8P(b(i))
    call mirror_matrix_R8P_oac(b(i), mir_oac_host(:,:,i))
+   matp_ref(i) = a(i)%matrixproduct(mat(:,:,i))
+   call matrixproduct_R8P_oac(mat(:,:,i), a(i), matp_oac_host(i))
 enddo
 
 ! --- Compare bit-exact ---
@@ -156,6 +173,26 @@ endif
 if (any(mir_dev /= mir_ref)) then
    print "(A,I0,A,ES10.3)", "mirror_matrix_oac on the device differs from the host, elements: ", &
                             count(mir_dev /= mir_ref), ", max abs diff: ", maxval(abs(mir_dev - mir_ref))
+   all_passed = .false.
+endif
+
+! Matrix products. The host TBP calls matmul, whose order of summation is the compiler's: gfortran 16.2 sums
+! differently from the open-coded `_oac` form (134 of these 256 products differ, below 1 ulp), nvfortran 26.1 and 26.9
+! agree bit-exact on the host and on the device. Two orders of a 3-term sum differ by at most 2*gamma_3 times the sum
+! of the absolute terms, gamma_3 ~ 3*epsilon: the bound below; a transcription error (index, sign) is far above it.
+do i = 1, n
+   matp_bound(:,i) = 6 * epsilon(1._R8P) * matmul(abs(mat(:,:,i)), abs([a(i)%x, a(i)%y, a(i)%z]))
+enddo
+if (any(abs(matp_oac_host%x - matp_ref%x) > matp_bound(1,:) .or. &
+        abs(matp_oac_host%y - matp_ref%y) > matp_bound(2,:) .or. &
+        abs(matp_oac_host%z - matp_ref%z) > matp_bound(3,:))) then
+   print "(A)", "matrixproduct_oac differs from matrixproduct on the host beyond the rounding bound"
+   all_passed = .false.
+endif
+if (any(abs(matp_dev%x - matp_ref%x) > matp_bound(1,:) .or. &
+        abs(matp_dev%y - matp_ref%y) > matp_bound(2,:) .or. &
+        abs(matp_dev%z - matp_ref%z) > matp_bound(3,:))) then
+   print "(A)", "matrixproduct_oac on the device differs from the host beyond the rounding bound"
    all_passed = .false.
 endif
 

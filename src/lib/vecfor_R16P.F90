@@ -32,6 +32,7 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define assign_vector_RPP_oac assign_vector_R16P_oac
 #define crossproduct_RPP_oac crossproduct_R16P_oac
 #define dotproduct_RPP_oac dotproduct_R16P_oac
+#define matrixproduct_RPP_oac matrixproduct_R16P_oac
 #define mirror_matrix_RPP_oac mirror_matrix_R16P_oac
 #define R8P_mul_vector_RPP_oac R8P_mul_vector_R16P_oac
 #define rotation_matrix_RPP_oac rotation_matrix_R16P_oac
