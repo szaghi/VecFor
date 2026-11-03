@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.7.0] — 2026-11-03
+### Added
+- **oac**: Add device-callable rotation_matrix_oac
+
+- **oac**: Add device-callable mirror_matrix_oac
+
+- **oac**: Add device-callable matrixproduct_oac
+
+
 ## [1.6.0] — 2026-11-03
 ### Added
 - **build**: Add fpm build path and keep vecfor scaffold-compliant
