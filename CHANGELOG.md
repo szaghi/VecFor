@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.8.0] — 2026-11-03
+### Added
+- **oac**: Add device-callable norms and normalization
+
+- **oac**: Add device-callable parallel and orthogonal components
+
+- **oac**: Add device-callable distance_to_line_oac
+
+- **oac**: Add device-callable face normals
+
+- **oac**: Add device-callable plane distances and projection
+
+- **oac**: Add device-callable collinearity and concyclicity tests
+
+- **oac**: Add device-callable in-place rotate and mirror
+
+- **oac**: Add device-callable angle_oac and document the geometric API
+
+
 ## [1.7.0] — 2026-11-03
 ### Added
 - **oac**: Add device-callable rotation_matrix_oac
