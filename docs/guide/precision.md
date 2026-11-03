@@ -41,21 +41,21 @@ There are no operations between vectors of two kinds: convert by components, `re
 ## True quadruple precision
 
 PENF defines `R16P` as a true quadruple precision kind (33 decimal digits, `real128` with gfortran) only when it is
-compiled with `-DPENF_R16P`; otherwise `R16P` is `R8P`, and `vector_R16P` is double precision. The FoBiS modes and the
-`makefile` of VecFor do not define it. To build VecFor with true quadruple precision:
+compiled with `-DPENF_R16P`; otherwise `R16P` is `R8P`, and `vector_R16P` is double precision. The GNU and Intel FoBiS
+modes, the `makefile` and `fpm.toml` of VecFor define it, for PENF and VecFor alike: `vector_R16P` has `real128`
+components, and the operators accept `real(R16P)` scalars.
 
-```bash
-fobis clean --mode static-gnu
-fobis build --mode static-gnu --preproc "-DPENF_R16P"
-```
+The flag must reach PENF and VecFor alike. A build of your own (another build system, or the sources compiled in your
+project) passes `-DPENF_R16P` to both; with fpm, `fpm.toml` passes it to the PENF dependency too. Compiled for VecFor
+alone, the `R16P` and `R8P` versions of the operators clash as ambiguous generics.
 
-The flag must reach PENF and VecFor alike, as it does here; the modules then define `vector_R16P` with `real128`
-components, and the operators accept `real(R16P)` scalars. `precision(v%x)` tells which build a program has: 33 or
-15. Quadruple precision arithmetic is done in software on most processors, many times slower than double precision.
+A compiler without a 128-bit real kind, as nvfortran on x86-64, gets double precision: its FoBiS modes do not define
+the flag, and `vector_R16P` is a double precision vector there. `precision(v%x)` tells which build a program has: 33
+or 15. Quadruple precision arithmetic is done in software on most processors, many times slower than double precision.
 
 ## The default kind
 
 `vector`, the versors `ex`, `ey`, `ez` and the unsuffixed functions have the kind `R8P` unless `vecfor_RPP.F90` is
 compiled with one of `-DDEFKIND_R4P`, `-DDEFKIND_R8P`, `-DDEFKIND_R16P`, which make it `R4P`, `R8P` or `R16P` (the
-last one quadruple precision only with `-DPENF_R16P` too). A program written with `vector` changes precision by a
+last one quadruple precision only where `-DPENF_R16P` is defined too). A program written with `vector` changes precision by a
 compiler flag; the explicit types keep theirs.

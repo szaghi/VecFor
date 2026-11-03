@@ -32,7 +32,8 @@ gfortran -I static/mod my_program.f90 static/libvecfor.a -o my_program
 ```
 
 The library has the vector in [single, double and quadruple precision](./precision); quadruple is true quadruple
-precision only when PENF and VecFor are compiled with `-DPENF_R16P`, which the FoBiS modes do not define (see
+precision when PENF and VecFor are compiled with `-DPENF_R16P`, as the GNU and Intel FoBiS modes, the `makefile` and
+`fpm.toml` do; with nvfortran, which has no 128-bit real kind, it is double precision (see
 [True quadruple precision](./precision#true-quadruple-precision)).
 
 ### Tests
@@ -60,13 +61,41 @@ VecFor   = https://github.com/szaghi/VecFor
 fobis fetch
 ```
 
+## fpm
+
+`fpm.toml` builds the library from `src/lib`, with PENF fetched by fpm. It is tested with gfortran; nvfortran has no
+128-bit real kind, use FoBiS there:
+
+```bash
+git clone https://github.com/szaghi/VecFor && cd VecFor
+fpm build --profile release       # libVecFor.a, PENF fetched into build/dependencies
+fpm test                          # the hand-written tests of src/tests
+fpm install --prefix ~/.local     # the archive and the modules of VecFor and PENF
+```
+
+### VecFor in an fpm project
+
+```toml
+[dependencies]
+VecFor = { git = "https://github.com/szaghi/VecFor" }
+```
+
+VecFor passes `-DPENF_R16P` to itself and to its PENF. If your project declares PENF too, your declaration replaces
+that of VecFor: give it the flag, or VecFor fails to compile with ambiguous `R16P` and `R8P` generics.
+
+```toml
+[dependencies]
+VecFor = { git = "https://github.com/szaghi/VecFor" }
+PENF   = { git = "https://github.com/szaghi/PENF", preprocess.cpp.macros = ["PENF_R16P"] }
+```
+
 ## The install script
 
 Each release has `install.sh`, which downloads the release (with `wget`, or `git`) and builds it, fetching PENF:
 
 ```bash
 wget https://github.com/szaghi/VecFor/releases/latest/download/install.sh
-bash install.sh --download wget --build fobis     # or --build make
+bash install.sh --download wget --build fobis     # or --build make, --build fpm
 ```
 
 `--tag vX.Y.Z` picks a release, `--mode` a FoBiS mode.

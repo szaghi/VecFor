@@ -5,8 +5,6 @@
 #                                  !run ID COMMAND        a run shown in the pages (!run -s: with its exit status)
 #                                  !region NAME ... !endregion NAME   a part of the program included on its own
 #                                  !as NAME               its runs call it NAME (the chapters of the tutorial are all probe)
-#                                  !quad                  built against VecFor compiled with -DPENF_R16P (true quadruple
-#                                                         precision) instead of the default build
 #   docs/examples/figures/*.f90  the programs that draw the figures (hand-written): each computes its geometry with VecFor
 #                                and writes, through docs/examples/lib/sketch.f90, the data files of its drawing
 #   docs/examples/figures/*.gp   the foresight script of each figure, run in the directory of the data files after the
@@ -39,29 +37,18 @@ mkdir -p "$root/build"
   > "$root/build/docs-examples.log" 2>&1 || {
   cat "$root/build/docs-examples.log"; echo "docs_examples: library build failed" >&2; exit 1; }
 rm -rf -- "$build"
-mkdir -p "$build/bin" "$build/lib" "$build/quad/obj" "$build/quad/mod" "$run_dir" "$fig_dir" "$ex/snippets" \
-         "$ex/output" "$figures"
+mkdir -p "$build/bin" "$build/lib" "$run_dir" "$fig_dir" "$ex/snippets" "$ex/output" "$figures"
 rm -f -- "$ex"/snippets/*.f90 "$ex"/output/*.txt "$figures"/*.svg
-
-# the library in true quadruple precision, for the programs marked !quad: the sources of the default build, -DPENF_R16P
-penf=$root/src/third_party/PENF/src/lib
-for src in "$penf"/penf_global_parameters_variables.F90 "$penf"/penf_b_size.F90 "$penf"/penf_stringify.F90 \
-           "$penf"/penf_allocatable_memory.F90 "$penf"/penf.F90 "$root"/src/lib/vecfor_R4P.F90 \
-           "$root"/src/lib/vecfor_R8P.F90 "$root"/src/lib/vecfor_R16P.F90 "$root"/src/lib/vecfor_RPP.F90 \
-           "$root"/src/lib/vecfor.F90; do
-  "$fc" -c -O2 -DPENF_R16P -I"$root/src/lib" -J"$build/quad/mod" "$src" -o "$build/quad/obj/$(basename "$src" .F90).o"
-done
-ar -rcs "$build/quad/libvecfor.a" "$build"/quad/obj/*.o
 
 # snippets: the whole program and each region, without the markers, dedented
 dedent() { awk '{l[NR]=$0; if ($0 ~ /[^ ]/) {match($0, /^ */); if (m == "" || RLENGTH < m) m = RLENGTH}}
                 END {for (i = 1; i <= NR; i++) print substr(l[i], m + 1)}' "$1"; }
 for src in "$ex"/src/*.f90; do
   name=$(basename "$src" .f90)
-  grep -Ev '^ *!(run|region|endregion|as|quad)( |$)' "$src" > "$ex/snippets/$name.f90" || true
+  grep -Ev '^ *!(run|region|endregion|as)( |$)' "$src" > "$ex/snippets/$name.f90" || true
   for region in $(sed -n 's/^ *!region \([A-Za-z0-9_-]*\).*/\1/p' "$src"); do
     awk -v r="$region" '$1 == "!endregion" && $2 == r {on = 0}
-                        on && $0 !~ /^ *!(run|region|endregion|as|quad)( |$)/ {print}
+                        on && $0 !~ /^ *!(run|region|endregion|as)( |$)/ {print}
                         $1 == "!region" && $2 == r {on = 1}' "$src" > "$build/region.f90"
     dedent "$build/region.f90" > "$ex/snippets/$name-$region.f90"
   done
@@ -69,9 +56,7 @@ done
 
 # programs
 for src in "$ex"/src/*.f90; do
-  lib=$root/static
-  if grep -Eq '^ *!quad( |$)' "$src"; then lib=$build/quad; fi
-  "$fc" -I"$lib/mod" -o "$build/bin/$(basename "$src" .f90)" "$src" "$lib/libvecfor.a"
+  "$fc" -I"$root/static/mod" -o "$build/bin/$(basename "$src" .f90)" "$src" "$root/static/libvecfor.a"
 done
 
 # runs, in the order of the files and of the lines

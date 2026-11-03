@@ -46,8 +46,9 @@ points in their order around the circle.
 
 - Vectors of two kinds do not mix: no `a4 + a8`, no `a8 = a4`. Convert by components.
 - `vector` and `vector_R8P` are two different types, although of the same kind; `ex` and `ex_R8P` likewise.
-- `vector_R16P` is quadruple precision only when PENF and VecFor are compiled with `-DPENF_R16P`, which the FoBiS modes
-  and the `makefile` do not do: by default it is double precision (see [Precision and kinds](./precision)).
+- `vector_R16P` is quadruple precision only when PENF and VecFor are compiled with `-DPENF_R16P`, as the GNU and Intel
+  builds are. nvfortran has no 128-bit real kind: there `vector_R16P` is double precision (see
+  [Precision and kinds](./precision)).
 - The scalar arguments of the methods (`angle=`, `tolerance=`) and the matrices must have the kind of the vector; the
   numbers of the operators may have any kind.
 

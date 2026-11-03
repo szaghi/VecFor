@@ -1,7 +1,6 @@
-!quad
 !run quad_precision quad_precision
 program quad_precision
-!< Cookbook: true quadruple precision, with VecFor built with -DPENF_R16P.
+!< Cookbook: true quadruple precision, the default of the GNU and Intel builds.
 use penf, only : R16P
 use vecfor, only : ex_R16P, ey_R16P, vector_R16P
 implicit none

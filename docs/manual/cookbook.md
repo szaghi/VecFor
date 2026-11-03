@@ -273,7 +273,7 @@ derived type: sum the components.
 <<< @/examples/output/kinds.txt{console}
 
 Each kind has its type, its versors and its free functions, all exported by `vecfor`. `vector` and `vector_R8P` have
-the same kind but are two types: copy the components. `vector_R16P` has the kind 8 here, double precision: see the
+the same kind but are two types: copy the components. `vector_R16P` has the kind 16 here, quadruple precision: see the
 next recipe.
 
 ### True quadruple precision
@@ -282,8 +282,8 @@ next recipe.
 
 <<< @/examples/output/quad_precision.txt{console}
 
-Built against VecFor and PENF compiled with `-DPENF_R16P` (see
-[Precision and kinds](/guide/precision#true-quadruple-precision)): 33 significant digits.
+33 significant digits, with VecFor and PENF compiled with `-DPENF_R16P`, as the GNU and Intel builds are (see
+[Precision and kinds](/guide/precision#true-quadruple-precision)).
 
 ### A method or a free function
 

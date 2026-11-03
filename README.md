@@ -32,7 +32,7 @@
 <td width="50%"><b>🧮 Whole arrays at once</b><br><sub>Operators and functions are elemental: one call computes the normals of every face, or the distances of a million points. <a href="https://szaghi.github.io/VecFor/manual/tutorial/08-arrays">Many vectors at once</a></sub></td>
 </tr>
 <tr>
-<td width="50%"><b>🎚️ Single, double, quadruple</b><br><sub><code>vector_R4P</code>, <code>vector_R8P</code>, <code>vector_R16P</code>, each with its versors and functions, from one <code>use vecfor</code>; true quadruple precision with <code>-DPENF_R16P</code>. <a href="https://szaghi.github.io/VecFor/manual/tutorial/09-precision">Precision</a></sub></td>
+<td width="50%"><b>🎚️ Single, double, quadruple</b><br><sub><code>vector_R4P</code>, <code>vector_R8P</code>, <code>vector_R16P</code>, each with its versors and functions, from one <code>use vecfor</code>; true quadruple precision by default with gfortran and ifx (<code>-DPENF_R16P</code>). <a href="https://szaghi.github.io/VecFor/manual/tutorial/09-precision">Precision</a></sub></td>
 <td width="50%"><b>🚀 On the GPU</b><br><sub>A device-callable API for OpenACC kernels: sum, difference, scaling, dot and cross products, assignment, with the results of the operators. <a href="https://szaghi.github.io/VecFor/manual/tutorial/11-gpu">On the GPU</a></sub></td>
 </tr>
 <tr>
@@ -139,13 +139,22 @@ gfortran -I static/mod my_program.f90 static/libvecfor.a -o my_program
 
 As a dependency of a FoBiS project, add VecFor to the `[dependencies]` of your `fobos` and run `fobis fetch`.
 
+### fpm
+
+```bash
+fpm build --profile release           # or, in your fpm.toml: VecFor = { git = "https://github.com/szaghi/VecFor" }
+```
+
+If your project declares PENF too, give it `preprocess.cpp.macros = ["PENF_R16P"]` (see
+[Installation](https://szaghi.github.io/VecFor/guide/install#fpm)).
+
 ### Install script or Make
 
 Each release has an `install.sh` that downloads and builds it:
 
 ```bash
 wget https://github.com/szaghi/VecFor/releases/latest/download/install.sh
-bash install.sh --download wget --build fobis     # or --build make
+bash install.sh --download wget --build fobis     # or --build make, --build fpm
 ```
 
 With PENF fetched, the `makefile` builds `static/vecfor.a` with gfortran: `make`.

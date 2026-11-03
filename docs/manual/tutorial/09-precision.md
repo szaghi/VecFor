@@ -5,13 +5,7 @@ precision; `probe` measures the edge from `p2` to `p3`, of length $\sqrt2$, in e
 
 <<< @/examples/snippets/probe_9.f90
 
-With VecFor built as by its FoBiS modes:
-
 <<< @/examples/output/probe_9.txt{console}
-
-With VecFor built with `-DPENF_R16P`:
-
-<<< @/examples/output/probe_9q.txt{console}
 
 ## Three precisions, one module
 
@@ -27,11 +21,11 @@ has 15, and is off by $9.7 \times 10^{-17}$, less than half a unit in the last p
 ## True quadruple precision
 
 `vector_R16P` is as precise as the kind `R16P` of PENF, and PENF makes `R16P` a true quadruple precision kind only when
-it is compiled with `-DPENF_R16P`. The FoBiS modes of VecFor do not define it, so in their builds `R16P` is double
-precision and `vector_R16P` has 15 digits, as the first run shows. Built with `-DPENF_R16P` (library and program
-alike, see [Precision and kinds](/guide/precision#true-quadruple-precision)), `vector_R16P` has 33 digits and the
-length is exact to all the digits printed, as the second run shows. The reference here is `real128` of
-`iso_fortran_env`, which does not depend on PENF.
+it is compiled with `-DPENF_R16P`. The GNU and Intel builds of VecFor define it (FoBiS modes, `makefile` and
+`fpm.toml`, for PENF and VecFor alike): `vector_R16P` has 33 digits and the length is exact to all the digits
+printed. The reference here is `real128` of `iso_fortran_env`, which does not depend on PENF. A compiler without a
+128-bit real kind, as nvfortran, builds VecFor without the flag: there `vector_R16P` has 15 digits, as `vector_R8P`
+(see [Precision and kinds](/guide/precision#true-quadruple-precision)).
 
 ## Scalars of other kinds, vectors of other kinds
 
@@ -46,7 +40,7 @@ precision: `vector` comes from its own module, so a `vector_R8P` is not assigned
 
 ::: tip What you learned
 `vector_R4P`, `vector_R8P`, `vector_R16P` and their versors and functions; true quadruple precision with
-`-DPENF_R16P`; scalars of any kind, vectors converted by components. Reference:
+`-DPENF_R16P`, the default of the GNU and Intel builds; scalars of any kind, vectors converted by components. Reference:
 [Precision and kinds](/guide/precision).
 :::
 
