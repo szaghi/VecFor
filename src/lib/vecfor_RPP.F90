@@ -21,6 +21,8 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #endif
 
 #define vector_RPP vector
+#define crossproduct_accurate_RPP crossproduct_accurate
+#define dotproduct_accurate_RPP dotproduct_accurate
 #define ex_RPP ex
 #define ey_RPP ey
 #define ez_RPP ez
@@ -44,10 +46,12 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 
 #define angle_RPP_dev angle_dev
 #define assign_vector_RPP_dev assign_vector_dev
+#define crossproduct_accurate_RPP_dev crossproduct_accurate_dev
 #define crossproduct_RPP_dev crossproduct_dev
 #define distance_to_line_RPP_dev distance_to_line_dev
 #define distance_to_plane_RPP_dev distance_to_plane_dev
 #define distance_vectorial_to_plane_RPP_dev distance_vectorial_to_plane_dev
+#define dotproduct_accurate_RPP_dev dotproduct_accurate_dev
 #define dotproduct_RPP_dev dotproduct_dev
 #define face_normal3_RPP_dev face_normal3_dev
 #define face_normal4_RPP_dev face_normal4_dev

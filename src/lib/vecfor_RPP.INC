@@ -1,5 +1,7 @@
 implicit none
 private
+public :: crossproduct_accurate_RPP
+public :: dotproduct_accurate_RPP
 public :: normalized_checked_RPP
 public :: vector_RPP
 public :: ex_RPP
@@ -22,10 +24,12 @@ public :: rotation_matrix_RPP
 public :: sq_norm_RPP
 public :: angle_RPP_dev
 public :: assign_vector_RPP_dev
+public :: crossproduct_accurate_RPP_dev
 public :: crossproduct_RPP_dev
 public :: distance_to_line_RPP_dev
 public :: distance_to_plane_RPP_dev
 public :: distance_vectorial_to_plane_RPP_dev
+public :: dotproduct_accurate_RPP_dev
 public :: dotproduct_RPP_dev
 public :: face_normal3_RPP_dev
 public :: face_normal4_RPP_dev
@@ -936,8 +940,160 @@ contains
    endif
    endsubroutine normalized_checked_RPP_dev
 
+   pure subroutine crossproduct_accurate_RPP_dev(a, b, c)
+   !$acc routine seq
+   !< Device-callable [[crossproduct_accurate_RPP]].
+   type(vector_RPP), intent(in)  :: a !< First vector.
+   type(vector_RPP), intent(in)  :: b !< Second vector.
+   type(vector_RPP), intent(out) :: c !< Cross product.
+
+   c%x = dop_RPP(a%y, b%z, a%z, b%y)
+   c%y = dop_RPP(a%z, b%x, a%x, b%z)
+   c%z = dop_RPP(a%x, b%y, a%y, b%x)
+   endsubroutine crossproduct_accurate_RPP_dev
+
+   pure function dotproduct_accurate_RPP_dev(a, b) result(d)
+   !$acc routine seq
+   !< Device-callable [[dotproduct_accurate_RPP]].
+   type(vector_RPP), intent(in) :: a !< First vector.
+   type(vector_RPP), intent(in) :: b !< Second vector.
+   real(RPP)                    :: d !< Dot product.
+   real(RPP)                    :: p !< Running sum.
+   real(RPP)                    :: s !< Running sum of the rounding errors.
+   real(RPP)                    :: h !< Product of a pair of components.
+   real(RPP)                    :: q !< Rounding error of a sum, exact (TwoSum).
+   real(RPP)                    :: r !< Rounding error of a product, exact (TwoProduct).
+   real(RPP)                    :: t !< Scratch of TwoSum.
+
+   p = a%x * b%x
+   s = fma_RPP(a%x, b%x, -p)
+   h = a%y * b%y
+   r = fma_RPP(a%y, b%y, -h)
+   t = p + h
+   q = (p - (t - (t - p))) + (h - (t - p))
+   p = t
+   s = s + (q + r)
+   h = a%z * b%z
+   r = fma_RPP(a%z, b%z, -h)
+   t = p + h
+   q = (p - (t - (t - p))) + (h - (t - p))
+   p = t
+   s = s + (q + r)
+   d = p + s
+   endfunction dotproduct_accurate_RPP_dev
+
    ! public methods
    ! non TBP
+   elemental function dotproduct_accurate_RPP(a, b) result(d)
+   !< Dot product `a .dot. b` as if computed in twice the working precision, then rounded (Ogita, Rump, Oishi 2005,
+   !< Dot2: products by TwoProduct with a fused multiply-add, sums by TwoSum). The `.dot.` operator can lose every
+   !< digit when the products nearly cancel.
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: a, b
+   !< real(RPP)        :: k
+   !< k = 2._RPP**(digits(1._RPP)/2)
+   !< a = (k + 1) * ex_RPP + k * ey_RPP + ez_RPP
+   !< b = (k + 1) * ex_RPP - k * ey_RPP + ez_RPP
+   !< print "(L1)", dotproduct_accurate_RPP(a, b) == 2 * k + 2
+   !<```
+   !=> T <<<
+   type(vector_RPP), intent(in) :: a !< First vector.
+   type(vector_RPP), intent(in) :: b !< Second vector.
+   real(RPP)                    :: d !< Dot product.
+   real(RPP)                    :: p !< Running sum.
+   real(RPP)                    :: s !< Running sum of the rounding errors.
+   real(RPP)                    :: h !< Product of a pair of components.
+   real(RPP)                    :: q !< Rounding error of a sum, exact (TwoSum).
+   real(RPP)                    :: r !< Rounding error of a product, exact (TwoProduct).
+   real(RPP)                    :: t !< Scratch of TwoSum.
+
+   p = a%x * b%x
+   s = fma_RPP(a%x, b%x, -p)
+   h = a%y * b%y
+   r = fma_RPP(a%y, b%y, -h)
+   t = p + h
+   q = (p - (t - (t - p))) + (h - (t - p))
+   p = t
+   s = s + (q + r)
+   h = a%z * b%z
+   r = fma_RPP(a%z, b%z, -h)
+   t = p + h
+   q = (p - (t - (t - p))) + (h - (t - p))
+   p = t
+   s = s + (q + r)
+   d = p + s
+   endfunction dotproduct_accurate_RPP
+
+   elemental function crossproduct_accurate_RPP(a, b) result(c)
+   !< Cross product `a .cross. b` with each component as accurate as one rounding allows (up to 2 ulps): every
+   !< component `a_i * b_j - a_j * b_i` by Kahan's algorithm with a fused multiply-add. The `.cross.` operator rounds
+   !< both products first and can lose all digits when they nearly cancel (nearly parallel vectors, sliver faces).
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: a, b, c
+   !< a = (2._RPP**(digits(1._RPP)/2) + 1) * ex_RPP + 2._RPP**(digits(1._RPP)/2) * ey_RPP
+   !< b = (2._RPP**(digits(1._RPP)/2) + 1) * ey_RPP + 2._RPP**(digits(1._RPP)/2) * ex_RPP
+   !< c = crossproduct_accurate_RPP(a, b)
+   !< print "(L1)", c%z == 2._RPP**(digits(1._RPP)/2 + 1) + 1
+   !<```
+   !=> T <<<
+   type(vector_RPP), intent(in) :: a !< First vector.
+   type(vector_RPP), intent(in) :: b !< Second vector.
+   type(vector_RPP)             :: c !< Cross product.
+
+   c%x = dop_RPP(a%y, b%z, a%z, b%y)
+   c%y = dop_RPP(a%z, b%x, a%x, b%z)
+   c%z = dop_RPP(a%x, b%y, a%y, b%x)
+   endfunction crossproduct_accurate_RPP
+
+   pure function fma_RPP(a, b, c) result(r)
+   !$acc routine seq
+   !< `a * b + c` with a single rounding (private). nvfortran: C `fma`/`fmaf` through a device-callable `bind(c)`
+   !< interface (its `ieee_fma` is not device-callable); other compilers: `ieee_fma` (any real kind, quad included).
+#if defined __NVCOMPILER
+   use, intrinsic :: iso_c_binding, only : c_double, c_float
+   interface c_fma
+     pure function c_fmaf(x, y, z) result(w) bind(c, name='fmaf')
+     import :: c_float
+     !$acc routine seq
+     real(c_float), value, intent(in) :: x, y, z
+     real(c_float)                    :: w
+     endfunction c_fmaf
+     pure function c_fmad(x, y, z) result(w) bind(c, name='fma')
+     import :: c_double
+     !$acc routine seq
+     real(c_double), value, intent(in) :: x, y, z
+     real(c_double)                    :: w
+     endfunction c_fmad
+   endinterface c_fma
+#else
+   use, intrinsic :: ieee_arithmetic, only : ieee_fma
+#endif
+   real(RPP), intent(in) :: a, b, c !< Operands.
+   real(RPP)             :: r       !< `a * b + c`, rounded once.
+
+#if defined __NVCOMPILER
+   r = c_fma(a, b, c)
+#else
+   r = ieee_fma(a, b, c)
+#endif
+   endfunction fma_RPP
+
+   pure function dop_RPP(a, b, c, d) result(r)
+   !$acc routine seq
+   !< `a * b - c * d` by Kahan's algorithm (private): error at most 2 units in the last place of the result
+   !< (Jeannerod, Louvet, Muller, Math. Comp. 2013), where the plain expression can lose every digit to cancellation.
+   real(RPP), intent(in) :: a, b, c, d !< Operands.
+   real(RPP)             :: r          !< `a * b - c * d`.
+   real(RPP)             :: cd         !< `c * d`, rounded.
+   real(RPP)             :: err        !< Rounding error of `cd`, exact.
+
+   cd = c * d
+   err = fma_RPP(-c, d, cd)
+   r = fma_RPP(a, b, -cd) + err
+   endfunction dop_RPP
+
    elemental subroutine normalized_checked_RPP(a, c, ok, min_norm)
    !< Normalize `a` into `c` only when its norm is above `min_norm` (default `smallRPP`): `ok` tells which.
    !<

@@ -17,12 +17,16 @@ use vecfor, only : vector_R8P,                          &
                    angle_R8P,                           &
                    angle_R8P_dev,                       &
                    assign_vector_R8P_dev,               &
+                   crossproduct_accurate_R8P,           &
+                   crossproduct_accurate_R8P_dev,       &
                    distance_to_line_R8P,                &
                    distance_to_line_R8P_dev,            &
                    distance_to_plane_R8P,               &
                    distance_to_plane_R8P_dev,           &
                    distance_vectorial_to_plane_R8P,     &
                    distance_vectorial_to_plane_R8P_dev, &
+                   dotproduct_accurate_R8P,             &
+                   dotproduct_accurate_R8P_dev,         &
                    face_normal3_R8P,                    &
                    face_normal3_R8P_dev,                &
                    face_normal4_R8P,                    &
@@ -104,6 +108,10 @@ real(R8P)               :: agl_dev(n), agl_ref(n), agl_hst(n), agl_bnd(n)
 type(vector_R8P)        :: nck_dev(n), nck_ref(n), nck_hst(n), nc5_dev(n), nc5_ref(n), nc5_hst(n)
 logical                 :: okk_dev(n), okk_ref(n), okk_hst(n), ok5_dev(n), ok5_ref(n), ok5_hst(n)
 
+! accurate cross and dot: explicit fma (no contraction choice), so device and host agree bit-exact
+type(vector_R8P)        :: cxa_dev(n), cxa_ref(n), cxa_hst(n)
+real(R8P)               :: dta_dev(n), dta_ref(n), dta_hst(n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -130,7 +138,7 @@ enddo
 !$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
-!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev)
+!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev, cxa_dev, dta_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_dev(p0(i))
    sq_dev(i) = sq_norm_R8P_dev(p0(i))
@@ -169,6 +177,8 @@ do i = 1, n
    agl_dev(i) = angle_R8P_dev(p0(i), p1(i))
    call normalized_checked_R8P_dev(p0(i), nck_dev(i), okk_dev(i))
    call normalized_checked_R8P_dev(p0(i), nc5_dev(i), ok5_dev(i), min_norm=50._R8P)
+   call crossproduct_accurate_R8P_dev(p1(i), p2(i), cxa_dev(i))
+   dta_dev(i) = dotproduct_accurate_R8P_dev(p1(i), p2(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -237,6 +247,10 @@ do i = 1, n
    call normalized_checked_R8P_dev(p0(i), nck_hst(i), okk_hst(i))
    call normalized_checked_R8P(p0(i), nc5_ref(i), ok5_ref(i), min_norm=50._R8P)
    call normalized_checked_R8P_dev(p0(i), nc5_hst(i), ok5_hst(i), min_norm=50._R8P)
+   cxa_ref(i) = crossproduct_accurate_R8P(p1(i), p2(i))
+   call crossproduct_accurate_R8P_dev(p1(i), p2(i), cxa_hst(i))
+   dta_ref(i) = dotproduct_accurate_R8P(p1(i), p2(i))
+   dta_hst(i) = dotproduct_accurate_R8P_dev(p1(i), p2(i))
 enddo
 
 call check_real('normL2_dev', nrm_dev, nrm_ref, nrm_hst)
@@ -323,6 +337,8 @@ if (okk_ref(1) .or. count(ok5_ref) == 0 .or. count(.not. ok5_ref) == 0) then
    print "(A)", "normalized_checked: the data do not exercise both outcomes"
    all_passed = .false.
 endif
+call check_vec('crossproduct_accurate_dev', cxa_dev, cxa_ref, cxa_hst)
+call check_real('dotproduct_accurate_dev', dta_dev, dta_ref, dta_hst)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then

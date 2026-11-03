@@ -14,6 +14,8 @@ module vecfor
 use vecfor_RPP, only : angle,                       &
                        angle_dev,                   &
                        assign_vector_dev,           &
+                       crossproduct_accurate,       &
+                       crossproduct_accurate_dev,   &
                        crossproduct_dev,            &
                        distance_to_line,            &
                        distance_to_line_dev,        &
@@ -21,6 +23,8 @@ use vecfor_RPP, only : angle,                       &
                        distance_to_plane_dev,       &
                        distance_vectorial_to_plane, &
                        distance_vectorial_to_plane_dev,&
+                       dotproduct_accurate,         &
+                       dotproduct_accurate_dev,     &
                        dotproduct_dev,              &
                        ex,                          &
                        ey,                          &
@@ -65,6 +69,8 @@ use vecfor_RPP, only : angle,                       &
 use vecfor_R4P, only : angle_R4P,                       &
                        angle_R4P_dev,                   &
                        assign_vector_R4P_dev,           &
+                       crossproduct_accurate_R4P,       &
+                       crossproduct_accurate_R4P_dev,   &
                        crossproduct_R4P_dev,            &
                        distance_to_line_R4P,            &
                        distance_to_line_R4P_dev,        &
@@ -72,6 +78,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        distance_to_plane_R4P_dev,       &
                        distance_vectorial_to_plane_R4P, &
                        distance_vectorial_to_plane_R4P_dev,&
+                       dotproduct_accurate_R4P,         &
+                       dotproduct_accurate_R4P_dev,     &
                        dotproduct_R4P_dev,              &
                        ex_R4P,                          &
                        ey_R4P,                          &
@@ -116,6 +124,8 @@ use vecfor_R4P, only : angle_R4P,                       &
 use vecfor_R8P, only : angle_R8P,                       &
                        angle_R8P_dev,                   &
                        assign_vector_R8P_dev,           &
+                       crossproduct_accurate_R8P,       &
+                       crossproduct_accurate_R8P_dev,   &
                        crossproduct_R8P_dev,            &
                        distance_to_line_R8P,            &
                        distance_to_line_R8P_dev,        &
@@ -123,6 +133,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        distance_to_plane_R8P_dev,       &
                        distance_vectorial_to_plane_R8P, &
                        distance_vectorial_to_plane_R8P_dev,&
+                       dotproduct_accurate_R8P,         &
+                       dotproduct_accurate_R8P_dev,     &
                        dotproduct_R8P_dev,              &
                        ex_R8P,                          &
                        ey_R8P,                          &
@@ -167,6 +179,8 @@ use vecfor_R8P, only : angle_R8P,                       &
 use vecfor_R16P, only : angle_R16P,                       &
                         angle_R16P_dev,                   &
                         assign_vector_R16P_dev,           &
+                        crossproduct_accurate_R16P,       &
+                        crossproduct_accurate_R16P_dev,   &
                         crossproduct_R16P_dev,            &
                         distance_to_line_R16P,            &
                         distance_to_line_R16P_dev,        &
@@ -174,6 +188,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         distance_to_plane_R16P_dev,       &
                         distance_vectorial_to_plane_R16P, &
                         distance_vectorial_to_plane_R16P_dev,&
+                        dotproduct_accurate_R16P,         &
+                        dotproduct_accurate_R16P_dev,     &
                         dotproduct_R16P_dev,              &
                         ex_R16P,                          &
                         ey_R16P,                          &
@@ -216,9 +232,11 @@ use vecfor_R16P, only : angle_R16P,                       &
                         vector_sum_vector_R16P_dev
 
 public :: angle
+public :: crossproduct_accurate
 public :: distance_to_line
 public :: distance_to_plane
 public :: distance_vectorial_to_plane
+public :: dotproduct_accurate
 public :: face_normal3
 public :: face_normal4
 public :: iolen
@@ -234,10 +252,12 @@ public :: sq_norm
 public :: ex, ey, ez, vector
 public :: angle_dev
 public :: assign_vector_dev
+public :: crossproduct_accurate_dev
 public :: crossproduct_dev
 public :: distance_to_line_dev
 public :: distance_to_plane_dev
 public :: distance_vectorial_to_plane_dev
+public :: dotproduct_accurate_dev
 public :: dotproduct_dev
 public :: face_normal3_dev
 public :: face_normal4_dev
@@ -259,9 +279,11 @@ public :: rotate_by_axis_angle_dev
 public :: rotate_by_matrix_dev
 public :: rotation_matrix_dev
 public :: angle_R8P_dev
+public :: crossproduct_accurate_R8P_dev
 public :: distance_to_line_R8P_dev
 public :: distance_to_plane_R8P_dev
 public :: distance_vectorial_to_plane_R8P_dev
+public :: dotproduct_accurate_R8P_dev
 public :: face_normal3_R8P_dev
 public :: face_normal4_R8P_dev
 public :: is_collinear_R8P_dev
@@ -284,9 +306,11 @@ public :: vector_sub_vector_dev
 public :: vector_sum_vector_dev
 
 public :: angle_R4P
+public :: crossproduct_accurate_R4P
 public :: distance_to_line_R4P
 public :: distance_to_plane_R4P
 public :: distance_vectorial_to_plane_R4P
+public :: dotproduct_accurate_R4P
 public :: face_normal3_R4P
 public :: face_normal4_R4P
 public :: iolen_R4P
@@ -302,10 +326,12 @@ public :: sq_norm_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
 public :: angle_R4P_dev
 public :: assign_vector_R4P_dev
+public :: crossproduct_accurate_R4P_dev
 public :: crossproduct_R4P_dev
 public :: distance_to_line_R4P_dev
 public :: distance_to_plane_R4P_dev
 public :: distance_vectorial_to_plane_R4P_dev
+public :: dotproduct_accurate_R4P_dev
 public :: dotproduct_R4P_dev
 public :: face_normal3_R4P_dev
 public :: face_normal4_R4P_dev
@@ -332,9 +358,11 @@ public :: vector_sub_vector_R4P_dev
 public :: vector_sum_vector_R4P_dev
 
 public :: angle_R8P
+public :: crossproduct_accurate_R8P
 public :: distance_to_line_R8P
 public :: distance_to_plane_R8P
 public :: distance_vectorial_to_plane_R8P
+public :: dotproduct_accurate_R8P
 public :: face_normal3_R8P
 public :: face_normal4_R8P
 public :: iolen_R8P
@@ -360,9 +388,11 @@ public :: vector_sub_vector_R8P_dev
 public :: vector_sum_vector_R8P_dev
 
 public :: angle_R16P
+public :: crossproduct_accurate_R16P
 public :: distance_to_line_R16P
 public :: distance_to_plane_R16P
 public :: distance_vectorial_to_plane_R16P
+public :: dotproduct_accurate_R16P
 public :: face_normal3_R16P
 public :: face_normal4_R16P
 public :: iolen_R16P
@@ -378,10 +408,12 @@ public :: sq_norm_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
 public :: angle_R16P_dev
 public :: assign_vector_R16P_dev
+public :: crossproduct_accurate_R16P_dev
 public :: crossproduct_R16P_dev
 public :: distance_to_line_R16P_dev
 public :: distance_to_plane_R16P_dev
 public :: distance_vectorial_to_plane_R16P_dev
+public :: dotproduct_accurate_R16P_dev
 public :: dotproduct_R16P_dev
 public :: face_normal3_R16P_dev
 public :: face_normal4_R16P_dev

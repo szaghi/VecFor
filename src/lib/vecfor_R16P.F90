@@ -8,6 +8,8 @@ use penf, only : I1P, I2P, I4P, I8P, R4P, R8P, R16P, str
 use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 
 #define vector_RPP vector_R16P
+#define crossproduct_accurate_RPP crossproduct_accurate_R16P
+#define dotproduct_accurate_RPP dotproduct_accurate_R16P
 #define ex_RPP ex_R16P
 #define ey_RPP ey_R16P
 #define ez_RPP ez_R16P
@@ -32,10 +34,12 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 
 #define angle_RPP_dev angle_R16P_dev
 #define assign_vector_RPP_dev assign_vector_R16P_dev
+#define crossproduct_accurate_RPP_dev crossproduct_accurate_R16P_dev
 #define crossproduct_RPP_dev crossproduct_R16P_dev
 #define distance_to_line_RPP_dev distance_to_line_R16P_dev
 #define distance_to_plane_RPP_dev distance_to_plane_R16P_dev
 #define distance_vectorial_to_plane_RPP_dev distance_vectorial_to_plane_R16P_dev
+#define dotproduct_accurate_RPP_dev dotproduct_accurate_R16P_dev
 #define dotproduct_RPP_dev dotproduct_R16P_dev
 #define face_normal3_RPP_dev face_normal3_R16P_dev
 #define face_normal4_RPP_dev face_normal4_R16P_dev

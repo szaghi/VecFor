@@ -50,3 +50,8 @@ main = "vecfor_test_device_loop.F90"
 name = "vecfor_test_device_geometry"
 source-dir = "src/tests"
 main = "vecfor_test_device_geometry.F90"
+
+[[test]]
+name = "vecfor_test_accurate_products"
+source-dir = "src/tests"
+main = "vecfor_test_accurate_products.f90"
