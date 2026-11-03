@@ -5,7 +5,7 @@ title: Device-callable API
 # Device-callable API
 
 A small set of plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They
-mirror seven operators of the vector and the rotation matrix; everything else of VecFor runs on the host only.
+mirror seven operators of the vector, the rotation matrix and the mirror matrix; everything else of VecFor runs on the host only.
 
 ## The routines
 
@@ -19,8 +19,9 @@ mirror seven operators of the vector and the rotation matrix; everything else of
 | `d = dotproduct_oac(a, b)` | `d = a .dot. b` | function |
 | `call assign_vector_oac(lhs, rhs)` | `lhs = rhs` | subroutine |
 | `call rotation_matrix_oac(axis, angle, matrix)` | `matrix = rotation_matrix(axis, angle)` | subroutine |
+| `call mirror_matrix_oac(normal, matrix)` | `matrix = mirror_matrix(normal)` | subroutine |
 
-`a`, `b`, `c`, `lhs`, `rhs`, `axis` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
+`a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
 of the kind of the vector, are `intent(out)`. `s` is `real(R8P)` for
 every kind of vector. `dotproduct_oac` returns a real of the kind of the vectors. Each kind has its set, with the
 suffix of the kind before `_oac`: `vector_sum_vector_R4P_oac`, `crossproduct_R16P_oac`, ...; the names without a kind
@@ -72,10 +73,10 @@ are comments and the same source runs on the host: the [tutorial](/manual/tutori
 
 Not device-callable: the other operators (`/`, numbers of other kinds, `.paral.`, `.ortho.`, `.matrix.`, the
 comparisons), every method (`normL2`, `normalize`, `angle`, `face_normal3`, the distances, the projections, the
-predicates, `rotate`, `mirror`) and the other matrices. Two of them need more than a new wrapper:
+predicates, `rotate`, `mirror`). Two of them need more than a new wrapper:
 
-- `mirror_matrix` and `.matrix.` return or take a `(3, 3)` array by value, which nvfortran compiles in device code
-  but gets wrong; a device version must take the matrix as an `intent(out)` argument, as `rotation_matrix_oac` does.
+- `.matrix.` takes a `(3, 3)` array by value, which nvfortran compiles in device code but gets wrong; a device version
+  must pass the matrix as an argument, as `rotation_matrix_oac` and `mirror_matrix_oac` do.
 - `angle` builds an array of two polymorphic vectors, which lowers to a host-only runtime call.
 
 The API grows one routine at a time, when a device code needs it, following the convention of the existing ones (see

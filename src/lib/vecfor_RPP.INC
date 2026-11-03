@@ -22,6 +22,7 @@ public :: sq_norm_RPP
 public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: dotproduct_RPP_oac
+public :: mirror_matrix_RPP_oac
 public :: R8P_mul_vector_RPP_oac
 public :: rotation_matrix_RPP_oac
 public :: vector_mul_R8P_RPP_oac
@@ -500,6 +501,38 @@ contains
    matrix(2,3) =     ay * az * one_c - ax * s
    matrix(3,3) = c + az * az * one_c
    endsubroutine rotation_matrix_RPP_oac
+
+   pure subroutine mirror_matrix_RPP_oac(normal, matrix)
+   !$acc routine seq
+   !< Device-callable mirror matrix: [[mirror_matrix_RPP]] with the matrix as an `intent(out)` argument.
+   !<
+   !< `mirror_matrix_RPP` returns the matrix by value, which nvfortran (26.1 and 26.9) miscompiles in device code:
+   !< no diagnostic, wrong results. The arithmetic is that of `mirror_matrix_RPP`, the normal normalized as by
+   !< `normalize`, open-coded (no calls into the TBP-bound surface).
+   type(vector_RPP), intent(in)  :: normal      !< Normal of the mirroring plane.
+   real(RPP),        intent(out) :: matrix(3,3) !< Mirror matrix.
+   real(RPP)                     :: nx          !< x component of the normalized normal.
+   real(RPP)                     :: ny          !< y component of the normalized normal.
+   real(RPP)                     :: nz          !< z component of the normalized normal.
+   real(RPP)                     :: nm          !< Norm L2 of the normal.
+
+   nm = sqrt((normal%x * normal%x) + (normal%y * normal%y) + (normal%z * normal%z))
+   if (nm < smallRPP) then
+     nm = nm + smallRPP
+   endif
+   nx = normal%x / nm
+   ny = normal%y / nm
+   nz = normal%z / nm
+   matrix(1,1) = 1._RPP - 2._RPP * nx * nx
+   matrix(2,1) =        - 2._RPP * ny * nx
+   matrix(3,1) =        - 2._RPP * nz * nx
+   matrix(1,2) =        - 2._RPP * nx * ny
+   matrix(2,2) = 1._RPP - 2._RPP * ny * ny
+   matrix(3,2) =        - 2._RPP * nz * ny
+   matrix(1,3) =        - 2._RPP * nx * nz
+   matrix(2,3) =        - 2._RPP * ny * nz
+   matrix(3,3) = 1._RPP - 2._RPP * nz * nz
+   endsubroutine mirror_matrix_RPP_oac
 
    ! public methods
    ! non TBP
