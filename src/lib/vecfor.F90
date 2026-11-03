@@ -30,7 +30,9 @@ use vecfor_RPP, only : angle,                       &
                        face_normal4_oac,            &
                        iolen,                       &
                        is_collinear,                &
+                       is_collinear_oac,            &
                        is_concyclic,                &
+                       is_concyclic_oac,            &
                        matrixproduct_oac,           &
                        mirror_matrix,               &
                        mirror_matrix_oac,           &
@@ -72,7 +74,9 @@ use vecfor_R4P, only : angle_R4P,                       &
                        face_normal4_R4P_oac,            &
                        iolen_R4P,                       &
                        is_collinear_R4P,                &
+                       is_collinear_R4P_oac,            &
                        is_concyclic_R4P,                &
+                       is_concyclic_R4P_oac,            &
                        matrixproduct_R4P_oac,           &
                        mirror_matrix_R4P,               &
                        mirror_matrix_R4P_oac,           &
@@ -114,7 +118,9 @@ use vecfor_R8P, only : angle_R8P,                       &
                        face_normal4_R8P_oac,            &
                        iolen_R8P,                       &
                        is_collinear_R8P,                &
+                       is_collinear_R8P_oac,            &
                        is_concyclic_R8P,                &
+                       is_concyclic_R8P_oac,            &
                        matrixproduct_R8P_oac,           &
                        mirror_matrix_R8P,               &
                        mirror_matrix_R8P_oac,           &
@@ -156,7 +162,9 @@ use vecfor_R16P, only : angle_R16P,                       &
                         face_normal4_R16P_oac,            &
                         iolen_R16P,                       &
                         is_collinear_R16P,                &
+                        is_collinear_R16P_oac,            &
                         is_concyclic_R16P,                &
+                        is_concyclic_R16P_oac,            &
                         matrixproduct_R16P_oac,           &
                         mirror_matrix_R16P,               &
                         mirror_matrix_R16P_oac,           &
@@ -203,6 +211,8 @@ public :: distance_vectorial_to_plane_oac
 public :: dotproduct_oac
 public :: face_normal3_oac
 public :: face_normal4_oac
+public :: is_collinear_oac
+public :: is_concyclic_oac
 public :: matrixproduct_oac
 public :: mirror_matrix_oac
 public :: normalize_oac
@@ -218,6 +228,8 @@ public :: distance_to_plane_R8P_oac
 public :: distance_vectorial_to_plane_R8P_oac
 public :: face_normal3_R8P_oac
 public :: face_normal4_R8P_oac
+public :: is_collinear_R8P_oac
+public :: is_concyclic_R8P_oac
 public :: normalize_R8P_oac
 public :: normalized_R8P_oac
 public :: normL2_R8P_oac
@@ -254,6 +266,8 @@ public :: distance_vectorial_to_plane_R4P_oac
 public :: dotproduct_R4P_oac
 public :: face_normal3_R4P_oac
 public :: face_normal4_R4P_oac
+public :: is_collinear_R4P_oac
+public :: is_concyclic_R4P_oac
 public :: matrixproduct_R4P_oac
 public :: mirror_matrix_R4P_oac
 public :: normalize_R4P_oac
@@ -320,6 +334,8 @@ public :: distance_vectorial_to_plane_R16P_oac
 public :: dotproduct_R16P_oac
 public :: face_normal3_R16P_oac
 public :: face_normal4_R16P_oac
+public :: is_collinear_R16P_oac
+public :: is_concyclic_R16P_oac
 public :: matrixproduct_R16P_oac
 public :: mirror_matrix_R16P_oac
 public :: normalize_R16P_oac

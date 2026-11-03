@@ -27,6 +27,8 @@ public :: distance_vectorial_to_plane_RPP_oac
 public :: dotproduct_RPP_oac
 public :: face_normal3_RPP_oac
 public :: face_normal4_RPP_oac
+public :: is_collinear_RPP_oac
+public :: is_concyclic_RPP_oac
 public :: matrixproduct_RPP_oac
 public :: mirror_matrix_RPP_oac
 public :: normalize_RPP_oac
@@ -774,6 +776,50 @@ contains
    call distance_vectorial_to_plane_RPP_oac(a, pt1, pt2, pt3, distance)
    call vector_sub_vector_RPP_oac(a, distance, projection)
    endsubroutine projection_onto_plane_RPP_oac
+
+   pure function is_collinear_RPP_oac(a, pt1, pt2, tolerance) result(is_collinear_)
+   !$acc routine seq
+   !< Device-callable test of the point `a` on the line through `pt1` and `pt2`: [[is_collinear_RPP]], the distance
+   !< from the line not above `ZeroRPP + tolerance` (0 when absent).
+   type(vector_RPP), intent(in)           :: a             !< Point.
+   type(vector_RPP), intent(in)           :: pt1           !< First point of the line.
+   type(vector_RPP), intent(in)           :: pt2           !< Second point of the line.
+   real(RPP),        intent(in), optional :: tolerance     !< Tolerance.
+   logical                                :: is_collinear_ !< Inquiry result.
+   real(RPP)                              :: tolerance_    !< Tolerance, local variable.
+
+   tolerance_ = 0._RPP
+   if (present(tolerance)) tolerance_ = tolerance
+   is_collinear_ = distance_to_line_RPP_oac(a, pt1, pt2) <= ZeroRPP + tolerance_
+   endfunction is_collinear_RPP_oac
+
+   pure function is_concyclic_RPP_oac(a, pt1, pt2, pt3, tolerance) result(is_concyclic_)
+   !$acc routine seq
+   !< Device-callable test of the points `a, pt1, pt2, pt3` on one circle: [[is_concyclic_RPP]] (Ptolemy's
+   !< inequality) open-coded, against `smallRPP + tolerance` (0 when absent).
+   type(vector_RPP), intent(in)           :: a             !< Point.
+   type(vector_RPP), intent(in)           :: pt1           !< Second point.
+   type(vector_RPP), intent(in)           :: pt2           !< Third point.
+   type(vector_RPP), intent(in)           :: pt3           !< Fourth point.
+   real(RPP),        intent(in), optional :: tolerance     !< Tolerance.
+   logical                                :: is_concyclic_ !< Inquiry result.
+   real(RPP)                              :: tolerance_    !< Tolerance, local variable.
+   real(RPP)                              :: p, q, r       !< Products of the squared distances.
+   type(vector_RPP)                       :: u, v          !< Differences of points.
+
+   call vector_sub_vector_RPP_oac(a, pt1, u)
+   call vector_sub_vector_RPP_oac(pt2, pt3, v)
+   p = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
+   call vector_sub_vector_RPP_oac(pt1, pt2, u)
+   call vector_sub_vector_RPP_oac(pt3, a, v)
+   q = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
+   call vector_sub_vector_RPP_oac(a, pt2, u)
+   call vector_sub_vector_RPP_oac(pt1, pt3, v)
+   r = sq_norm_RPP_oac(u) * sq_norm_RPP_oac(v)
+   tolerance_ = 0._RPP
+   if (present(tolerance)) tolerance_ = tolerance
+   is_concyclic_ = sqrt(p) + sqrt(q) - sqrt(r) <= smallRPP + tolerance_
+   endfunction is_concyclic_RPP_oac
 
    ! public methods
    ! non TBP

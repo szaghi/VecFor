@@ -37,6 +37,8 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define dotproduct_RPP_oac dotproduct_R8P_oac
 #define face_normal3_RPP_oac face_normal3_R8P_oac
 #define face_normal4_RPP_oac face_normal4_R8P_oac
+#define is_collinear_RPP_oac is_collinear_R8P_oac
+#define is_concyclic_RPP_oac is_concyclic_R8P_oac
 #define matrixproduct_RPP_oac matrixproduct_R8P_oac
 #define mirror_matrix_RPP_oac mirror_matrix_R8P_oac
 #define normalize_RPP_oac normalize_R8P_oac

@@ -25,6 +25,10 @@ use vecfor, only : vector_R8P,                          &
                    face_normal3_R8P_oac,                &
                    face_normal4_R8P,                    &
                    face_normal4_R8P_oac,                &
+                   is_collinear_R8P,                    &
+                   is_collinear_R8P_oac,                &
+                   is_concyclic_R8P,                    &
+                   is_concyclic_R8P_oac,                &
                    normalize_R8P_oac,                   &
                    normalized_R8P,                      &
                    normalized_R8P_oac,                  &
@@ -70,6 +74,13 @@ real(R8P)               :: dtp_dev(n), dtp_ref(n), dtp_oac(n)
 type(vector_R8P)        :: dvp_dev(n), dvp_ref(n), dvp_oac(n), prj_dev(n), prj_ref(n), prj_oac(n)
 real(R8P)               :: dtp_bnd(n), dvp_bnd(3,n), prj_bnd(3,n)
 
+! is_collinear, is_concyclic, with and without tolerance (q: on the line p1-p2 for odd i; c0..c3: on a circle,
+! c3 moved off it for even i)
+type(vector_R8P)        :: q(n), c0(n), c1(n), c2(n), c3(n)
+real(R8P)               :: rad, ctr(3)
+logical                 :: col_dev(n), col_ref(n), col_oac(n), colt_dev(n), colt_ref(n), colt_oac(n)
+logical                 :: ccl_dev(n), ccl_ref(n), ccl_oac(n), cclt_dev(n), cclt_ref(n), cclt_oac(n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -79,11 +90,20 @@ do i = 1, n
    p1(i) = vector_R8P(x=1._R8P / real(i, R8P), y=0.7_R8P * real(i, R8P), z=2._R8P - 0.003_R8P * real(i, R8P))
    p2(i) = vector_R8P(x=-1.5_R8P + 0.02_R8P * real(i, R8P), y=0.3_R8P, z=real(mod(i, 7), R8P) - 2.5_R8P)
    p3(i) = vector_R8P(x=0.9_R8P, y=-0.4_R8P * real(mod(i, 5), R8P), z=1._R8P + 1._R8P / real(i + 1, R8P))
+   q(i) = p1(i) + (0.25_R8P + 0.01_R8P * real(i, R8P)) * (p2(i) - p1(i))
+   if (mod(i, 2) == 0) q(i) = q(i) + p3(i)
+   rad = 0.5_R8P + 0.01_R8P * real(i, R8P)
+   ctr = [0.1_R8P * real(i, R8P), -1._R8P, 0.3_R8P]
+   c0(i) = vector_R8P(x=ctr(1) + rad * cos(0.1_R8P), y=ctr(2) + rad * sin(0.1_R8P), z=ctr(3))
+   c1(i) = vector_R8P(x=ctr(1) + rad * cos(1.7_R8P), y=ctr(2) + rad * sin(1.7_R8P), z=ctr(3))
+   c2(i) = vector_R8P(x=ctr(1) + rad * cos(3.9_R8P), y=ctr(2) + rad * sin(3.9_R8P), z=ctr(3))
+   c3(i) = vector_R8P(x=ctr(1) + rad * cos(5.2_R8P), y=ctr(2) + rad * sin(5.2_R8P), z=ctr(3))
+   if (mod(i, 2) == 0) c3(i)%x = c3(i)%x + 0.3_R8P
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3) private(t1) &
+!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3) private(t1) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
-!$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev)
+!$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -101,6 +121,10 @@ do i = 1, n
    dtp_dev(i) = distance_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i))
    call distance_vectorial_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), dvp_dev(i))
    call projection_onto_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), prj_dev(i))
+   col_dev(i) = is_collinear_R8P_oac(q(i), p1(i), p2(i))
+   colt_dev(i) = is_collinear_R8P_oac(q(i), p1(i), p2(i), tolerance=1e-9_R8P)
+   ccl_dev(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i))
+   cclt_dev(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -139,6 +163,14 @@ do i = 1, n
    call distance_vectorial_to_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), dvp_oac(i))
    prj_ref(i) = projection_onto_plane_R8P(p0(i), p1(i), p2(i), p3(i))
    call projection_onto_plane_R8P_oac(p0(i), p1(i), p2(i), p3(i), prj_oac(i))
+   col_ref(i) = is_collinear_R8P(q(i), p1(i), p2(i))
+   col_oac(i) = is_collinear_R8P_oac(q(i), p1(i), p2(i))
+   colt_ref(i) = is_collinear_R8P(q(i), p1(i), p2(i), tolerance=1e-9_R8P)
+   colt_oac(i) = is_collinear_R8P_oac(q(i), p1(i), p2(i), tolerance=1e-9_R8P)
+   ccl_ref(i) = is_concyclic_R8P(c0(i), c1(i), c2(i), c3(i))
+   ccl_oac(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i))
+   cclt_ref(i) = is_concyclic_R8P(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
+   cclt_oac(i) = is_concyclic_R8P_oac(c0(i), c1(i), c2(i), c3(i), tolerance=1e-9_R8P)
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -188,6 +220,18 @@ enddo
 call check_real_bound('distance_to_plane_oac', dtp_dev, dtp_ref, dtp_oac, dtp_bnd)
 call check_vec_bound('distance_vectorial_to_plane_oac', dvp_dev, dvp_ref, dvp_oac, dvp_bnd)
 call check_vec_bound('projection_onto_plane_oac', prj_dev, prj_ref, prj_oac, prj_bnd)
+! predicates: without tolerance, points exactly on the line or circle (odd i) sit on the threshold, where a rounding
+! difference (FMA contraction) legitimately flips the answer: compared only on the points off it (even i). With
+! tolerance 1e-9, far above rounding, every point is compared.
+call check_logical('is_collinear_oac', col_dev(2::2), col_ref(2::2), col_oac(2::2))
+call check_logical('is_collinear_oac tolerance', colt_dev, colt_ref, colt_oac)
+call check_logical('is_concyclic_oac', ccl_dev(2::2), ccl_ref(2::2), ccl_oac(2::2))
+call check_logical('is_concyclic_oac tolerance', cclt_dev, cclt_ref, cclt_oac)
+! both outcomes must occur, or the predicates are not exercised
+if (count(colt_ref) == 0 .or. count(.not. colt_ref) == 0 .or. count(cclt_ref) == 0 .or. count(.not. cclt_ref) == 0) then
+   print "(A)", "is_collinear/is_concyclic: the data do not exercise both outcomes"
+   all_passed = .false.
+endif
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
