@@ -17,10 +17,30 @@ arguments `pt1`, `pt2`, ...; the results are of the kind of the vectors.
 | `v%sq_norm()` | $v_x^2 + v_y^2 + v_z^2$ |
 | `v%normalized()` | $\mathbf v / \lvert\mathbf v\rvert$, a new vector |
 | `call v%normalize` | `v` becomes $\mathbf v / \lvert\mathbf v\rvert$ |
+| `call normalized_checked(v, u, ok [, min_norm])` | `u` = $\mathbf v / \lvert\mathbf v\rvert$ and `ok` true when $\lvert\mathbf v\rvert >$ `min_norm`; otherwise `ok` false and `u` the zero vector |
 
 When $\lvert\mathbf v\rvert$ is below `tiny` (the smallest positive normal number of the kind), `normalize` and
 `normalized` divide by $\lvert\mathbf v\rvert$ + `tiny` instead: the zero vector stays zero, it is not divided by zero.
 `normalize` is an elemental subroutine: `call p%normalize` normalizes a whole array.
+
+`normalized_checked` reports the degenerate case instead: `min_norm` (a real of the kind of the vector) defaults to
+the threshold of `normalize`, and the zero vector it returns when `ok` is false makes an unchecked use obviously
+wrong rather than plausible. It is elemental too.
+
+## Accurate products
+
+| Call | Result |
+|---|---|
+| `crossproduct_accurate(a, b)` | $\mathbf a \times \mathbf b$, each component within 2 units in the last place |
+| `dotproduct_accurate(a, b)` | $\mathbf a \cdot \mathbf b$ as if computed in twice the precision, then rounded |
+
+`.cross.` rounds both products of a component, $a_y b_z - a_z b_y$, before subtracting them: when they nearly cancel
+(nearly parallel vectors, the normal of a sliver face) the result can lose every digit. `crossproduct_accurate`
+computes each component by Kahan's algorithm with a fused multiply-add, `dotproduct_accurate` by Dot2 (Ogita, Rump
+and Oishi). On nearly parallel vectors in double precision the accurate cross product stays within one unit of
+the exact result where `.cross.` can be wrong by $10^{11}$. They cost two to three times the operators, and the
+operators are unchanged: use them where the cancellation matters.
+
 
 ## Angle
 
@@ -77,6 +97,36 @@ $\hat n$ is `face_normal3(pt1=, pt2=, pt3=, norm='y')`: the signed distance is p
 of the points changes its sign. The line through `pt1` and `pt2` is infinite, as is the plane through the three points.
 The points must define the line or the plane: two coincident points give a distance from the line of NaN; three
 collinear points give a zero normal, and every distance from their "plane" comes out 0, silently.
+
+## Measures
+
+| Call | Result |
+|---|---|
+| `triangle_area(pt1, pt2, pt3)` | $\tfrac12 \lvert(\mathbf p_2 - \mathbf p_1) \times (\mathbf p_3 - \mathbf p_1)\rvert$ |
+| `tetrahedron_volume(pt1, pt2, pt3, pt4)` | $\tfrac16 (\mathbf p_2 - \mathbf p_1) \cdot \big((\mathbf p_3 - \mathbf p_1) \times (\mathbf p_4 - \mathbf p_1)\big)$, signed |
+| `polygon_vector_area(pts)` | $\tfrac12 \sum_i (\mathbf p_i - \mathbf p_1) \times (\mathbf p_{i+1} - \mathbf p_1)$ |
+
+The volume is positive when `pt4` lies on the side where $(\mathbf p_2 - \mathbf p_1) \times (\mathbf p_3 - \mathbf p_1)$
+points. The vector area of a polygon (its vertices in order, an array of vectors) has the area of a planar polygon as
+its length and its normal as its direction; it does not depend on the origin, and the outward vector areas of the faces
+of a closed cell sum to zero, the discrete geometric conservation law of finite volumes. With nvfortran pass a named
+array: an array constructor of vectors as the argument crashes nvfortran 26.9.
+
+## Point location
+
+| Call | Result |
+|---|---|
+| `barycentric_triangle(p, pt1, pt2, pt3)` | the 3 barycentric coordinates of `p` (of its projection onto the plane) |
+| `barycentric_tetrahedron(p, pt1, pt2, pt3, pt4)` | the 4 barycentric coordinates of `p` |
+| `call closest_point_triangle(p, a, b, c, q, feature)` | `q`, the point of the triangle closest to `p`, and the feature it lies on |
+
+The coordinates sum to 1 and are all in $[0, 1]$ inside the triangle or the tetrahedron: the point-in-cell test of a
+donor search. `feature` is 1, 2, 3 for the vertices `a`, `b`, `c`, 4, 5, 6 for the edges `ab`, `bc`, `ca`, 7 for the
+face. For the signed distance of a point from a closed triangulated surface, take the closest point over the triangles
+and sign $\lvert\mathbf p - \mathbf q\rvert$ with the angle-weighted pseudo-normal of that feature: the face normal on
+the face, the weighted average of the normals of the faces sharing the edge or the vertex otherwise (VecFor has no mesh,
+so the caller assembles them). The barycentric coordinates in a triangle use Kahan's algorithm for their 2x2
+determinants, and so do the region tests of the closest point, which cancel badly for skinny triangles.
 
 ## Collinear and concyclic points
 

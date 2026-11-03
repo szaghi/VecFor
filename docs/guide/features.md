@@ -28,6 +28,10 @@ it.
 | Distance from a plane | `distance_to_plane`, `distance_vectorial_to_plane` | [5](/manual/tutorial/05-point#inside-or-outside) | [plane](/manual/cookbook#the-distance-of-a-point-from-a-plane) | [Distances](./geometry#distances-and-projections) |
 | Projection onto a plane | `projection_onto_plane` | [5](/manual/tutorial/05-point#the-foot-of-a-point) | [plane](/manual/cookbook#the-distance-of-a-point-from-a-plane) | [Distances](./geometry#distances-and-projections) |
 | Collinear points | `is_collinear`, `tolerance` | [5](/manual/tutorial/05-point#collinear-points-and-tolerances) | [collinear](/manual/cookbook#are-three-points-on-one-line) | [Predicates](./geometry#collinear-and-concyclic-points) |
+| Checked normalization | `normalized_checked`, `ok`, `min_norm` | | | [Lengths](./geometry#lengths-and-directions) |
+| Accurate products | `crossproduct_accurate`, `dotproduct_accurate` | | | [Accurate products](./geometry#accurate-products) |
+| Cell measures | `triangle_area`, `tetrahedron_volume`, `polygon_vector_area` | | | [Measures](./geometry#measures) |
+| Point location | `barycentric_triangle`, `barycentric_tetrahedron`, `closest_point_triangle` | | | [Point location](./geometry#point-location) |
 | Concyclic points | `is_concyclic`, `tolerance` | [5](/manual/tutorial/05-point#concyclic-points) | [concyclic](/manual/cookbook#are-four-points-on-one-circle) | [Predicates](./geometry#collinear-and-concyclic-points) |
 | Rotation | `rotate(axis=, angle=)`, `rotate(matrix=)`, `rotation_matrix` | [7](/manual/tutorial/07-transforms) | [axis](/manual/cookbook#a-rotation-about-an-axis), [matrix](/manual/cookbook#a-rotation-matrix-applied-many-times) | [Rotations](./transforms#rotations) |
 | Mirror | `mirror(normal=)`, `mirror(matrix=)`, `mirror_matrix` | [7](/manual/tutorial/07-transforms#a-mirror) | [plane](/manual/cookbook#the-mirror-image-across-a-plane), [matrix](/manual/cookbook#a-mirror-matrix-applied-many-times) | [Mirrors](./transforms#mirrors) |

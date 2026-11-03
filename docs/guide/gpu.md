@@ -54,6 +54,24 @@ suffix was `_oac`: code written against it renames `_oac` to `_dev`, nothing els
 | `call mirror_by_matrix_dev(a, matrix)` | `call a%mirror(matrix=matrix)` | subroutine, `a` in place |
 | `d = angle_dev(a, b)` | `d = a%angle(b)` | function |
 
+### Accurate products, measures, point location
+
+| Device routine | Same as | Kind |
+|---|---|---|
+| `call normalized_checked_dev(a, c, ok [, min_norm])` | `call normalized_checked(a, c, ok [, min_norm])` | subroutine |
+| `call crossproduct_accurate_dev(a, b, c)` | `c = crossproduct_accurate(a, b)` | subroutine |
+| `d = dotproduct_accurate_dev(a, b)` | `d = dotproduct_accurate(a, b)` | function |
+| `d = triangle_area_dev(pt1, pt2, pt3)` | `d = triangle_area(pt1, pt2, pt3)` | function |
+| `d = tetrahedron_volume_dev(pt1, pt2, pt3, pt4)` | `d = tetrahedron_volume(pt1, pt2, pt3, pt4)` | function |
+| `call polygon_vector_area_dev(n, pts, c)` | `c = polygon_vector_area(pts)` | subroutine, `pts(n)` |
+| `call barycentric_triangle_dev(p, pt1, pt2, pt3, l)` | `l = barycentric_triangle(p, pt1, pt2, pt3)` | subroutine, `l(3)` |
+| `call barycentric_tetrahedron_dev(p, pt1, pt2, pt3, pt4, l)` | `l = barycentric_tetrahedron(p, pt1, pt2, pt3, pt4)` | subroutine, `l(4)` |
+| `call closest_point_triangle_dev(p, a, b, c, q, feature)` | `call closest_point_triangle(p, a, b, c, q, feature)` | subroutine |
+
+The accurate products give the same bits on the GPU as on the host: their fused multiply-adds are explicit (with
+nvfortran, C `fma` through a device-callable interface, since its `ieee_fma` is not), so the compiler has no
+contraction to choose.
+
 The optional arguments are those of the host: `norm` (`character(1)`, present for a unit normal, whatever its value)
 and `tolerance` (a real of the kind of the vector, 0 when absent); optional arguments work in device code with
 nvfortran 26.1 and 26.9.

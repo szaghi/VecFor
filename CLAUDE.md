@@ -25,7 +25,7 @@ fobis rule --ex clean                    # delete docs build, exe/, *.gcov
 ### fpm Build
 ```bash
 fpm build --profile release              # library from src/lib only; PENF cloned by fpm into build/dependencies
-fpm test                                 # quad_precision, device_loop and device_geometry tests
+fpm test                                 # quad_precision, device_loop, device_geometry, accurate_products
 fpm install --prefix <dir>               # libVecFor.a + VecFor and PENF .mod files
 ```
 
@@ -50,7 +50,7 @@ fobis doctests --mode tests-gnu-debug    # Build and generate test executables i
 fobis build --mode tests-nvf-acc --varset local_nvf   # OpenACC device test (local only, not in CI)
 ```
 
-Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.F90` and `vecfor_test_device_geometry.F90` (`_dev` API; under `_OPENACC` they also fail if any iteration ran on the host), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
+Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.F90` and `vecfor_test_device_geometry.F90` (`_dev` API; under `_OPENACC` they also fail if any iteration ran on the host), `vecfor_test_accurate_products.f90` (accurate cross/dot: exact crafted cases on every compiler, quad references where available), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
 
 ### CI and the FoBiS scaffold
 `fobis scaffold status` must report every managed file `OK`. Scaffold-managed (`verbatim`) files such as `.github/workflows/ci.yml`, `docs.yml`, `install.yml` and the scripts in `scripts/` must stay byte-identical to the FoBiS templates: never add project jobs to them, `fobis scaffold sync` would drop them. Project-specific CI goes into project-owned workflows (the StringiFor convention): `.github/workflows/docs-examples.yml` rebuilds `docs/examples/` and diffs the committed snippets/figures; `.github/workflows/fpm.yml` runs `fpm test` (fpm 0.13.0, gfortran-14), the only CI job that runs the hand-written tests of `src/tests`, since the scaffold's `ci.yml` runs only `fobis doctests` for the coverage. CI runs on gfortran-14 (default of `.github/actions/setup-build-env`).
@@ -159,6 +159,20 @@ scalar results (`real`, `logical`) are function results:
 | `a%rotate(...)`    | `rotate_by_axis_angle`, `rotate_by_matrix` | `call rotate_by_axis_angle_<KIND>_dev(a, axis, angle)`, `call rotate_by_matrix_<KIND>_dev(a, matrix)` (inout) |
 | `a%mirror(...)`    | `mirror_by_normal`, `mirror_by_matrix` | `call mirror_by_normal_<KIND>_dev(a, normal)`, `call mirror_by_matrix_<KIND>_dev(a, matrix)` (inout) |
 | `a%angle(b)`       | `angle_<KIND>`            | `d = angle_<KIND>_dev(a, b)`                              |
+| checked normalize  | `normalized_checked_<KIND>` | `call normalized_checked_<KIND>_dev(a, c, ok[, min_norm])` |
+| accurate products  | `crossproduct_accurate_<KIND>`, `dotproduct_accurate_<KIND>` | `call crossproduct_accurate_<KIND>_dev(a, b, c)`, `d = dotproduct_accurate_<KIND>_dev(a, b)` |
+| measures           | `triangle_area`, `tetrahedron_volume`, `polygon_vector_area` (`_<KIND>`) | `d = triangle_area_<KIND>_dev(p1, p2, p3)`, `d = tetrahedron_volume_<KIND>_dev(p1, p2, p3, p4)`, `call polygon_vector_area_<KIND>_dev(n, pts, c)` |
+| point location     | `barycentric_triangle/tetrahedron`, `closest_point_triangle` (`_<KIND>`) | `call barycentric_triangle_<KIND>_dev(p, p1, p2, p3, l)`, `call barycentric_tetrahedron_<KIND>_dev(p, p1, p2, p3, p4, l)`, `call closest_point_triangle_<KIND>_dev(p, a, b, c, q, feature)` |
+
+The last four rows (2026-11-03) are new free procedures, not TBPs: host `<name>_RPP` (elemental where possible) and
+device `<name>_RPP_dev`, both built from the `_dev` building blocks. The accurate products use the private
+`fma_RPP` (nvfortran: `bind(c)` to C `fma`/`fmaf` with `!$acc routine seq`, because its `ieee_fma` is not
+device-callable; other compilers: `ieee_fma`) and `dop_RPP` (Kahan's `a*b - c*d`, also used by the barycentric
+determinants and the closest-point region tests). Their tests check correctness against independent references
+(exact crafted cases, quad references, existing procedures, reconstruction identities, a brute-force closest point),
+because host and `_dev` forms share code: device == host proves portability, not correctness. nvfortran 26.9 crashes
+on an array constructor of `vector` passed as an actual argument (`polygon_vector_area([p1, p2, p3])`): pass a named
+array.
 
 Optional dummies (`norm`, `tolerance`) keep the host signatures: optional `real`,
 `character(*)`, `character(1)` and `logical` dummies with `present()` were probed in
