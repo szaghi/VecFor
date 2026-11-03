@@ -29,7 +29,7 @@ that you can compile and run; every output shown is the real output of that prog
 | [8. Many vectors at once](./tutorial/08-arrays) | elemental operators and functions on arrays, comparisons by length |
 | [9. Precision](./tutorial/09-precision) | `vector_R4P`, `vector_R8P`, `vector_R16P`, true quadruple precision |
 | [10. Printing and files](./tutorial/10-io) | `printf`, `save_into_file`, `load_from_file`, `iolen`, I/O errors |
-| [11. On the GPU](./tutorial/11-gpu) | the device-callable `_oac` routines inside an OpenACC loop |
+| [11. On the GPU](./tutorial/11-gpu) | the device-callable `_dev` routines inside an OpenACC loop |
 
 ```mermaid
 flowchart LR

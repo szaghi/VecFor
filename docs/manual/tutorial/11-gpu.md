@@ -21,17 +21,17 @@ that take and return `type(vector)` arguments:
 
 | Operation | Operator | Device routine |
 |---|---|---|
-| sum | `c = a + b` | `call vector_sum_vector_oac(a, b, c)` |
-| difference | `c = a - b` | `call vector_sub_vector_oac(a, b, c)` |
-| number times vector | `c = s * a` | `call R8P_mul_vector_oac(s, a, c)` |
-| vector times number | `c = a * s` | `call vector_mul_R8P_oac(a, s, c)` |
-| cross product | `c = a .cross. b` | `call crossproduct_oac(a, b, c)` |
-| dot product | `d = a .dot. b` | `d = dotproduct_oac(a, b)` |
-| assignment | `a = b` | `call assign_vector_oac(a, b)` |
+| sum | `c = a + b` | `call vector_sum_vector_dev(a, b, c)` |
+| difference | `c = a - b` | `call vector_sub_vector_dev(a, b, c)` |
+| number times vector | `c = s * a` | `call R8P_mul_vector_dev(s, a, c)` |
+| vector times number | `c = a * s` | `call vector_mul_R8P_dev(a, s, c)` |
+| cross product | `c = a .cross. b` | `call crossproduct_dev(a, b, c)` |
+| dot product | `d = a .dot. b` | `d = dotproduct_dev(a, b)` |
+| assignment | `a = b` | `call assign_vector_dev(a, b)` |
 
 The result of a vector operation is the last argument of a subroutine; only the dot product, a number, is a function.
 The scalar of the products is `real(R8P)` whatever the kind of the vector. Each kind has its own set:
-`crossproduct_R4P_oac`, `dotproduct_R16P_oac`, ...; the names without a suffix are those of the default `vector`.
+`crossproduct_R4P_dev`, `dotproduct_R16P_dev`, ...; the names without a suffix are those of the default `vector`.
 
 ## Writing a kernel
 
@@ -42,12 +42,12 @@ method are zero; in general, expect differences of the order of the last digit, 
 order.
 
 The OpenACC API started with what its first user, a distance kernel, needed, and now covers the methods too:
-`distance_to_plane_oac` does what this loop body does, `normL2_oac`, `face_normal3_oac`, `rotate_by_axis_angle_oac`
+`distance_to_plane_dev` does what this loop body does, `normL2_dev`, `face_normal3_dev`, `rotate_by_axis_angle_dev`
 and the others mirror the methods; the other operators and the comparisons are not device-callable (see
 [Device-callable API](/guide/gpu)).
 
 ::: tip What you learned
-The seven `_oac` routines, their calling convention, an OpenACC loop that uses them; why the operators cannot run on
+The seven `_dev` routines, their calling convention, an OpenACC loop that uses them; why the operators cannot run on
 the device. Reference: [Device-callable API](/guide/gpu).
 :::
 

@@ -2,8 +2,8 @@
 program device_routines
 !< Cookbook: the seven device-callable routines, inside an OpenACC loop; the same results as the operators.
 use penf, only : R8P
-use vecfor, only : assign_vector_oac, crossproduct_oac, dotproduct_oac, ex, ey, ez, R8P_mul_vector_oac, vector, &
-                   vector_mul_R8P_oac, vector_sub_vector_oac, vector_sum_vector_oac
+use vecfor, only : assign_vector_dev, crossproduct_dev, dotproduct_dev, ex, ey, ez, R8P_mul_vector_dev, vector, &
+                   vector_mul_R8P_dev, vector_sub_vector_dev, vector_sum_vector_dev
 implicit none
 integer, parameter :: n = 1000
 type(vector)       :: a(n), b(n), c(n), d(n), e(n), f(n), g(n), h(n)
@@ -16,13 +16,13 @@ do i = 1, n
 enddo
 !$acc parallel loop copyin(a, b) copyout(c, d, e, f, g, h, dots)
 do i = 1, n
-   call vector_sum_vector_oac(a(i), b(i), c(i))       ! c = a + b
-   call vector_sub_vector_oac(a(i), b(i), d(i))       ! d = a - b
-   call crossproduct_oac(a(i), b(i), e(i))            ! e = a .cross. b
-   call R8P_mul_vector_oac(2._R8P, a(i), f(i))        ! f = 2 * a
-   call vector_mul_R8P_oac(a(i), 0.5_R8P, g(i))       ! g = a * 0.5
-   call assign_vector_oac(h(i), b(i))                 ! h = b
-   dots(i) = dotproduct_oac(a(i), b(i))               ! a .dot. b
+   call vector_sum_vector_dev(a(i), b(i), c(i))       ! c = a + b
+   call vector_sub_vector_dev(a(i), b(i), d(i))       ! d = a - b
+   call crossproduct_dev(a(i), b(i), e(i))            ! e = a .cross. b
+   call R8P_mul_vector_dev(2._R8P, a(i), f(i))        ! f = 2 * a
+   call vector_mul_R8P_dev(a(i), 0.5_R8P, g(i))       ! g = a * 0.5
+   call assign_vector_dev(h(i), b(i))                 ! h = b
+   dots(i) = dotproduct_dev(a(i), b(i))               ! a .dot. b
 enddo
 print '(A,L1)', 'a + b       ', all(c == a + b)
 print '(A,L1)', 'a - b       ', all(d == a - b)

@@ -41,7 +41,7 @@ it.
 | Files | `save_into_file`, `load_from_file`, `fmt`, `pos` | [10](/manual/tutorial/10-io#saving-and-loading) | [binary](/manual/cookbook#a-binary-file-of-vectors), [text](/manual/cookbook#a-text-file-of-vectors), [stream](/manual/cookbook#the-n-th-vector-of-a-stream-file) | [Files](./io#save-into-file-and-load-from-file) |
 | Record length | `iolen` | [10](/manual/tutorial/10-io#stream-files-and-positions) | [direct access](/manual/cookbook#a-direct-access-file-of-vectors) | [iolen](./io#iolen) |
 | I/O errors | `iostat`, `iomsg` | [10](/manual/tutorial/10-io#errors) | [errors](/manual/cookbook#an-i-o-error-caught) | [Errors](./io#errors) |
-| OpenACC device routines | `*_oac` | [11](/manual/tutorial/11-gpu) | [device](/manual/cookbook#the-device-callable-routines-in-an-openacc-loop) | [Device-callable API](./gpu) |
+| OpenACC device routines | `*_dev` | [11](/manual/tutorial/11-gpu) | [device](/manual/cookbook#the-device-callable-routines-in-an-openacc-loop) | [Device-callable API](./gpu) |
 
 Not available: vectors of other dimensions than three; operations between vectors of two different kinds; `sum`,
 `dot_product` or `matmul` of the intrinsics on vectors; a tolerance in the comparisons (see
