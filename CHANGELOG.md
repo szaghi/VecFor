@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.6.0] — 2026-11-03
+### Added
+- **build**: Add fpm build path and keep vecfor scaffold-compliant
+
+
+### Fixed
+- **build**: Enable quad precision by passing PENF_R16P
+
+- **docs**: Document quadruple precision as the default build
+
+
 ## [1.5.2] — 2026-10-09
 ### Documentation
 - Rebuild README and VitePress site with tutorial, cookbook, figures
