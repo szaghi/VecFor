@@ -41,6 +41,7 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define rotation_matrix_RPP rotation_matrix
 #define sq_norm_RPP sq_norm
 
+#define angle_RPP_oac angle_oac
 #define assign_vector_RPP_oac assign_vector_oac
 #define crossproduct_RPP_oac crossproduct_oac
 #define distance_to_line_RPP_oac distance_to_line_oac

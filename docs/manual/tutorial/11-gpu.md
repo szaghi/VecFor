@@ -41,9 +41,9 @@ and its dot product with the normal. The temporaries are `private` to each itera
 method are zero; in general, expect differences of the order of the last digit, since the two compute in a different
 order.
 
-The OpenACC API covers what its first user, a distance kernel, needed: the other operators and methods, the
-comparisons are not device-callable; the matrix product and the rotation and mirror matrices are, as
-`matrixproduct_oac`, `rotation_matrix_oac` and `mirror_matrix_oac` (see
+The OpenACC API started with what its first user, a distance kernel, needed, and now covers the methods too:
+`distance_to_plane_oac` does what this loop body does, `normL2_oac`, `face_normal3_oac`, `rotate_by_axis_angle_oac`
+and the others mirror the methods; the other operators and the comparisons are not device-callable (see
 [Device-callable API](/guide/gpu)).
 
 ::: tip What you learned

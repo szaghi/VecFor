@@ -14,6 +14,8 @@ use penf, only : R8P, I4P
 use openacc, only : acc_on_device, acc_device_not_host
 #endif
 use vecfor, only : vector_R8P,                          &
+                   angle_R8P,                           &
+                   angle_R8P_oac,                       &
                    assign_vector_R8P_oac,               &
                    distance_to_line_R8P,                &
                    distance_to_line_R8P_oac,            &
@@ -93,6 +95,9 @@ type(vector_R8P)        :: rax_dev(n), rax_ref(n), rax_oac(n), rmx_dev(n), rmx_r
 type(vector_R8P)        :: mnr_dev(n), mnr_ref(n), mnr_oac(n), mmx_dev(n), mmx_ref(n), mmx_oac(n)
 real(R8P)               :: trf_bnd(3,n), trm_bnd(3,n)
 
+! angle (p0(1) is the zero vector: atan2(0, 0))
+real(R8P)               :: agl_dev(n), agl_ref(n), agl_oac(n), agl_bnd(n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -119,7 +124,7 @@ enddo
 !$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
-!$acc         rmx_dev, mnr_dev, mmx_dev)
+!$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -155,6 +160,7 @@ do i = 1, n
    m = mirm(:,:,i)
    call mirror_by_matrix_R8P_oac(t1, m)
    call assign_vector_R8P_oac(mmx_dev(i), t1)
+   agl_dev(i) = angle_R8P_oac(p0(i), p1(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -217,6 +223,8 @@ do i = 1, n
    call mmx_ref(i)%mirror(matrix=mirm(:,:,i))
    mmx_oac(i) = p0(i)
    call mirror_by_matrix_R8P_oac(mmx_oac(i), mirm(:,:,i))
+   agl_ref(i) = angle_R8P(p0(i), p1(i))
+   agl_oac(i) = angle_R8P_oac(p0(i), p1(i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
@@ -290,6 +298,11 @@ call check_vec_bound('rotate_by_axis_angle_oac', rax_dev, rax_ref, rax_oac, trf_
 call check_vec_bound('rotate_by_matrix_oac', rmx_dev, rmx_ref, rmx_oac, trm_bnd)
 call check_vec_bound('mirror_by_normal_oac', mnr_dev, mnr_ref, mnr_oac, trf_bnd)
 call check_vec_bound('mirror_by_matrix_oac', mmx_dev, mmx_ref, mmx_oac, trm_bnd)
+! angle: atan2(|v1 x v2|, v1.v2) of unit vectors; FMA contraction moves sin and cos by a few eps, which moves the
+! angle by about as much (d(atan2) = (c*ds - s*dc)/(s**2 + c**2)), and the device atan2 can differ in the last bit:
+! absolute bound 16*eps (the angle is at most pi).
+agl_bnd = 16 * epsilon(1._R8P)
+call check_real_bound('angle_oac', agl_dev, agl_ref, agl_oac, agl_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then

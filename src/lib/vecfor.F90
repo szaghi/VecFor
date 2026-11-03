@@ -12,6 +12,7 @@ module vecfor
 !< Therefore this module provides a far-complete algebra based on Vector derived type.
 
 use vecfor_RPP, only : angle,                       &
+                       angle_oac,                   &
                        assign_vector_oac,           &
                        crossproduct_oac,            &
                        distance_to_line,            &
@@ -60,6 +61,7 @@ use vecfor_RPP, only : angle,                       &
                        vector_sum_vector_oac
 
 use vecfor_R4P, only : angle_R4P,                       &
+                       angle_R4P_oac,                   &
                        assign_vector_R4P_oac,           &
                        crossproduct_R4P_oac,            &
                        distance_to_line_R4P,            &
@@ -108,6 +110,7 @@ use vecfor_R4P, only : angle_R4P,                       &
                        vector_sum_vector_R4P_oac
 
 use vecfor_R8P, only : angle_R8P,                       &
+                       angle_R8P_oac,                   &
                        assign_vector_R8P_oac,           &
                        crossproduct_R8P_oac,            &
                        distance_to_line_R8P,            &
@@ -156,6 +159,7 @@ use vecfor_R8P, only : angle_R8P,                       &
                        vector_sum_vector_R8P_oac
 
 use vecfor_R16P, only : angle_R16P,                       &
+                        angle_R16P_oac,                   &
                         assign_vector_R16P_oac,           &
                         crossproduct_R16P_oac,            &
                         distance_to_line_R16P,            &
@@ -219,6 +223,7 @@ public :: projection_onto_plane
 public :: rotation_matrix
 public :: sq_norm
 public :: ex, ey, ez, vector
+public :: angle_oac
 public :: assign_vector_oac
 public :: crossproduct_oac
 public :: distance_to_line_oac
@@ -243,6 +248,7 @@ public :: R8P_mul_vector_oac
 public :: rotate_by_axis_angle_oac
 public :: rotate_by_matrix_oac
 public :: rotation_matrix_oac
+public :: angle_R8P_oac
 public :: distance_to_line_R8P_oac
 public :: distance_to_plane_R8P_oac
 public :: distance_vectorial_to_plane_R8P_oac
@@ -282,6 +288,7 @@ public :: projection_onto_plane_R4P
 public :: rotation_matrix_R4P
 public :: sq_norm_R4P
 public :: ex_R4P, ey_R4P, ez_R4P, vector_R4P
+public :: angle_R4P_oac
 public :: assign_vector_R4P_oac
 public :: crossproduct_R4P_oac
 public :: distance_to_line_R4P_oac
@@ -354,6 +361,7 @@ public :: projection_onto_plane_R16P
 public :: rotation_matrix_R16P
 public :: sq_norm_R16P
 public :: ex_R16P, ey_R16P, ez_R16P, vector_R16P
+public :: angle_R16P_oac
 public :: assign_vector_R16P_oac
 public :: crossproduct_R16P_oac
 public :: distance_to_line_R16P_oac

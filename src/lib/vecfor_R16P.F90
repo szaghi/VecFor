@@ -29,6 +29,7 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define rotation_matrix_RPP rotation_matrix_R16P
 #define sq_norm_RPP sq_norm_R16P
 
+#define angle_RPP_oac angle_R16P_oac
 #define assign_vector_RPP_oac assign_vector_R16P_oac
 #define crossproduct_RPP_oac crossproduct_R16P_oac
 #define distance_to_line_RPP_oac distance_to_line_R16P_oac

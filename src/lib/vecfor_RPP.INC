@@ -19,6 +19,7 @@ public :: normL2_RPP
 public :: projection_onto_plane_RPP
 public :: rotation_matrix_RPP
 public :: sq_norm_RPP
+public :: angle_RPP_oac
 public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: distance_to_line_RPP_oac
@@ -885,6 +886,28 @@ contains
    a%y = t%y
    a%z = t%z
    endsubroutine mirror_by_matrix_RPP_oac
+
+   pure function angle_RPP_oac(a, b) result(angle_)
+   !$acc routine seq
+   !< Device-callable angle (radians) between `a` and `b`: [[angle_RPP]] without its polymorphic array constructor
+   !< (`[self%normalized(), other%normalized()]`, a host-only runtime call on the device): both versors by
+   !< normalized_oac, then `atan2(normL2(v1.cross.v2), v1.dot.v2)` as on the host.
+   type(vector_RPP), intent(in) :: a         !< First vector.
+   type(vector_RPP), intent(in) :: b         !< Second vector.
+   real(RPP)                    :: angle_    !< Angle between the vectors, in radians.
+   real(RPP)                    :: angle_cos !< Angle computed by means of cos.
+   real(RPP)                    :: angle_sin !< Angle computed by means of sin.
+   type(vector_RPP)             :: v1        !< `a` normalized.
+   type(vector_RPP)             :: v2        !< `b` normalized.
+   type(vector_RPP)             :: w         !< `v1 .cross. v2`.
+
+   call normalized_RPP_oac(a, v1)
+   call normalized_RPP_oac(b, v2)
+   angle_cos = dotproduct_RPP_oac(v1, v2)
+   call crossproduct_RPP_oac(v1, v2, w)
+   angle_sin = normL2_RPP_oac(w)
+   angle_ = atan2(angle_sin, angle_cos)
+   endfunction angle_RPP_oac
 
    ! public methods
    ! non TBP

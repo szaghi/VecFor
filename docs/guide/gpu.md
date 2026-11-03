@@ -4,10 +4,14 @@ title: Device-callable API
 
 # Device-callable API
 
-A small set of plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They
-mirror seven operators of the vector, the matrix product, the rotation matrix and the mirror matrix; everything else of VecFor runs on the host only.
+Plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They mirror seven
+operators of the vector, the matrices and the matrix product, and the geometric methods (norms, components, distances,
+face normals, predicates, rotations, mirrors, angle); the other operators, the comparisons and the input/output run on
+the host only.
 
 ## The routines
+
+### Operators and matrices
 
 | Device routine | Same as | Kind |
 |---|---|---|
@@ -22,7 +26,35 @@ mirror seven operators of the vector, the matrix product, the rotation matrix an
 | `call mirror_matrix_oac(normal, matrix)` | `matrix = mirror_matrix(normal)` | subroutine |
 | `call matrixproduct_oac(matrix, a, c)` | `c = matrix .matrix. a` | subroutine |
 
-`a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
+### Geometry
+
+| Device routine | Same as | Kind |
+|---|---|---|
+| `d = normL2_oac(a)` | `d = a%normL2()` | function |
+| `d = sq_norm_oac(a)` | `d = a%sq_norm()` | function |
+| `call normalized_oac(a, c)` | `c = a%normalized()` | subroutine |
+| `call normalize_oac(a)` | `call a%normalize()` | subroutine, `a` in place |
+| `call parallel_oac(a, b, c)` | `c = a .paral. b` | subroutine |
+| `call orthogonal_oac(a, b, c)` | `c = a .ortho. b` | subroutine |
+| `d = distance_to_line_oac(a, pt1, pt2)` | `d = a%distance_to_line(pt1, pt2)` | function |
+| `d = distance_to_plane_oac(a, pt1, pt2, pt3)` | `d = a%distance_to_plane(pt1, pt2, pt3)` | function |
+| `call distance_vectorial_to_plane_oac(a, pt1, pt2, pt3, c)` | `c = a%distance_vectorial_to_plane(pt1, pt2, pt3)` | subroutine |
+| `call projection_onto_plane_oac(a, pt1, pt2, pt3, c)` | `c = a%projection_onto_plane(pt1, pt2, pt3)` | subroutine |
+| `call face_normal3_oac(pt1, pt2, pt3, c [, norm])` | `c = face_normal3(pt1, pt2, pt3 [, norm])` | subroutine |
+| `call face_normal4_oac(pt1, pt2, pt3, pt4, c [, norm])` | `c = face_normal4(pt1, pt2, pt3, pt4 [, norm])` | subroutine |
+| `l = is_collinear_oac(a, pt1, pt2 [, tolerance])` | `l = a%is_collinear(pt1, pt2 [, tolerance])` | function |
+| `l = is_concyclic_oac(a, pt1, pt2, pt3 [, tolerance])` | `l = a%is_concyclic(pt1, pt2, pt3 [, tolerance])` | function |
+| `call rotate_by_axis_angle_oac(a, axis, angle)` | `call a%rotate(axis=axis, angle=angle)` | subroutine, `a` in place |
+| `call rotate_by_matrix_oac(a, matrix)` | `call a%rotate(matrix=matrix)` | subroutine, `a` in place |
+| `call mirror_by_normal_oac(a, normal)` | `call a%mirror(normal=normal)` | subroutine, `a` in place |
+| `call mirror_by_matrix_oac(a, matrix)` | `call a%mirror(matrix=matrix)` | subroutine, `a` in place |
+| `d = angle_oac(a, b)` | `d = a%angle(b)` | function |
+
+The optional arguments are those of the host: `norm` (`character(1)`, present for a unit normal, whatever its value)
+and `tolerance` (a real of the kind of the vector, 0 when absent); optional arguments work in device code with
+nvfortran 26.1 and 26.9.
+
+`a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal`, `pt1` to `pt4` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
 of the kind of the vector, are `intent(out)` (`matrix` is `intent(in)` in `matrixproduct_oac`). `s` is `real(R8P)` for
 every kind of vector. `dotproduct_oac` returns a real of the kind of the vectors. Each kind has its set, with the
 suffix of the kind before `_oac`: `vector_sum_vector_R4P_oac`, `crossproduct_R16P_oac`, ...; the names without a kind
@@ -34,7 +66,11 @@ compiler may fuse a product and a sum into one instruction (FMA), which can chan
 product. The rotation matrix differs from the host one in the last bit on a GPU also because the device `sin` and
 `cos` do (at most one unit in the last place of 1.0, measured with nvfortran 26.1 and 26.9). `.matrix.` calls
 `matmul`, whose order of summation is the compiler's: with gfortran `matrixproduct_oac` can differ from it in the last
-bit; with nvfortran they agree.
+bit; with nvfortran they agree. The geometric routines are built from products and sums too: with nvfortran, which
+contracts them into FMAs differently in different places, on the host as on the GPU, expect differences from the
+methods in the last bits (for a unit normal, amplified by the condition of the cross product of the face), and a
+different answer from `is_collinear_oac` or `is_concyclic_oac` without a tolerance for points exactly on the line or
+circle. With gfortran the routines reproduce the methods exactly on the host.
 
 ## Why not the operators
 
@@ -74,11 +110,9 @@ are comments and the same source runs on the host: the [tutorial](/manual/tutori
 
 ## Outside the API
 
-Not device-callable: the other operators (`/`, numbers of other kinds, `.paral.`, `.ortho.`, the comparisons), every
-method (`normL2`, `normalize`, `angle`, `face_normal3`, the distances, the projections, the predicates, `rotate`,
-`mirror`). One of them needs more than a new wrapper:
-
-- `angle` builds an array of two polymorphic vectors, which lowers to a host-only runtime call.
+Not device-callable: the other operators (`*` and `/` between vectors, `/`, the numbers of other kinds than `R8P`, the
+unary `+` and `-`), the comparisons, the assignment of a number to a vector, and the input/output (`printf`,
+`save_into_file`, `load_from_file`, `iolen`), which is host-only by nature.
 
 The API grows one routine at a time, when a device code needs it, following the convention of the existing ones (see
 `CLAUDE.md` in the repository).
