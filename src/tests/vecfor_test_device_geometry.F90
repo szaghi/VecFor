@@ -21,6 +21,8 @@ use vecfor, only : vector_R8P,                          &
                    barycentric_tetrahedron_R8P_dev,     &
                    barycentric_triangle_R8P,            &
                    barycentric_triangle_R8P_dev,        &
+                   closest_point_triangle_R8P,          &
+                   closest_point_triangle_R8P_dev,      &
                    crossproduct_accurate_R8P,           &
                    crossproduct_accurate_R8P_dev,       &
                    distance_to_line_R8P,                &
@@ -136,6 +138,14 @@ real(R8P)               :: btl_dev(3,n), btl_ref(3,n), btl_hst(3,n), btl_bnd(3,n
 real(R8P)               :: bql_dev(4,n), bql_ref(4,n), bql_hst(4,n), bql_bnd(4,n)
 type(vector_R8P)        :: rec, prj, nrm
 
+! closest_point_triangle: equilateral triangles in varying frames, points placed by barycentric weights in each
+! of the 7 Voronoi regions in turn (expected feature known), plus an offset along the normal
+type(vector_R8P)        :: ta(n), tb(n), tc(n), tp(n), e1, e2, e3, cq_dev(n), cq_ref(n), cq_hst(n)
+integer                 :: cf_dev(n), cf_ref(n), cf_hst(n), cfe(n), kk
+real(R8P)               :: wts(3,7), cq_bnd(3,n)
+real(R8P)               :: dmin, bq(3)
+integer                 :: jj
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -162,13 +172,25 @@ do i = 1, n
    polys(3,i) = p2(i)
    polys(4,i) = p3(i)
    p4(i) = p1(i) + (1._R8P + 0.01_R8P * real(i, R8P)) * vector_R8P(x=0.3_R8P, y=-0.7_R8P, z=1.1_R8P)
+   wts = reshape([1.4_R8P, -0.2_R8P, -0.2_R8P,  -0.2_R8P, 1.4_R8P, -0.2_R8P,  -0.2_R8P, -0.2_R8P, 1.4_R8P, &
+                  0.7_R8P, 0.5_R8P, -0.2_R8P,  -0.2_R8P, 0.7_R8P, 0.5_R8P,   0.5_R8P, -0.2_R8P, 0.7_R8P, &
+                  0.3_R8P, 0.3_R8P, 0.4_R8P], [3, 7])
+   e1 = normalized_R8P(p1(i))
+   e2 = normalized_R8P(p2(i)%orthogonal(p1(i)))
+   e3 = e1%crossproduct(e2)
+   ta(i) = p3(i)
+   tb(i) = p3(i) + e1
+   tc(i) = p3(i) + 0.5_R8P * e1 + (sqrt(3._R8P) / 2) * e2
+   kk = mod(i - 1, 7) + 1
+   cfe(i) = kk
+   tp(i) = wts(1,kk) * ta(i) + wts(2,kk) * tb(i) + wts(3,kk) * tc(i) + 0.3_R8P * sin(real(i, R8P)) * e3
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm, polys, p4) private(t1, m) &
+!$acc parallel loop copyin(p0, p1, p2, p3, q, c0, c1, c2, c3, ang, rotm, mirm, polys, p4, ta, tb, tc, tp) private(t1, m) &
 !$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev, dtl_dev, f3n_dev, f3a_dev, &
 !$acc         f4n_dev, f4a_dev, dtp_dev, dvp_dev, prj_dev, col_dev, colt_dev, ccl_dev, cclt_dev, rax_dev, &
 !$acc         rmx_dev, mnr_dev, mmx_dev, agl_dev, nck_dev, nc5_dev, okk_dev, ok5_dev, cxa_dev, dta_dev, &
-!$acc         tra_dev, tev_dev, pva_dev, btl_dev, bql_dev)
+!$acc         tra_dev, tev_dev, pva_dev, btl_dev, bql_dev, cq_dev, cf_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_dev(p0(i))
    sq_dev(i) = sq_norm_R8P_dev(p0(i))
@@ -214,6 +236,7 @@ do i = 1, n
    call polygon_vector_area_R8P_dev(4, polys(:,i), pva_dev(i))
    call barycentric_triangle_R8P_dev(p0(i), p1(i), p2(i), p3(i), btl_dev(:,i))
    call barycentric_tetrahedron_R8P_dev(p0(i), p1(i), p2(i), p3(i), p4(i), bql_dev(:,i))
+   call closest_point_triangle_R8P_dev(tp(i), ta(i), tb(i), tc(i), cq_dev(i), cf_dev(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -296,6 +319,8 @@ do i = 1, n
    call barycentric_triangle_R8P_dev(p0(i), p1(i), p2(i), p3(i), btl_hst(:,i))
    bql_ref(:,i) = barycentric_tetrahedron_R8P(p0(i), p1(i), p2(i), p3(i), p4(i))
    call barycentric_tetrahedron_R8P_dev(p0(i), p1(i), p2(i), p3(i), p4(i), bql_hst(:,i))
+   call closest_point_triangle_R8P(tp(i), ta(i), tb(i), tc(i), cq_ref(i), cf_ref(i))
+   call closest_point_triangle_R8P_dev(tp(i), ta(i), tb(i), tc(i), cq_hst(i), cf_hst(i))
 enddo
 
 call check_real('normL2_dev', nrm_dev, nrm_ref, nrm_hst)
@@ -458,6 +483,32 @@ do i = 1, n
    rec = btl_ref(1,i) * p1(i) + btl_ref(2,i) * p2(i) + btl_ref(3,i) * p3(i)
    if (normL2_R8P(rec - prj) > maxval(btl_bnd(:,i)) * (normL2_R8P(p0(i)) + normL2_R8P(p3(i) - p1(i)) + 1)) then
       print "(A,I0)", "barycentric_triangle does not rebuild the projection, i = ", i
+      all_passed = .false.
+   endif
+enddo
+! closest point: the feature must be the expected region, on the host and on the device; the point within a
+! rounding bound of the size of the triangle and of p.
+if (any(cf_ref /= cfe) .or. any(cf_hst /= cf_ref) .or. any(cf_dev /= cf_ref)) then
+   print "(A,I0,A,I0,A,I0)", "closest_point_triangle: wrong features, host ", count(cf_ref /= cfe), &
+         ", host _dev ", count(cf_hst /= cf_ref), ", device ", count(cf_dev /= cf_ref)
+   all_passed = .false.
+endif
+do i = 1, n
+   cq_bnd(:,i) = 16 * epsilon(1._R8P) * (normL2_R8P(tp(i)) + normL2_R8P(ta(i)) + 2._R8P)
+enddo
+call check_vec_bound('closest_point_triangle_dev', cq_dev, cq_ref, cq_hst, cq_bnd)
+! independent reference: q lies in the triangle and no sampled point of the triangle (41 x 41) is closer to p
+do i = 1, n
+   dmin = huge(1._R8P)
+   do kk = 0, 40
+      do jj = 0, 40 - kk
+         rec = (1 - (kk + jj) / 40._R8P) * ta(i) + (kk / 40._R8P) * tb(i) + (jj / 40._R8P) * tc(i)
+         dmin = min(dmin, normL2_R8P(tp(i) - rec))
+      enddo
+   enddo
+   bq = barycentric_triangle_R8P(cq_ref(i), ta(i), tb(i), tc(i))
+   if (normL2_R8P(tp(i) - cq_ref(i)) > dmin + 1e-12_R8P .or. any(bq < -1e-12_R8P) .or. any(bq > 1 + 1e-12_R8P)) then
+      print "(A,I0)", "closest_point_triangle: q is not the closest point of the triangle, i = ", i
       all_passed = .false.
    endif
 enddo

@@ -2,6 +2,7 @@ implicit none
 private
 public :: barycentric_tetrahedron_RPP
 public :: barycentric_triangle_RPP
+public :: closest_point_triangle_RPP
 public :: crossproduct_accurate_RPP
 public :: dotproduct_accurate_RPP
 public :: normalized_checked_RPP
@@ -31,6 +32,7 @@ public :: angle_RPP_dev
 public :: assign_vector_RPP_dev
 public :: barycentric_tetrahedron_RPP_dev
 public :: barycentric_triangle_RPP_dev
+public :: closest_point_triangle_RPP_dev
 public :: crossproduct_accurate_RPP_dev
 public :: crossproduct_RPP_dev
 public :: distance_to_line_RPP_dev
@@ -1102,8 +1104,126 @@ contains
    l(4) = tetrahedron_volume_RPP_dev(pt1, pt2, pt3, p) / v
    endsubroutine barycentric_tetrahedron_RPP_dev
 
+   pure subroutine closest_point_triangle_RPP_dev(p, a, b, c, q, feature)
+   !$acc routine seq
+   !< Device-callable [[closest_point_triangle_RPP]].
+   type(vector_RPP), intent(in)  :: p       !< Point.
+   type(vector_RPP), intent(in)  :: a       !< First vertex.
+   type(vector_RPP), intent(in)  :: b       !< Second vertex.
+   type(vector_RPP), intent(in)  :: c       !< Third vertex.
+   type(vector_RPP), intent(out) :: q       !< Closest point.
+   integer,          intent(out) :: feature !< Feature of the triangle where `q` lies.
+   type(vector_RPP)              :: ab, ac, ap, bp, cp !< Edges and offsets of `p`.
+   real(RPP)                     :: d1, d2, d3, d4, d5, d6 !< Dot products locating `p`.
+   real(RPP)                     :: va, vb, vc         !< Region signs, by Kahan's algorithm.
+   real(RPP)                     :: s, t               !< Parameters along an edge or on the face.
+
+   call vector_sub_vector_RPP_dev(b, a, ab)
+   call vector_sub_vector_RPP_dev(c, a, ac)
+   call vector_sub_vector_RPP_dev(p, a, ap)
+   d1 = dotproduct_RPP_dev(ab, ap)
+   d2 = dotproduct_RPP_dev(ac, ap)
+   if (d1 <= 0._RPP .and. d2 <= 0._RPP) then
+     q%x = a%x ; q%y = a%y ; q%z = a%z ; feature = 1 ; return
+   endif
+   call vector_sub_vector_RPP_dev(p, b, bp)
+   d3 = dotproduct_RPP_dev(ab, bp)
+   d4 = dotproduct_RPP_dev(ac, bp)
+   if (d3 >= 0._RPP .and. d4 <= d3) then
+     q%x = b%x ; q%y = b%y ; q%z = b%z ; feature = 2 ; return
+   endif
+   vc = dop_RPP(d1, d4, d3, d2)
+   if (vc <= 0._RPP .and. d1 >= 0._RPP .and. d3 <= 0._RPP) then
+     s = d1 / (d1 - d3)
+     q%x = a%x + s * ab%x ; q%y = a%y + s * ab%y ; q%z = a%z + s * ab%z ; feature = 4 ; return
+   endif
+   call vector_sub_vector_RPP_dev(p, c, cp)
+   d5 = dotproduct_RPP_dev(ab, cp)
+   d6 = dotproduct_RPP_dev(ac, cp)
+   if (d6 >= 0._RPP .and. d5 <= d6) then
+     q%x = c%x ; q%y = c%y ; q%z = c%z ; feature = 3 ; return
+   endif
+   vb = dop_RPP(d5, d2, d1, d6)
+   if (vb <= 0._RPP .and. d2 >= 0._RPP .and. d6 <= 0._RPP) then
+     t = d2 / (d2 - d6)
+     q%x = a%x + t * ac%x ; q%y = a%y + t * ac%y ; q%z = a%z + t * ac%z ; feature = 6 ; return
+   endif
+   va = dop_RPP(d3, d6, d5, d4)
+   if (va <= 0._RPP .and. (d4 - d3) >= 0._RPP .and. (d5 - d6) >= 0._RPP) then
+     t = (d4 - d3) / ((d4 - d3) + (d5 - d6))
+     q%x = b%x + t * (c%x - b%x) ; q%y = b%y + t * (c%y - b%y) ; q%z = b%z + t * (c%z - b%z) ; feature = 5 ; return
+   endif
+   s = vb / (va + vb + vc)
+   t = vc / (va + vb + vc)
+   q%x = a%x + s * ab%x + t * ac%x ; q%y = a%y + s * ab%y + t * ac%y ; q%z = a%z + s * ab%z + t * ac%z ; feature = 7
+   endsubroutine closest_point_triangle_RPP_dev
+
    ! public methods
    ! non TBP
+   elemental subroutine closest_point_triangle_RPP(p, a, b, c, q, feature)
+   !< Point `q` of the triangle `a, b, c` closest to `p`, and the feature it lies on: 1, 2, 3 the vertices `a, b, c`;
+   !< 4, 5, 6 the edges `ab, bc, ca`; 7 the face (Ericson's Voronoi-region test, the region signs by Kahan's
+   !< algorithm). For a signed distance to a mesh, sign `|p - q|` with the angle-weighted pseudo-normal of that
+   !< feature (face normal on the face, an average over the faces sharing an edge or a vertex otherwise).
+   !<
+   !<```fortran
+   !< type(vector_RPP) :: q
+   !< integer          :: f
+   !< call closest_point_triangle_RPP(2 * ex_RPP + ez_RPP, 0 * ex_RPP, ex_RPP, ey_RPP, q, f)
+   !< print "(I1,3(1X,F3.1))", f, q%x, q%y, q%z
+   !<```
+   !=> 2 1.0 0.0 0.0 <<<
+   type(vector_RPP), intent(in)  :: p       !< Point.
+   type(vector_RPP), intent(in)  :: a       !< First vertex.
+   type(vector_RPP), intent(in)  :: b       !< Second vertex.
+   type(vector_RPP), intent(in)  :: c       !< Third vertex.
+   type(vector_RPP), intent(out) :: q       !< Closest point.
+   integer,          intent(out) :: feature !< Feature of the triangle where `q` lies.
+   type(vector_RPP)              :: ab, ac, ap, bp, cp !< Edges and offsets of `p`.
+   real(RPP)                     :: d1, d2, d3, d4, d5, d6 !< Dot products locating `p`.
+   real(RPP)                     :: va, vb, vc         !< Region signs, by Kahan's algorithm.
+   real(RPP)                     :: s, t               !< Parameters along an edge or on the face.
+
+   call vector_sub_vector_RPP_dev(b, a, ab)
+   call vector_sub_vector_RPP_dev(c, a, ac)
+   call vector_sub_vector_RPP_dev(p, a, ap)
+   d1 = dotproduct_RPP_dev(ab, ap)
+   d2 = dotproduct_RPP_dev(ac, ap)
+   if (d1 <= 0._RPP .and. d2 <= 0._RPP) then
+     q%x = a%x ; q%y = a%y ; q%z = a%z ; feature = 1 ; return
+   endif
+   call vector_sub_vector_RPP_dev(p, b, bp)
+   d3 = dotproduct_RPP_dev(ab, bp)
+   d4 = dotproduct_RPP_dev(ac, bp)
+   if (d3 >= 0._RPP .and. d4 <= d3) then
+     q%x = b%x ; q%y = b%y ; q%z = b%z ; feature = 2 ; return
+   endif
+   vc = dop_RPP(d1, d4, d3, d2)
+   if (vc <= 0._RPP .and. d1 >= 0._RPP .and. d3 <= 0._RPP) then
+     s = d1 / (d1 - d3)
+     q%x = a%x + s * ab%x ; q%y = a%y + s * ab%y ; q%z = a%z + s * ab%z ; feature = 4 ; return
+   endif
+   call vector_sub_vector_RPP_dev(p, c, cp)
+   d5 = dotproduct_RPP_dev(ab, cp)
+   d6 = dotproduct_RPP_dev(ac, cp)
+   if (d6 >= 0._RPP .and. d5 <= d6) then
+     q%x = c%x ; q%y = c%y ; q%z = c%z ; feature = 3 ; return
+   endif
+   vb = dop_RPP(d5, d2, d1, d6)
+   if (vb <= 0._RPP .and. d2 >= 0._RPP .and. d6 <= 0._RPP) then
+     t = d2 / (d2 - d6)
+     q%x = a%x + t * ac%x ; q%y = a%y + t * ac%y ; q%z = a%z + t * ac%z ; feature = 6 ; return
+   endif
+   va = dop_RPP(d3, d6, d5, d4)
+   if (va <= 0._RPP .and. (d4 - d3) >= 0._RPP .and. (d5 - d6) >= 0._RPP) then
+     t = (d4 - d3) / ((d4 - d3) + (d5 - d6))
+     q%x = b%x + t * (c%x - b%x) ; q%y = b%y + t * (c%y - b%y) ; q%z = b%z + t * (c%z - b%z) ; feature = 5 ; return
+   endif
+   s = vb / (va + vb + vc)
+   t = vc / (va + vb + vc)
+   q%x = a%x + s * ab%x + t * ac%x ; q%y = a%y + s * ab%y + t * ac%y ; q%z = a%z + s * ab%z + t * ac%z ; feature = 7
+   endsubroutine closest_point_triangle_RPP
+
    pure function barycentric_tetrahedron_RPP(p, pt1, pt2, pt3, pt4) result(l)
    !< Barycentric coordinates of `p` in the tetrahedron `pt1, pt2, pt3, pt4`: ratios of signed sub-volumes, so
    !< `p = sum(l(i)*pt(i))`, `sum(l) = 1`, all in `[0, 1]` inside (the point-in-cell test of donor search).

@@ -10,6 +10,7 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define vector_RPP vector_R16P
 #define barycentric_tetrahedron_RPP barycentric_tetrahedron_R16P
 #define barycentric_triangle_RPP barycentric_triangle_R16P
+#define closest_point_triangle_RPP closest_point_triangle_R16P
 #define crossproduct_accurate_RPP crossproduct_accurate_R16P
 #define dotproduct_accurate_RPP dotproduct_accurate_R16P
 #define ex_RPP ex_R16P
@@ -41,6 +42,7 @@ use penf, only : RPP=>R16P, smallRPP=>smallR16P, ZeroRPP=>ZeroR16P
 #define assign_vector_RPP_dev assign_vector_R16P_dev
 #define barycentric_tetrahedron_RPP_dev barycentric_tetrahedron_R16P_dev
 #define barycentric_triangle_RPP_dev barycentric_triangle_R16P_dev
+#define closest_point_triangle_RPP_dev closest_point_triangle_R16P_dev
 #define crossproduct_accurate_RPP_dev crossproduct_accurate_R16P_dev
 #define crossproduct_RPP_dev crossproduct_R16P_dev
 #define distance_to_line_RPP_dev distance_to_line_R16P_dev
