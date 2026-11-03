@@ -32,6 +32,7 @@ use vecfor_RPP, only : angle,                       &
                        projection_onto_plane,       &
                        R8P_mul_vector_oac,          &
                        rotation_matrix,             &
+                       rotation_matrix_oac,         &
                        sq_norm,                     &
                        vector,                      &
                        vector_mul_R8P_oac,          &
@@ -59,6 +60,7 @@ use vecfor_R4P, only : angle_R4P,                       &
                        projection_onto_plane_R4P,       &
                        R8P_mul_vector_R4P_oac,          &
                        rotation_matrix_R4P,             &
+                       rotation_matrix_R4P_oac,         &
                        sq_norm_R4P,                     &
                        vector_R4P,                      &
                        vector_mul_R8P_R4P_oac,          &
@@ -86,6 +88,7 @@ use vecfor_R8P, only : angle_R8P,                       &
                        projection_onto_plane_R8P,       &
                        R8P_mul_vector_R8P_oac,          &
                        rotation_matrix_R8P,             &
+                       rotation_matrix_R8P_oac,         &
                        sq_norm_R8P,                     &
                        vector_R8P,                      &
                        vector_mul_R8P_R8P_oac,          &
@@ -113,6 +116,7 @@ use vecfor_R16P, only : angle_R16P,                       &
                         projection_onto_plane_R16P,       &
                         R8P_mul_vector_R16P_oac,          &
                         rotation_matrix_R16P,             &
+                        rotation_matrix_R16P_oac,         &
                         sq_norm_R16P,                     &
                         vector_R16P,                      &
                         vector_mul_R8P_R16P_oac,          &
@@ -139,6 +143,7 @@ public :: assign_vector_oac
 public :: crossproduct_oac
 public :: dotproduct_oac
 public :: R8P_mul_vector_oac
+public :: rotation_matrix_oac
 public :: vector_mul_R8P_oac
 public :: vector_sub_vector_oac
 public :: vector_sum_vector_oac
@@ -163,6 +168,7 @@ public :: assign_vector_R4P_oac
 public :: crossproduct_R4P_oac
 public :: dotproduct_R4P_oac
 public :: R8P_mul_vector_R4P_oac
+public :: rotation_matrix_R4P_oac
 public :: vector_mul_R8P_R4P_oac
 public :: vector_sub_vector_R4P_oac
 public :: vector_sum_vector_R4P_oac
@@ -187,6 +193,7 @@ public :: assign_vector_R8P_oac
 public :: crossproduct_R8P_oac
 public :: dotproduct_R8P_oac
 public :: R8P_mul_vector_R8P_oac
+public :: rotation_matrix_R8P_oac
 public :: vector_mul_R8P_R8P_oac
 public :: vector_sub_vector_R8P_oac
 public :: vector_sum_vector_R8P_oac
@@ -211,6 +218,7 @@ public :: assign_vector_R16P_oac
 public :: crossproduct_R16P_oac
 public :: dotproduct_R16P_oac
 public :: R8P_mul_vector_R16P_oac
+public :: rotation_matrix_R16P_oac
 public :: vector_mul_R8P_R16P_oac
 public :: vector_sub_vector_R16P_oac
 public :: vector_sum_vector_R16P_oac

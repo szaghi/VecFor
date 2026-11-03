@@ -119,9 +119,10 @@ Consequences:
    stay subroutines, which also keeps 26.1 working.
 4. Pattern 4 is fixed on 26.9 only: keep the subroutine convention while 26.1 is supported.
 
-The current `_oac` API covers exactly the 7 operators FOSSIL's distance kernel
-needs. Six are subroutines (intent(out) result argument); only `dotproduct` is
-a function because it returns a scalar `real` with no overload entanglement:
+The current `_oac` API covers the 7 operators FOSSIL's distance kernel needs,
+plus the rotation matrix (added 2026-11-03 on request). Seven are subroutines
+(intent(out) result argument); only `dotproduct` is a function because it
+returns a scalar `real` with no overload entanglement:
 
 | Math op            | Host TBP/operator         | Device `_oac` entry                                       |
 |--------------------|---------------------------|-----------------------------------------------------------|
@@ -132,6 +133,7 @@ a function because it returns a scalar `real` with no overload entanglement:
 | `s * a` (R8P · v)  | `R8P_mul_vector`          | `call R8P_mul_vector_<KIND>_oac(s, a, c)`                 |
 | `a * s` (v · R8P)  | `vector_mul_R8P`          | `call vector_mul_R8P_<KIND>_oac(a, s, c)`                 |
 | `a = b` (vector)   | `assign_vector`           | `call assign_vector_<KIND>_oac(lhs, rhs)`                 |
+| rotation matrix    | `rotation_matrix_<KIND>`  | `call rotation_matrix_<KIND>_oac(axis, angle, matrix)`    |
 
 `<KIND>` is one of `R4P`, `R8P`, `R16P` (the per-precision template expansion
 of `vecfor_RPP.INC`). The default-kind `vecfor_RPP` module exports the same
@@ -156,29 +158,37 @@ Every new entry point must follow the same shape:
    point inside its `!$acc parallel loop` and bit-exact-compare against the
    host TBP form. The test must run under both `tests-gnu` (serial, !$acc
    inert) and `tests-nvf-acc --varset local_nvf` (real device).
+   Exception: an entry point calling transcendental intrinsics (`sin`, `cos`,
+   `sqrt` is exact) cannot be bit-exact device vs host: the device math library
+   differs from the host one in the last bit, and the device contracts FMAs.
+   Then compare the `_oac` form run *on the host* bit-exact against the host
+   form (this catches transcription errors in the open-coded body), and device
+   vs host within a tolerance derived from measurement (rotation matrix: at
+   most 1 ulp of 1.0 measured, tested at `4*epsilon`).
 
 #### Scope statement
 
-Today the `_oac` API covers exactly the FOSSIL distance-kernel needs (the 7
-operators above). Other operators (the full +/-/*//, comparisons, full
+Today the `_oac` API covers the FOSSIL distance-kernel needs (the 7 operators
+above) and the rotation matrix. Other operators (the full +/-/*//, comparisons, full
 real/integer mixed-kind matrix), TBP-bound methods (`normL2`, `normalize`,
 `angle`, `face_normal3`, `distance_to_*`, `projection_*`, `is_collinear`,
-`is_concyclic`), and matrix-returning procedures (`rotation_matrix`,
-`mirror_matrix`, `matrixproduct`) are **not** in the `_oac` surface. Add them
+`is_concyclic`), and the remaining matrix-returning procedures (`mirror_matrix`,
+`matrixproduct`) are **not** in the `_oac` surface. Add them
 on request from a real device consumer, one operator at a time, following the
 convention above. Speculative annotation is what produced commits 7e76258 (177
 broken procedures) and 4229257 (narrowed back to 7). The minimum-set scope
 exists because every entry point must be runtime-validated against at least
 one concrete consumer's needs under nvfortran.
 
-#### Two deferred-work hazards
+#### Deferred-work hazards
 
 Two procedures in the current implementation are device-incompatible and
 deliberately stayed out of the `_oac` surface; if you ever try to add them,
 expect these errors:
 
-- `rotation_matrix_RPP`, `mirror_matrix_RPP`, `matrixproduct` return rank-2
-  `real(RPP) :: matrix(3,3)` by value. Re-probed 2026-11-03: the probe **compiles
+- `mirror_matrix_RPP`, `matrixproduct` return rank-2
+  `real(RPP) :: matrix(3,3)` by value (`rotation_matrix_RPP` too; its device form
+  is `rotation_matrix_RPP_oac`, the template for these two). Re-probed 2026-11-03: the probe **compiles
   without diagnostics on 26.1 and 26.9 but returns garbage** (relative errors ~1e3,
   4096/4096 wrong), which is worse than the W-0155 *"No device symbol"* recorded
   earlier. The same body with the matrix as an `intent(out)` argument is bit-exact

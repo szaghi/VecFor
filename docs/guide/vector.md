@@ -87,6 +87,6 @@ ones that only write it: `printf`, `save_into_file`.
 | `ex`, `ey`, `ez` and `_R4P`, `_R8P`, `_R16P` variants | the versors |
 | `angle`, `distance_to_line`, `distance_to_plane`, `distance_vectorial_to_plane`, `face_normal3`, `face_normal4`, `iolen`, `is_collinear`, `is_concyclic`, `normalized`, `normL2`, `projection_onto_plane`, `sq_norm`, and their `_R4P`, `_R8P`, `_R16P` variants | the free functions |
 | `rotation_matrix`, `mirror_matrix` and their variants | the matrices of [rotations and mirrors](./transforms) |
-| `assign_vector_oac`, `crossproduct_oac`, `dotproduct_oac`, `R8P_mul_vector_oac`, `vector_mul_R8P_oac`, `vector_sub_vector_oac`, `vector_sum_vector_oac` and their variants | the [device-callable API](./gpu) |
+| `assign_vector_oac`, `crossproduct_oac`, `dotproduct_oac`, `R8P_mul_vector_oac`, `rotation_matrix_oac`, `vector_mul_R8P_oac`, `vector_sub_vector_oac`, `vector_sum_vector_oac` and their variants | the [device-callable API](./gpu) |
 
 The operators and the methods come with the types. The kinds are not exported: `use penf`.

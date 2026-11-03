@@ -5,7 +5,7 @@ title: Device-callable API
 # Device-callable API
 
 A small set of plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They
-mirror seven operators of the vector; everything else of VecFor runs on the host only.
+mirror seven operators of the vector and the rotation matrix; everything else of VecFor runs on the host only.
 
 ## The routines
 
@@ -18,8 +18,10 @@ mirror seven operators of the vector; everything else of VecFor runs on the host
 | `call crossproduct_oac(a, b, c)` | `c = a .cross. b` | subroutine |
 | `d = dotproduct_oac(a, b)` | `d = a .dot. b` | function |
 | `call assign_vector_oac(lhs, rhs)` | `lhs = rhs` | subroutine |
+| `call rotation_matrix_oac(axis, angle, matrix)` | `matrix = rotation_matrix(axis, angle)` | subroutine |
 
-`a`, `b`, `c`, `lhs`, `rhs` are `type(vector)` (not `class`); `c` and `lhs` are `intent(out)`. `s` is `real(R8P)` for
+`a`, `b`, `c`, `lhs`, `rhs`, `axis` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
+of the kind of the vector, are `intent(out)`. `s` is `real(R8P)` for
 every kind of vector. `dotproduct_oac` returns a real of the kind of the vectors. Each kind has its set, with the
 suffix of the kind before `_oac`: `vector_sum_vector_R4P_oac`, `crossproduct_R16P_oac`, ...; the names without a kind
 are those of the default `vector`. All are exported by `use vecfor`.
@@ -27,20 +29,22 @@ are those of the default `vector`. All are exported by `use vecfor`.
 The routines do the arithmetic of the operators in the same order, with the same conversions: on the host the results
 are identical, as the [cookbook](/manual/cookbook#the-device-callable-routines-in-an-openacc-loop) checks. On a GPU the
 compiler may fuse a product and a sum into one instruction (FMA), which can change the last bit of a cross or dot
-product.
+product. The rotation matrix differs from the host one in the last bit on a GPU also because the device `sin` and
+`cos` do (at most one unit in the last place of 1.0, measured with nvfortran 26.1 and 26.9).
 
 ## Why not the operators
 
-On nvfortran 26.1, the compiler the API is validated with, the operators and the methods cannot run on the device:
+On nvfortran 26.1 and 26.9, the compilers the API is validated with, the operators and the methods cannot run on the
+device:
 
-1. A type-bound operator is a generic resolved through the type's table of procedures, an indirect call: nvfortran
-   rejects indirect calls in device code (`NVFORTRAN-W-0155`, *Indirect function/procedure calls are not supported*).
-2. The passed object of a type-bound procedure is `class(vector)`, polymorphic, with the same restriction even when
-   the procedure is called by its specific name.
-3. `a = b` between two vectors is the user-defined assignment of the type, rejected in device code
+1. A type-bound operator is a generic resolved through the type's table of procedures, an indirect call. In a compute
+   region nvfortran warns (`NVFORTRAN-W-0155`, *Indirect function/procedure calls are not supported*) and runs the
+   whole loop on the host: the results are right, the GPU is not used. A type-bound call through a `class(vector)`
+   argument inside a device routine fails the same way, at link time.
+2. `a = b` between two vectors is the user-defined assignment of the type, rejected in device code
    (`NVFORTRAN-F-1252`).
-4. A function returning a `type(vector)`, called in a parallel loop, gave every thread one shared temporary, and
-   garbage results (nvhpc 26.1).
+3. A function returning a `type(vector)`, called in a parallel loop, gave every thread one shared temporary and
+   garbage results with nvfortran 26.1 (fixed in 26.9). A `(3, 3)` matrix returned by value still does, with both.
 
 Hence subroutines with the result as last argument, and a function only for the scalar dot product.
 
@@ -68,11 +72,10 @@ are comments and the same source runs on the host: the [tutorial](/manual/tutori
 
 Not device-callable: the other operators (`/`, numbers of other kinds, `.paral.`, `.ortho.`, `.matrix.`, the
 comparisons), every method (`normL2`, `normalize`, `angle`, `face_normal3`, the distances, the projections, the
-predicates, `rotate`, `mirror`) and the matrices. Two of them need more than a new wrapper:
+predicates, `rotate`, `mirror`) and the other matrices. Two of them need more than a new wrapper:
 
-- `rotation_matrix`, `mirror_matrix` and `.matrix.` return or take a `(3, 3)` array by value, which nvfortran rejects in
-  device code (*No device symbol for address reference*); a device version must take the matrix as an `intent(out)`
-  argument.
+- `mirror_matrix` and `.matrix.` return or take a `(3, 3)` array by value, which nvfortran compiles in device code
+  but gets wrong; a device version must take the matrix as an `intent(out)` argument, as `rotation_matrix_oac` does.
 - `angle` builds an array of two polymorphic vectors, which lowers to a host-only runtime call.
 
 The API grows one routine at a time, when a device code needs it, following the convention of the existing ones (see

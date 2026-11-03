@@ -42,7 +42,8 @@ method are zero; in general, expect differences of the order of the last digit, 
 order.
 
 The OpenACC API covers what its first user, a distance kernel, needed: the other operators and methods, the
-comparisons, the rotations and mirrors are not device-callable (see [Device-callable API](/guide/gpu)).
+comparisons and the mirrors are not device-callable; the rotation matrix is, as `rotation_matrix_oac` (see
+[Device-callable API](/guide/gpu)).
 
 ::: tip What you learned
 The seven `_oac` routines, their calling convention, an OpenACC loop that uses them; why the operators cannot run on

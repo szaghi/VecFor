@@ -23,6 +23,7 @@ public :: assign_vector_RPP_oac
 public :: crossproduct_RPP_oac
 public :: dotproduct_RPP_oac
 public :: R8P_mul_vector_RPP_oac
+public :: rotation_matrix_RPP_oac
 public :: vector_mul_R8P_RPP_oac
 public :: vector_sub_vector_RPP_oac
 public :: vector_sum_vector_RPP_oac
@@ -458,6 +459,47 @@ contains
    lhs%y = rhs%y
    lhs%z = rhs%z
    endsubroutine assign_vector_RPP_oac
+
+   pure subroutine rotation_matrix_RPP_oac(axis, angle, matrix)
+   !$acc routine seq
+   !< Device-callable rotation matrix: [[rotation_matrix_RPP]] with the matrix as an `intent(out)` argument.
+   !<
+   !< `rotation_matrix_RPP` returns the matrix by value, which nvfortran (26.1 and 26.9) miscompiles in device code:
+   !< no diagnostic, wrong results. The arithmetic is that of `rotation_matrix_RPP`, the axis normalized as by
+   !< `normalize`, open-coded (no calls into the TBP-bound surface), so device and host results agree bit-exact.
+   !<
+   !< Angle must be in radians.
+   type(vector_RPP), intent(in)  :: axis        !< Axis of rotation.
+   real(RPP),        intent(in)  :: angle       !< Angle of rotation.
+   real(RPP),        intent(out) :: matrix(3,3) !< Rotation matrix.
+   real(RPP)                     :: ax          !< x component of the normalized axis.
+   real(RPP)                     :: ay          !< y component of the normalized axis.
+   real(RPP)                     :: az          !< z component of the normalized axis.
+   real(RPP)                     :: nm          !< Norm L2 of the axis.
+   real(RPP)                     :: c           !< `cos(angle)`.
+   real(RPP)                     :: s           !< `sin(angle)`.
+   real(RPP)                     :: one_c       !< `1-cos(angle)`.
+
+   nm = sqrt((axis%x * axis%x) + (axis%y * axis%y) + (axis%z * axis%z))
+   if (nm < smallRPP) then
+     nm = nm + smallRPP
+   endif
+   ax = axis%x / nm
+   ay = axis%y / nm
+   az = axis%z / nm
+   c = cos(angle)
+   s = sin(angle)
+   one_c = 1._RPP - cos(angle)
+   matrix(1,1) = c + ax * ax * one_c
+   matrix(2,1) =     ay * ax * one_c + az * s
+   matrix(3,1) =     az * ax * one_c - ay * s
+   matrix(1,2) =     ax * ay * one_c - az * s
+   matrix(2,2) = c + ay * ay * one_c
+   matrix(3,2) =     az * ay * one_c + ax * s
+   matrix(1,3) =     ax * az * one_c + ay * s
+   matrix(2,3) =     ay * az * one_c - ax * s
+   matrix(3,3) = c + az * az * one_c
+   endsubroutine rotation_matrix_RPP_oac
 
    ! public methods
    ! non TBP

@@ -354,5 +354,6 @@ Pass `iostat` (and `iomsg`) to every `save_into_file` and `load_from_file`: with
 
 <<< @/examples/output/device_routines.txt{console}
 
-The seven `_oac` routines and the operators they stand for; this output is the gfortran build, without `-fopenacc`.
+The seven `_oac` routines of the vector operators and the operators they stand for (the eighth, the rotation
+matrix, is in [Device-callable API](/guide/gpu)); this output is the gfortran build, without `-fopenacc`.
 See [tutorial, chapter 11](./tutorial/11-gpu) and [Device-callable API](/guide/gpu).
