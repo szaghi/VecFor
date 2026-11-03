@@ -27,6 +27,8 @@ public :: mirror_matrix_RPP_oac
 public :: normalize_RPP_oac
 public :: normalized_RPP_oac
 public :: normL2_RPP_oac
+public :: orthogonal_RPP_oac
+public :: parallel_RPP_oac
 public :: R8P_mul_vector_RPP_oac
 public :: rotation_matrix_RPP_oac
 public :: sq_norm_RPP_oac
@@ -604,6 +606,43 @@ contains
    a%y = a%y / nm
    a%z = a%z / nm
    endsubroutine normalize_RPP_oac
+
+   pure subroutine parallel_RPP_oac(a, b, c)
+   !$acc routine seq
+   !< Device-callable component of `a` parallel to `b`, `c = a .paral. b`: [[parallel]] open-coded,
+   !< `(a.dot.b) * normalized(b) / normL2(b)` in the same order (the normalization guarded by `smallRPP`, the divisor
+   !< not, as on the host).
+   type(vector_RPP), intent(in)  :: a   !< Vector.
+   type(vector_RPP), intent(in)  :: b   !< Direction.
+   type(vector_RPP), intent(out) :: c   !< Component of `a` parallel to `b`.
+   real(RPP)                     :: d   !< `a.dot.b`.
+   real(RPP)                     :: nm  !< Norm L2 of `b`.
+   real(RPP)                     :: nmg !< Norm L2 of `b`, guarded by `smallRPP`.
+
+   d = (a%x * b%x) + (a%y * b%y) + (a%z * b%z)
+   nm = sqrt((b%x * b%x) + (b%y * b%y) + (b%z * b%z))
+   nmg = nm
+   if (nmg < smallRPP) then
+     nmg = nmg + smallRPP
+   endif
+   c%x = (d * (b%x / nmg)) / nm
+   c%y = (d * (b%y / nmg)) / nm
+   c%z = (d * (b%z / nmg)) / nm
+   endsubroutine parallel_RPP_oac
+
+   pure subroutine orthogonal_RPP_oac(a, b, c)
+   !$acc routine seq
+   !< Device-callable component of `a` orthogonal to `b`, `c = a .ortho. b`: [[orthogonal]], `a - (a .paral. b)`.
+   type(vector_RPP), intent(in)  :: a !< Vector.
+   type(vector_RPP), intent(in)  :: b !< Direction.
+   type(vector_RPP), intent(out) :: c !< Component of `a` orthogonal to `b`.
+   type(vector_RPP)              :: p !< Component of `a` parallel to `b`.
+
+   call parallel_RPP_oac(a, b, p)
+   c%x = a%x - p%x
+   c%y = a%y - p%y
+   c%z = a%z - p%z
+   endsubroutine orthogonal_RPP_oac
 
    ! public methods
    ! non TBP

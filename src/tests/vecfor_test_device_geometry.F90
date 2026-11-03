@@ -20,6 +20,8 @@ use vecfor, only : vector_R8P,            &
                    normalized_R8P_oac,    &
                    normL2_R8P,            &
                    normL2_R8P_oac,        &
+                   orthogonal_R8P_oac,    &
+                   parallel_R8P_oac,      &
                    sq_norm_R8P,           &
                    sq_norm_R8P_oac
 implicit none
@@ -37,6 +39,11 @@ real(R8P)               :: sq_dev(n), sq_ref(n), sq_oac(n)
 type(vector_R8P)        :: nzd_dev(n), nzd_ref(n), nzd_oac(n)
 type(vector_R8P)        :: nze_dev(n), nze_ref(n), nze_oac(n)
 
+! parallel, orthogonal
+type(vector_R8P)        :: par_dev(n), par_ref(n), par_oac(n)
+type(vector_R8P)        :: ort_dev(n), ort_ref(n), ort_oac(n)
+real(R8P)               :: ort_bnd(3,n)
+
 all_passed = .true.
 on_device = .false.
 do i = 1, n
@@ -48,7 +55,8 @@ do i = 1, n
    p3(i) = vector_R8P(x=0.9_R8P, y=-0.4_R8P * real(mod(i, 5), R8P), z=1._R8P + 1._R8P / real(i + 1, R8P))
 enddo
 
-!$acc parallel loop copyin(p0, p1, p2, p3) copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev) private(t1)
+!$acc parallel loop copyin(p0, p1, p2, p3) private(t1) &
+!$acc copyout(on_device, nrm_dev, sq_dev, nzd_dev, nze_dev, par_dev, ort_dev)
 do i = 1, n
    nrm_dev(i) = normL2_R8P_oac(p0(i))
    sq_dev(i) = sq_norm_R8P_oac(p0(i))
@@ -56,6 +64,8 @@ do i = 1, n
    call assign_vector_R8P_oac(t1, p0(i))
    call normalize_R8P_oac(t1)
    call assign_vector_R8P_oac(nze_dev(i), t1)
+   call parallel_R8P_oac(p1(i), p2(i), par_dev(i))
+   call orthogonal_R8P_oac(p1(i), p2(i), ort_dev(i))
 #ifdef _OPENACC
    on_device(i) = acc_on_device(acc_device_not_host)
 #endif
@@ -74,12 +84,24 @@ do i = 1, n
    call nze_ref(i)%normalize()
    nze_oac(i) = p0(i)
    call normalize_R8P_oac(nze_oac(i))
+   par_ref(i) = p1(i)%parallel(p2(i))
+   call parallel_R8P_oac(p1(i), p2(i), par_oac(i))
+   ort_ref(i) = p1(i)%orthogonal(p2(i))
+   call orthogonal_R8P_oac(p1(i), p2(i), ort_oac(i))
 enddo
 
 call check_real('normL2_oac', nrm_dev, nrm_ref, nrm_oac)
 call check_real('sq_norm_oac', sq_dev, sq_ref, sq_oac)
 call check_vec('normalized_oac', nzd_dev, nzd_ref, nzd_oac)
 call check_vec('normalize_oac', nze_dev, nze_ref, nze_oac)
+! parallel, orthogonal: nvfortran contracts the dot product of `.paral.` into FMAs differently on the host form and on
+! the `_oac` form, depending on the compilation context (below 1 ulp; gfortran is bit-exact). The dot product changes by at most 2*gamma_3*sum|a_k*b_k|
+! <= 6*eps*|a||b|, that is at most 6*eps*|a| on each component of the parallel part; the subtraction adds one rounding.
+do i = 1, n
+   ort_bnd(:,i) = 8 * epsilon(1._R8P) * (normL2_R8P(p1(i)) + abs([par_ref(i)%x, par_ref(i)%y, par_ref(i)%z]))
+enddo
+call check_vec_bound('parallel_oac', par_dev, par_ref, par_oac, ort_bnd)
+call check_vec_bound('orthogonal_oac', ort_dev, ort_ref, ort_oac, ort_bnd)
 
 #ifdef _OPENACC
 if (.not. all(on_device)) then
@@ -126,6 +148,55 @@ contains
    call check_real(label//' y', dev%y, ref%y, oac%y)
    call check_real(label//' z', dev%z, ref%z, oac%z)
    endsubroutine check_vec
+
+   subroutine check_vec_bound(label, dev, ref, oac, bnd)
+   !< Host `_oac` and device within the per-component bound `bnd(3,:)` of the host reference.
+   character(*),     intent(in) :: label    !< Entry point.
+   type(vector_R8P), intent(in) :: dev(:)   !< Device results.
+   type(vector_R8P), intent(in) :: ref(:)   !< Host reference results.
+   type(vector_R8P), intent(in) :: oac(:)   !< Host `_oac` results.
+   real(R8P),        intent(in) :: bnd(:,:) !< Bound of each component.
+
+   if (any(abs(oac%x - ref%x) > bnd(1,:) .or. abs(oac%y - ref%y) > bnd(2,:) .or. abs(oac%z - ref%z) > bnd(3,:))) then
+      print "(A,A)", label, " on the host differs from the host procedure beyond the bound"
+      all_passed = .false.
+   endif
+   if (any(abs(dev%x - ref%x) > bnd(1,:) .or. abs(dev%y - ref%y) > bnd(2,:) .or. abs(dev%z - ref%z) > bnd(3,:))) then
+      print "(A,A,ES10.3)", label, " on the device differs from the host beyond the bound, max abs diff: ", &
+         maxval(abs([dev%x - ref%x, dev%y - ref%y, dev%z - ref%z]))
+      all_passed = .false.
+   endif
+   endsubroutine check_vec_bound
+
+   subroutine check_real_bound(label, dev, ref, oac, bnd)
+   !< Host `_oac` and device within the bound `bnd(:)` of the host reference.
+   character(*), intent(in) :: label  !< Entry point.
+   real(R8P),    intent(in) :: dev(:) !< Device results.
+   real(R8P),    intent(in) :: ref(:) !< Host reference results.
+   real(R8P),    intent(in) :: oac(:) !< Host `_oac` results.
+   real(R8P),    intent(in) :: bnd(:) !< Bound of each element.
+
+   if (any(abs(oac - ref) > bnd)) then
+      print "(A,A)", label, " on the host differs from the host procedure beyond the bound"
+      all_passed = .false.
+   endif
+   if (any(abs(dev - ref) > bnd)) then
+      print "(A,A,ES10.3)", label, " on the device differs from the host beyond the bound, max abs diff: ", &
+         maxval(abs(dev - ref))
+      all_passed = .false.
+   endif
+   endsubroutine check_real_bound
+
+   function cond_cross(u, v) result(cnd)
+   !< Condition of the cross product `u x v`: `|u||v| / |u x v|`.
+   type(vector_R8P), intent(in) :: u   !< First vector.
+   type(vector_R8P), intent(in) :: v   !< Second vector.
+   real(R8P)                    :: cnd !< Condition.
+   type(vector_R8P)             :: w   !< `u x v`.
+
+   w = u%crossproduct(v)
+   cnd = u%normL2() * v%normL2() / w%normL2()
+   endfunction cond_cross
 
    subroutine check_logical(label, dev, ref, oac)
    !< Host `_oac` and device equal to the host reference.

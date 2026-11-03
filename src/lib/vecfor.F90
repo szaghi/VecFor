@@ -34,6 +34,8 @@ use vecfor_RPP, only : angle,                       &
                        normalized_oac,              &
                        normL2,                      &
                        normL2_oac,                  &
+                       orthogonal_oac,              &
+                       parallel_oac,                &
                        projection_onto_plane,       &
                        R8P_mul_vector_oac,          &
                        rotation_matrix,             &
@@ -68,6 +70,8 @@ use vecfor_R4P, only : angle_R4P,                       &
                        normalized_R4P_oac,              &
                        normL2_R4P,                      &
                        normL2_R4P_oac,                  &
+                       orthogonal_R4P_oac,              &
+                       parallel_R4P_oac,                &
                        projection_onto_plane_R4P,       &
                        R8P_mul_vector_R4P_oac,          &
                        rotation_matrix_R4P,             &
@@ -102,6 +106,8 @@ use vecfor_R8P, only : angle_R8P,                       &
                        normalized_R8P_oac,              &
                        normL2_R8P,                      &
                        normL2_R8P_oac,                  &
+                       orthogonal_R8P_oac,              &
+                       parallel_R8P_oac,                &
                        projection_onto_plane_R8P,       &
                        R8P_mul_vector_R8P_oac,          &
                        rotation_matrix_R8P,             &
@@ -136,6 +142,8 @@ use vecfor_R16P, only : angle_R16P,                       &
                         normalized_R16P_oac,              &
                         normL2_R16P,                      &
                         normL2_R16P_oac,                  &
+                        orthogonal_R16P_oac,              &
+                        parallel_R16P_oac,                &
                         projection_onto_plane_R16P,       &
                         R8P_mul_vector_R16P_oac,          &
                         rotation_matrix_R16P,             &
@@ -171,11 +179,15 @@ public :: mirror_matrix_oac
 public :: normalize_oac
 public :: normalized_oac
 public :: normL2_oac
+public :: orthogonal_oac
+public :: parallel_oac
 public :: R8P_mul_vector_oac
 public :: rotation_matrix_oac
 public :: normalize_R8P_oac
 public :: normalized_R8P_oac
 public :: normL2_R8P_oac
+public :: orthogonal_R8P_oac
+public :: parallel_R8P_oac
 public :: sq_norm_R8P_oac
 public :: vector_mul_R8P_oac
 public :: sq_norm_oac
@@ -206,6 +218,8 @@ public :: mirror_matrix_R4P_oac
 public :: normalize_R4P_oac
 public :: normalized_R4P_oac
 public :: normL2_R4P_oac
+public :: orthogonal_R4P_oac
+public :: parallel_R4P_oac
 public :: R8P_mul_vector_R4P_oac
 public :: rotation_matrix_R4P_oac
 public :: sq_norm_R4P_oac
@@ -264,6 +278,8 @@ public :: mirror_matrix_R16P_oac
 public :: normalize_R16P_oac
 public :: normalized_R16P_oac
 public :: normL2_R16P_oac
+public :: orthogonal_R16P_oac
+public :: parallel_R16P_oac
 public :: R8P_mul_vector_R16P_oac
 public :: rotation_matrix_R16P_oac
 public :: sq_norm_R16P_oac

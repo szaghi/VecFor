@@ -49,6 +49,8 @@ use penf, only : RPP=>R8P, smallRPP=>smallR8P, ZeroRPP=>ZeroR8P
 #define normalize_RPP_oac normalize_oac
 #define normalized_RPP_oac normalized_oac
 #define normL2_RPP_oac normL2_oac
+#define orthogonal_RPP_oac orthogonal_oac
+#define parallel_RPP_oac parallel_oac
 #define R8P_mul_vector_RPP_oac R8P_mul_vector_oac
 #define rotation_matrix_RPP_oac rotation_matrix_oac
 #define sq_norm_RPP_oac sq_norm_oac
