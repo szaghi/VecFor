@@ -20,7 +20,8 @@ four lengths. `g%distance_to_plane(...)` calls the method on an array of vectors
 numbers, usable anywhere an array is, as in `sum(p%x)`.
 
 `call p%normalize` is elemental too, and normalizes a whole array in place. `rotate` and `mirror`, the matrices of
-`rotation_matrix` and `mirror_matrix`, `.matrix.` and the input/output procedures are not: call them in a loop.
+`rotation_matrix` and `mirror_matrix`, `.matrix.` and the input/output procedures are not: call them in a loop
+(the complete list is in [Behaviour and limitations](/guide/limitations#not-elemental)).
 
 ## The volume, counted
 

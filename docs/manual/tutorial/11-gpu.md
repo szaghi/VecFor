@@ -12,12 +12,13 @@ CPU. Built with NVIDIA nvfortran and `-acc` (the FoBiS mode `tests-nvf-acc`), th
 
 ## Why a separate API
 
-The operators and the methods of the vector cannot be called inside an OpenACC device routine with nvfortran (26.1, the
-compiler VecFor is validated on): the type-bound operators dispatch through a table of procedures, an indirect call the
-device does not support; the passed object of a method is polymorphic, with the same problem; the assignment between
-two vectors is a user-defined assignment, rejected on the device; and a function returning a vector made every thread
-of a loop share one temporary. So VecFor exposes a few operations as plain procedures, each an `!$acc routine seq`,
-that take and return `type(vector)` arguments:
+The operators and the methods of the vector cannot run on the device with nvfortran (26.1 and 26.9, the compilers
+VecFor is validated with). A type-bound operator dispatches through a table of procedures: an indirect call, which
+the device does not support. The passed object of a method is polymorphic, with the same problem. The assignment
+between two vectors is a user-defined assignment, rejected on the device. And with nvfortran 26.1, a function
+returning a vector made every thread of a loop share one temporary. So VecFor exposes the operations as plain
+procedures, each an `!$acc routine seq`, that take and return `type(vector)` arguments. The loop of `probe` uses seven
+of them:
 
 | Operation | Operator | Device routine |
 |---|---|---|
@@ -41,14 +42,15 @@ and its dot product with the normal. The temporaries are `private` to each itera
 method are zero; in general, expect differences of the order of the last digit, since the two compute in a different
 order.
 
-The OpenACC API started with what its first user, a distance kernel, needed, and now covers the methods too:
-`distance_to_plane_dev` does what this loop body does, `normL2_dev`, `face_normal3_dev`, `rotate_by_axis_angle_dev`
-and the others mirror the methods; the other operators and the comparisons are not device-callable (see
-[Device-callable API](/guide/gpu)).
+The loop body is written out to show the routines at work: the API has the methods too, and
+`distance_to_plane_dev(g(i), p(2), p(3), p(4))` does the same in one call. The device API has 38 routines for each
+kind: the operators above, the rotation and mirror matrices, the geometric methods, the accurate products, the
+measures and the point location. The other operators (`*` and `/` between vectors, numbers of other kinds) and the
+comparisons are not device-callable (see [Device-callable API](/guide/gpu)).
 
 ::: tip What you learned
-The seven `_dev` routines, their calling convention, an OpenACC loop that uses them; why the operators cannot run on
-the device. Reference: [Device-callable API](/guide/gpu).
+The `_dev` routines of the operators, their calling convention, an OpenACC loop that uses them; why the operators
+cannot run on the device. Reference: [Device-callable API](/guide/gpu).
 :::
 
 This is the end of the tutorial. The [cookbook](../cookbook) has a short recipe for each task, the

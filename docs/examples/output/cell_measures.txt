@@ -1,0 +1,6 @@
+$ cell_measures
+area of o, ex, ey           0.5000
+volume of o, ex, ey, ez     0.1667
+volume of o, ey, ex, ez    -0.1667
+vector area of the L       = +0.0, +0.0, +3.0
+sum over a closed surface  = +0.0, +0.0, +0.0

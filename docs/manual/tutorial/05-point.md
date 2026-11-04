@@ -17,6 +17,11 @@ as in [chapter 4](./04-faces), every normal points outward, so a point is inside
 or zero. `q` is 0.6928 ($0.4\sqrt3$) outside the slanted face; the centroid is inside, a quarter from each face on
 the coordinate planes.
 
+The same test, without the faces: `barycentric_tetrahedron(q, p(1), p(2), p(3), p(4))` returns the four barycentric
+coordinates of `q`, all non-negative inside. For a surface rather than a body, `closest_point_triangle` finds the point
+of a triangle nearest to `q` (see [Is a point inside a tetrahedron?](../cookbook#is-a-point-inside-a-tetrahedron) and
+[The point of a triangle closest to a point](../cookbook#the-point-of-a-triangle-closest-to-a-point)).
+
 ## The foot of a point
 
 `q%distance_vectorial_to_plane(...)` is the vector from the plane to `q`, along the normal: its length is the distance,
@@ -43,15 +48,16 @@ tolerance whenever the points are computed: scale it to the size of your geometr
 `a%is_concyclic(pt1=, pt2=, pt3=)` asks whether four points lie on one circle, **in this order** around it:
 VecFor tests Ptolemy's theorem, $|a p_1|\,|p_2 p_3| + |p_1 p_2|\,|p_3 a| = |a p_2|\,|p_1 p_3|$, which holds for the
 points of a circle taken in their order along it. `a`, the point of the circle through the slanted face opposite to
-`p2`, lies between `p3` and `p4`: the order `a, p4, p2, p3` passes, `a, p2, p4, p3` does not. Its default tolerance is
-the smallest positive number, so computed points need a `tolerance` here too (see
+`p2`, lies between `p3` and `p4`: the order `a, p4, p2, p3` passes, `a, p2, p4, p3` does not. Without `tolerance` the
+test allows only `tiny`, the smallest positive normal number, so computed points need a `tolerance` here too (see
 [Are four points on one circle?](../cookbook#are-four-points-on-one-circle)).
 
 ![the circle through the corners of the slanted face, and a point a on it](/figures/concyclic.svg){.figure}
 
 ::: tip What you learned
 `distance_to_plane` (signed), `distance_vectorial_to_plane`, `projection_onto_plane`, `distance_to_line`,
-`is_collinear` and `is_concyclic` with their `tolerance`. Reference: [Geometry](/guide/geometry).
+`is_collinear` and `is_concyclic` with their `tolerance`; in passing, `barycentric_tetrahedron` and
+`closest_point_triangle`. Reference: [Geometry](/guide/geometry).
 :::
 
 Next: [6. Components: a slip wall](./06-components).

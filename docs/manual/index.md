@@ -41,7 +41,8 @@ flowchart LR
 
 [The cookbook](./cookbook) answers "how do I ...?" in a few lines each: a vector from its components, a unit vector,
 the angle between two vectors, the normal of a quadrilateral, the signed distance from a plane, a rotation matrix
-applied many times, a mirror across a plane that misses the origin, a text file of vectors, ...
+applied many times, a mirror across a plane that misses the origin, a point inside a tetrahedron, a text file of
+vectors, ...
 
 ## Building the examples
 

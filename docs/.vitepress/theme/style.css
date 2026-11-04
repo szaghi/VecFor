@@ -1,20 +1,24 @@
-/* VecFor: the colours of the figures (Catppuccin: Latte in light mode, Mocha in dark mode) */
+/* VecFor: the palette of the logo, shared with FoXy (slate and an orange ramp). Text links: #c2410c on white 5.2:1,
+   #ffa94d on the dark background 9.0:1; brand buttons: white on #c2410c 5.2:1 (hover #9a3412 7.3:1). The figures keep
+   their Catppuccin colours: they are drawn on white cards. */
 :root {
-  --vp-c-brand-1: #179299;
-  --vp-c-brand-2: #1e66f5;
-  --vp-c-brand-3: #137a80;
-  --vp-c-brand-soft: rgba(23, 146, 153, 0.14);
+  --vp-c-brand-1: #c2410c;
+  --vp-c-brand-2: #9a3412;
+  --vp-c-brand-3: #c2410c;
+  --vp-c-brand-soft: rgba(240, 140, 46, 0.14);
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #179299 10%, #1e66f5 55%, #ea76cb 100%);
+  --vp-home-hero-name-background: linear-gradient(120deg, #33415c 10%, #e8590c 60%, #a61e4d 100%);
+  --vecfor-halo: linear-gradient(-45deg, #ffc078 30%, #9fb2d4 70%);
   --vecfor-shadow: 0 18px 50px -12px rgba(30, 30, 46, 0.35);
 }
 
 .dark {
-  --vp-c-brand-1: #94e2d5;
-  --vp-c-brand-2: #89b4fa;
-  --vp-c-brand-3: #74c7ec;
-  --vp-c-brand-soft: rgba(148, 226, 213, 0.16);
-  --vp-home-hero-name-background: linear-gradient(120deg, #94e2d5 10%, #89b4fa 55%, #f5c2e7 100%);
+  --vp-c-brand-1: #ffa94d;
+  --vp-c-brand-2: #9a3412;
+  --vp-c-brand-3: #c2410c;
+  --vp-c-brand-soft: rgba(255, 169, 77, 0.16);
+  --vp-home-hero-name-background: linear-gradient(120deg, #aebfdc 10%, #ffa94d 60%, #f783ac 100%);
+  --vecfor-halo: linear-gradient(-45deg, #f08c2e 30%, #4c5c7d 70%);
   --vecfor-shadow: 0 18px 50px -12px rgba(0, 0, 0, 0.75);
 }
 
@@ -72,7 +76,7 @@ img.figure {
 
 /* the logo of the hero: a soft halo behind it */
 .VPHero .image-bg {
-  background-image: linear-gradient(-45deg, #94e2d5 30%, #f5c2e7 70%);
+  background-image: var(--vecfor-halo);
   filter: blur(68px);
   opacity: 0.55;
 }

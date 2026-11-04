@@ -4,10 +4,13 @@ title: Geometry
 
 # Geometry
 
-The methods of a vector that measure it or relate it, as a point, to other points. Each method that returns a value is
-also a free function (see [Methods and free functions](./vector#methods-and-free-functions)); all of them are elemental.
-In the formulas, $\mathbf p$ is the vector the method is called on (`self`) and $\mathbf p_1, \mathbf p_2, \ldots$ its
-arguments `pt1`, `pt2`, ...; the results are of the kind of the vectors.
+The procedures that measure a vector or relate it, as a point, to other points. Each method that returns a value is
+also a free function (see [Methods and free functions](./vector#methods-and-free-functions)).
+`normalized_checked`, the accurate products, the measures and the point location are free procedures only, without a
+method. All are elemental, except `polygon_vector_area`, `barycentric_triangle` and `barycentric_tetrahedron`, which
+are `pure`: the first takes an array of vertices, the other two return an array of coordinates. In the formulas,
+$\mathbf p$ is the vector the method is called on (`self`) or the point `p`, and $\mathbf p_1, \mathbf p_2, \ldots$
+the arguments `pt1`, `pt2`, ...; the results are of the kind of the vectors.
 
 ## Lengths and directions
 
@@ -23,9 +26,10 @@ When $\lvert\mathbf v\rvert$ is below `tiny` (the smallest positive normal numbe
 `normalized` divide by $\lvert\mathbf v\rvert$ + `tiny` instead: the zero vector stays zero, it is not divided by zero.
 `normalize` is an elemental subroutine: `call p%normalize` normalizes a whole array.
 
-`normalized_checked` reports the degenerate case instead: `min_norm` (a real of the kind of the vector) defaults to
-the threshold of `normalize`, and the zero vector it returns when `ok` is false makes an unchecked use obviously
-wrong rather than plausible. It is elemental too.
+`normalized_checked` reports the degenerate case instead. It is a subroutine: `u` is a `type(vector)`, `ok` a
+`logical`, both `intent(out)`. `min_norm` (a real of the kind of the vector) defaults to `tiny`, the threshold of
+`normalize`; pass a larger one when a short vector has no reliable direction. When `ok` is false `u` is the zero
+vector, which makes an unchecked use obviously wrong rather than plausible.
 
 ## Accurate products
 
@@ -37,10 +41,10 @@ wrong rather than plausible. It is elemental too.
 `.cross.` rounds both products of a component, $a_y b_z - a_z b_y$, before subtracting them: when they nearly cancel
 (nearly parallel vectors, the normal of a sliver face) the result can lose every digit. `crossproduct_accurate`
 computes each component by Kahan's algorithm with a fused multiply-add, `dotproduct_accurate` by Dot2 (Ogita, Rump
-and Oishi). On nearly parallel vectors in double precision the accurate cross product stays within one unit of
-the exact result where `.cross.` can be wrong by $10^{11}$. They cost two to three times the operators, and the
-operators are unchanged: use them where the cancellation matters.
-
+and Oishi). On 2000 nearly parallel pairs in double precision, checked against quadruple precision, the error of
+`crossproduct_accurate` stayed below $\varepsilon\lvert\mathbf c\rvert$ ($\varepsilon$ the machine epsilon), that of
+`.cross.` reached $2.4 \times 10^{11}\,\varepsilon\lvert\mathbf c\rvert$. They cost two to three times the operators,
+and the operators are unchanged: use them where the cancellation matters.
 
 ## Angle
 
@@ -116,12 +120,13 @@ array: an array constructor of vectors as the argument crashes nvfortran 26.9.
 
 | Call | Result |
 |---|---|
-| `barycentric_triangle(p, pt1, pt2, pt3)` | the 3 barycentric coordinates of `p` (of its projection onto the plane) |
-| `barycentric_tetrahedron(p, pt1, pt2, pt3, pt4)` | the 4 barycentric coordinates of `p` |
-| `call closest_point_triangle(p, a, b, c, q, feature)` | `q`, the point of the triangle closest to `p`, and the feature it lies on |
+| `barycentric_triangle(p, pt1, pt2, pt3)` | `real` array of 3: the barycentric coordinates of `p` (of its projection onto the plane) |
+| `barycentric_tetrahedron(p, pt1, pt2, pt3, pt4)` | `real` array of 4: the barycentric coordinates of `p` |
+| `call closest_point_triangle(p, a, b, c, q, feature)` | `q` (`type(vector)`), the point of the triangle closest to `p`, and `feature` (`integer`), the feature it lies on |
 
-The coordinates sum to 1 and are all in $[0, 1]$ inside the triangle or the tetrahedron: the point-in-cell test of a
-donor search. `feature` is 1, 2, 3 for the vertices `a`, `b`, `c`, 4, 5, 6 for the edges `ab`, `bc`, `ca`, 7 for the
+The coordinates $\lambda_i$ give $\mathbf p = \sum_i \lambda_i \mathbf p_i$ with $\sum_i \lambda_i = 1$, and are all in
+$[0, 1]$ inside the triangle or the tetrahedron: the point-in-cell test of a donor search. A degenerate triangle or
+tetrahedron (collinear or coplanar vertices) gives IEEE infinities or NaN. `feature` is 1, 2, 3 for the vertices `a`, `b`, `c`, 4, 5, 6 for the edges `ab`, `bc`, `ca`, 7 for the
 face. For the signed distance of a point from a closed triangulated surface, take the closest point over the triangles
 and sign $\lvert\mathbf p - \mathbf q\rvert$ with the angle-weighted pseudo-normal of that feature: the face normal on
 the face, the weighted average of the normals of the faces sharing the edge or the vertex otherwise (VecFor has no mesh,

@@ -36,9 +36,15 @@ and $\mathbf N_f$ its outward normal as long as its area. `probe` finds 0.1667, 
 1/6. The same sum gives the volume of any closed mesh of triangles, and a negative volume reveals faces listed
 clockwise.
 
+For a single cell VecFor has the measures as functions: `triangle_area(pt1, pt2, pt3)`, the signed
+`tetrahedron_volume(pt1, pt2, pt3, pt4)`, and `polygon_vector_area(pts)`, the normal of a planar polygon of any number of
+vertices, as long as its area (see
+[The area of a triangle, the volume of a tetrahedron](../cookbook#the-area-of-a-triangle-the-volume-of-a-tetrahedron)).
+
 ::: tip What you learned
 `face_normal3` and `face_normal4`, with and without `norm`; areas from normals; outward normals from the order of the
-vertices; the volume of a body by the divergence theorem. Reference: [Geometry](/guide/geometry#face-normals).
+vertices; the volume of a body by the divergence theorem; `triangle_area`, `tetrahedron_volume`,
+`polygon_vector_area`. Reference: [Geometry](/guide/geometry#face-normals).
 :::
 
 Next: [5. A point and the body](./05-point).

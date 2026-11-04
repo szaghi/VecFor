@@ -80,6 +80,16 @@ than any intrinsic one, so `a .dot. b + c` is `a .dot. (b + c)`.
 
 ![two vectors, the parallelogram they span and their cross product](/figures/cross.svg){.figure}
 
+### Products of nearly parallel vectors, accurately
+
+<<< @/examples/snippets/accurate_products.f90
+
+<<< @/examples/output/accurate_products.txt{console}
+
+`.cross.` and `.dot.` round each product before the subtraction or the sum, and lose digits when the terms nearly
+cancel. `crossproduct_accurate` and `dotproduct_accurate` keep them (see
+[Accurate products](/guide/geometry#accurate-products)). The operators stay as they are.
+
 ### The length of a vector
 
 <<< @/examples/snippets/lengths.f90
@@ -88,6 +98,15 @@ than any intrinsic one, so `a .dot. b + c` is `a .dot. (b + c)`.
 
 `sq_norm` is the squared length, without a square root: enough to compare lengths.
 
+### A method or a free function
+
+<<< @/examples/snippets/two_spellings.f90
+
+<<< @/examples/output/two_spellings.txt{console}
+
+The methods that return a value are free functions too, with the vector as first argument: use them on expressions
+(`normL2(a - b)`), where `(a - b)%normL2()` is not Fortran.
+
 ### A unit vector
 
 <<< @/examples/snippets/unit_vector.f90
@@ -95,7 +114,17 @@ than any intrinsic one, so `a .dot. b + c` is `a .dot. (b + c)`.
 <<< @/examples/output/unit_vector.txt{console}
 
 `normalized` returns a copy, `normalize` changes the vector. The zero vector stays zero: a length below `tiny(1._R8P)`
-is replaced by that length plus `tiny`, so the division is never by zero.
+is replaced by that length plus `tiny`, so the division is never by zero. To be told that a vector has no
+direction, see the next recipe.
+
+### A unit vector, or a report that there is none
+
+<<< @/examples/snippets/unit_vector_checked.f90
+
+<<< @/examples/output/unit_vector_checked.txt{console}
+
+`ok` is false when the length is not above `min_norm` (by default `tiny`, the threshold of `normalize`); `u` is then the
+zero vector. `normalized` returns a unit vector for any vector longer than `tiny`, however short.
 
 ### The angle between two vectors
 
@@ -122,7 +151,26 @@ Only the direction of the right operand matters. The zero vector has none: `.par
 The same reflection, by components or by a mirror across the plane of the wall (see [tutorial, chapter
 6](./tutorial/06-components)).
 
-## Faces
+## Comparisons
+
+### Comparing two vectors
+
+<<< @/examples/snippets/compare.f90
+
+<<< @/examples/output/compare.txt{console}
+
+`<`, `<=`, `>`, `>=` compare lengths: `a` and `b`, as long as each other, are both `<=` and `>=`. `==` and `/=`
+compare lengths and directions: `a == b` is false. Both are exact, without a tolerance.
+
+### Comparing the length of a vector with a number
+
+<<< @/examples/snippets/compare_number.f90
+
+<<< @/examples/output/compare_number.txt{console}
+
+The number may be of any integer or real kind, on either side.
+
+## Faces and cells
 
 ### The normal and the area of a triangle
 
@@ -145,6 +193,16 @@ From the cross product of the diagonals, $\tfrac12 (p_3 - p_1) \times (p_4 - p_2
 quadrilateral. For a warped one it is the vector area of its four edges, the same for every surface they bound: the
 normal to use for a flux through the face.
 
+### The area of a triangle, the volume of a tetrahedron
+
+<<< @/examples/snippets/cell_measures.f90
+
+<<< @/examples/output/cell_measures.txt{console}
+
+The volume is signed: positive when the fourth point lies on the side of the normal of the first three, so swapping
+two points changes its sign. The vector area of a planar polygon, convex or not, has its area as length; the outward
+vector areas of the faces of a closed surface sum to zero.
+
 ## Points, lines, planes
 
 ### The distance of a point from a line
@@ -166,6 +224,25 @@ points.
 
 Signed: positive on the side of `face_normal3(pt1, pt2, pt3)`, which swapping two points reverses. The vectorial
 distance goes from the plane to the point; the projection is the foot of the point on the plane.
+
+### Is a point inside a tetrahedron?
+
+<<< @/examples/snippets/point_location.f90
+
+<<< @/examples/output/point_location.txt{console}
+
+The barycentric coordinates sum to 1; the point is inside when none is negative. In a triangle they interpolate a
+field given at the vertices; they locate the projection of the point onto the plane of the triangle.
+
+### The point of a triangle closest to a point
+
+<<< @/examples/snippets/closest_point.f90
+
+<<< @/examples/output/closest_point.txt{console}
+
+`feature` is 1, 2, 3 for the vertices, 4, 5, 6 for the edges `ab`, `bc`, `ca`, 7 for the inside of the face. The
+distance from a triangulated surface is the smallest over its triangles (see
+[Point location](/guide/geometry#point-location) for its sign).
 
 ### Are three points on one line?
 
@@ -236,26 +313,7 @@ vector in the plane stays.
 
 `.matrix.` takes any 3 x 3 real matrix of the kind of the vector, on the left.
 
-## Comparisons
-
-### Comparing two vectors
-
-<<< @/examples/snippets/compare.f90
-
-<<< @/examples/output/compare.txt{console}
-
-`<`, `<=`, `>`, `>=` compare lengths: `a` and `b`, as long as each other, are both `<=` and `>=`. `==` and `/=`
-compare lengths and directions: `a == b` is false. Both are exact, without a tolerance.
-
-### Comparing the length of a vector with a number
-
-<<< @/examples/snippets/compare_number.f90
-
-<<< @/examples/output/compare_number.txt{console}
-
-The number may be of any integer or real kind, on either side.
-
-## Arrays and kinds
+## Arrays
 
 ### Whole arrays of vectors at once
 
@@ -266,6 +324,8 @@ The number may be of any integer or real kind, on either side.
 Operators and functions are elemental; `p%x` is the array of the x components. Fortran has no `sum` of an array of a
 derived type: sum the components.
 
+## Precision
+
 ### Vectors of each precision
 
 <<< @/examples/snippets/kinds.f90
@@ -273,8 +333,8 @@ derived type: sum the components.
 <<< @/examples/output/kinds.txt{console}
 
 Each kind has its type, its versors and its free functions, all exported by `vecfor`. `vector` and `vector_R8P` have
-the same kind but are two types: copy the components. `vector_R16P` has the kind 16 here, quadruple precision: see the
-next recipe.
+the same kind but are two types: copy the components. `vector_R16P` has the kind 16 here, quadruple precision (see the
+next recipe).
 
 ### True quadruple precision
 
@@ -284,15 +344,6 @@ next recipe.
 
 33 significant digits, with VecFor and PENF compiled with `-DPENF_R16P`, as the GNU and Intel builds are (see
 [Precision and kinds](/guide/precision#true-quadruple-precision)).
-
-### A method or a free function
-
-<<< @/examples/snippets/two_spellings.f90
-
-<<< @/examples/output/two_spellings.txt{console}
-
-The methods that return a value are free functions too, with the vector as first argument: use them on expressions
-(`normL2(a - b)`), where `(a - b)%normL2()` is not Fortran.
 
 ## Input and output
 
@@ -354,6 +405,6 @@ Pass `iostat` (and `iomsg`) to every `save_into_file` and `load_from_file`: with
 
 <<< @/examples/output/device_routines.txt{console}
 
-The seven `_dev` routines of the vector operators and the operators they stand for (the matrices and the
-geometric routines are in [Device-callable API](/guide/gpu)); this output is the gfortran build, without `-fopenacc`.
-See [tutorial, chapter 11](./tutorial/11-gpu) and [Device-callable API](/guide/gpu).
+The seven `_dev` routines of the vector operators give the same results as the operators; the output is the gfortran
+build, without `-fopenacc`, where the `!$acc` lines are comments. The matrices, the geometric and the accurate routines
+are listed in [Device-callable API](/guide/gpu); see also [tutorial, chapter 11](./tutorial/11-gpu).

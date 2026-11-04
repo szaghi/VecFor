@@ -69,4 +69,5 @@ do i = 1, size(p)
 enddo
 ```
 
-None of these is available in device code: see [Device-callable API](./gpu#outside-the-api).
+In device code the methods, the matrices and `.matrix.` are replaced by subroutines, `rotate_by_axis_angle_dev`,
+`rotation_matrix_dev`, `matrixproduct_dev`, ...: see [Device-callable API](./gpu#operators-and-matrices).

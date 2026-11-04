@@ -77,6 +77,11 @@ kind.
 The methods that change the vector have no free function: `normalize`, `rotate`, `mirror`, `load_from_file`; nor do the
 ones that only write it: `printf`, `save_into_file`.
 
+Some procedures are free only, without a method: `normalized_checked`, `crossproduct_accurate`,
+`dotproduct_accurate`, `triangle_area`, `tetrahedron_volume`, `polygon_vector_area`, `barycentric_triangle`,
+`barycentric_tetrahedron`, `closest_point_triangle` (see [Geometry](./geometry)), and `rotation_matrix`,
+`mirror_matrix` (see [Rotations and mirrors](./transforms)).
+
 ## Every public name
 
 `use vecfor` exports:
@@ -87,6 +92,6 @@ ones that only write it: `printf`, `save_into_file`.
 | `ex`, `ey`, `ez` and `_R4P`, `_R8P`, `_R16P` variants | the versors |
 | `angle`, `distance_to_line`, `distance_to_plane`, `distance_vectorial_to_plane`, `face_normal3`, `face_normal4`, `iolen`, `is_collinear`, `is_concyclic`, `normalized`, `normL2`, `projection_onto_plane`, `sq_norm`, `normalized_checked`, `crossproduct_accurate`, `dotproduct_accurate`, `triangle_area`, `tetrahedron_volume`, `polygon_vector_area`, `barycentric_triangle`, `barycentric_tetrahedron`, `closest_point_triangle`, and their `_R4P`, `_R8P`, `_R16P` variants | the free functions |
 | `rotation_matrix`, `mirror_matrix` and their variants | the matrices of [rotations and mirrors](./transforms) |
-| `assign_vector_dev`, `crossproduct_dev`, `dotproduct_dev`, `matrixproduct_dev`, `mirror_matrix_dev`, `R8P_mul_vector_dev`, `rotation_matrix_dev`, `vector_mul_R8P_dev`, `vector_sub_vector_dev`, `vector_sum_vector_dev`, the `_dev` forms of the free functions above, the geometric `angle_dev`, `distance_to_line_dev`, `distance_to_plane_dev`, `distance_vectorial_to_plane_dev`, `face_normal3_dev`, `face_normal4_dev`, `is_collinear_dev`, `is_concyclic_dev`, `mirror_by_matrix_dev`, `mirror_by_normal_dev`, `normalize_dev`, `normalized_dev`, `normL2_dev`, `orthogonal_dev`, `parallel_dev`, `projection_onto_plane_dev`, `rotate_by_axis_angle_dev`, `rotate_by_matrix_dev`, `sq_norm_dev`, and their variants | the [device-callable API](./gpu) |
+| the `_dev` form of every free function above but `iolen`, of `rotation_matrix` and `mirror_matrix`; `assign_vector_dev`, `crossproduct_dev`, `dotproduct_dev`, `matrixproduct_dev`, `R8P_mul_vector_dev`, `vector_mul_R8P_dev`, `vector_sub_vector_dev`, `vector_sum_vector_dev` (the operators); `mirror_by_matrix_dev`, `mirror_by_normal_dev`, `normalize_dev`, `orthogonal_dev`, `parallel_dev`, `rotate_by_axis_angle_dev`, `rotate_by_matrix_dev` (the other methods); 38 names, and their `_R4P_dev`, `_R8P_dev`, `_R16P_dev` variants | the [device-callable API](./gpu) |
 
 The operators and the methods come with the types. The kinds are not exported: `use penf`.

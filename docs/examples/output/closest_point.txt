@@ -1,0 +1,4 @@
+$ closest_point
+feature 7, q =  0.20  0.20  0.00, distance  1.0000
+feature 5, q =  0.50  0.50  0.00, distance  1.2247
+feature 1, q =  0.00  0.00  0.00, distance  1.4142

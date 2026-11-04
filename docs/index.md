@@ -6,7 +6,8 @@ hero:
   text: Vector algebra for Fortran
   tagline: "One vector type, written as you write the maths: a + b, 2 * a, a .dot. b, a .cross. b. Lengths, angles, face normals, distances, projections, rotations and mirrors, in single, double or quadruple precision, on whole arrays at once, and inside an OpenACC kernel."
   image:
-    src: /logo.svg
+    light: /logo.svg
+    dark: /logo-dark.svg
     alt: VecFor
   actions:
     - theme: brand
@@ -33,17 +34,17 @@ features:
     linkText: Arithmetic
   - icon: 📐
     title: Lengths, angles, directions
-    details: "normL2, sq_norm, a unit vector in place or as a copy, the angle between two vectors with atan2, so it is accurate near 0 and 180 degrees."
+    details: "normL2, sq_norm, a unit vector in place, as a copy or checked for a degenerate length, the angle between two vectors with atan2, so it is accurate near 0 and 180 degrees; cross and dot products accurate when their terms cancel."
     link: /manual/tutorial/03-lengths-angles
     linkText: Lengths and angles
   - icon: 🔺
     title: Faces of a mesh
-    details: "The normal of a triangle or a quadrilateral, as long as the face is large or of unit length: areas, outward normals, the volume of a body by the divergence theorem."
+    details: "The normal of a triangle or a quadrilateral, as long as the face is large or of unit length: areas, outward normals, the volume of a body by the divergence theorem; the area of a triangle, the signed volume of a tetrahedron, the vector area of a polygon."
     link: /manual/tutorial/04-faces
     linkText: Faces, area, volume
   - icon: 📍
     title: Points, lines, planes
-    details: "The distance from a line, the signed distance from a plane, the foot of a point on it, collinear and concyclic points, with a tolerance when the points are computed."
+    details: "The distance from a line, the signed distance from a plane, the foot of a point on it, collinear and concyclic points, with a tolerance when the points are computed; barycentric coordinates, the closest point of a triangle."
     link: /manual/tutorial/05-point
     linkText: A point and the body
   - icon: 🔄
@@ -53,7 +54,7 @@ features:
     linkText: Rotations and mirrors
   - icon: 🧮
     title: Whole arrays at once
-    details: "Every operator and function is elemental: one call computes the normals of all the faces, or the distances of a million points."
+    details: "The operators and the functions are elemental: one call computes the normals of all the faces, or the distances of a million points."
     link: /manual/tutorial/08-arrays
     linkText: Many vectors at once
   - icon: 🎚️
@@ -63,7 +64,7 @@ features:
     linkText: Precision
   - icon: 🚀
     title: On the GPU
-    details: "A device-callable API for OpenACC kernels: sum, difference, scaling, dot and cross products, assignment, the same results as the operators."
+    details: "A device-callable API for OpenACC kernels, the _dev routines: the vector operators, the rotation and mirror matrices, and the geometry: lengths, distances, face normals, measures, point location."
     link: /manual/tutorial/11-gpu
     linkText: On the GPU
 ---

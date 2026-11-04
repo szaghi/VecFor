@@ -62,7 +62,7 @@ export default withMermaid({
   title: 'VecFor',
   description: 'Vector algebra class for Fortran',
   base: '/VecFor/',
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/VecFor/logo.svg' }]],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/VecFor/favicon.svg' }]],
 
   markdown: {
     math: true,
@@ -78,7 +78,7 @@ export default withMermaid({
   },
 
   themeConfig: {
-    logo: '/logo.svg',
+    logo: { light: '/logo.svg', dark: '/logo-dark.svg' },
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Start here', link: '/guide/', activeMatch: '^/guide/(index|install)' },

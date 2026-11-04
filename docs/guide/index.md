@@ -8,11 +8,13 @@ VecFor is a pure Fortran library of vector algebra in three-dimensional Cartesia
 type, `vector`, with three real components, and the operators and procedures that let a program write vector maths as
 it is written on paper: `a + b`, `2 * a`, `a .dot. b`, `a .cross. b`, `a .paral. n`, `a%normL2()`,
 `a%angle(b)`. On top of the algebra it has the geometry a solver asks of its mesh: face normals and areas, distances
-from lines and planes, projections, collinear and concyclic points, rotations and mirrors.
+from lines and planes, projections, collinear and concyclic points, areas and volumes of cells, barycentric
+coordinates and closest points, rotations and mirrors.
 
 The same type exists in single, double and quadruple precision, `vector_R4P`, `vector_R8P` and `vector_R16P`, with
 scalars of any integer or real kind accepted by every operator. The operators and the functions are elemental: they
-work on whole arrays of vectors, element by element. A narrow set of routines is callable from OpenACC kernels. VecFor
+work on whole arrays of vectors, element by element. A parallel set of plain routines, the `_dev` routines, is
+callable from OpenACC kernels. VecFor
 is standard Fortran 2008 and depends on one small library by the same author, [PENF](https://github.com/szaghi/PENF),
 for its kinds.
 

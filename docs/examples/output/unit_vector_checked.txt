@@ -1,0 +1,6 @@
+$ unit_vector_checked
+ok = T
+u  = +0.6, +0.8, +0.0
+ok = F
+u  = +0.0, +0.0, +0.0
+normalized(a) = +1.0, +0.0, +0.0

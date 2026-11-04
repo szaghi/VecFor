@@ -17,8 +17,8 @@ docs or by the sources.
 
 ## Tolerances of the predicates
 
-`is_collinear` and `is_concyclic` take an optional `tolerance`, 0 by default (the smallest positive number, for
-`is_concyclic`). Without it the tests are exact, and points that are collinear or concyclic only up to rounding, as
+`is_collinear` and `is_concyclic` take an optional `tolerance`, 0 by default (`is_concyclic` adds `tiny`, the smallest
+positive normal number). Without it the tests are exact, and points that are collinear or concyclic only up to rounding, as
 computed points are, pass or fail by chance: pass a tolerance scaled to your geometry. `is_concyclic` also needs the
 points in their order around the circle.
 
@@ -27,11 +27,13 @@ points in their order around the circle.
 | Case | Result |
 |---|---|
 | `normalize`, `normalized` of the zero vector | the zero vector |
+| `normalized_checked` of a vector not longer than `min_norm` | `ok` false, the zero vector |
 | `angle` with a zero vector | 0 |
 | `a .paral. b`, `a .ortho. b` with `b` zero | NaN |
 | `distance_to_line` with `pt1 = pt2` | NaN |
 | `distance_to_plane` and the projections, with three collinear points | 0, and the point itself: silently |
 | `face_normal3`, `face_normal4` of a degenerate face | the zero vector, also with `norm` |
+| `barycentric_triangle`, `barycentric_tetrahedron` of a degenerate cell | IEEE infinities or NaN |
 | `a / b` with a zero component of `b`; `a / 0` | IEEE infinities or NaN, as for numbers |
 
 ## Input and output
@@ -63,12 +65,15 @@ points in their order around the circle.
 ## Not elemental
 
 `rotate`, `mirror`, `rotation_matrix`, `mirror_matrix`, `.matrix.` and the I/O procedures work on one vector at a time;
-loop over arrays. Every other operator and function, and `normalize`, are elemental.
+loop over arrays. `polygon_vector_area` takes an array, the vertices of one polygon, and `barycentric_triangle` and
+`barycentric_tetrahedron` return an array, the coordinates of one point: they are `pure`, not elemental. Every other
+operator and function, and `normalize`, `normalized_checked` and `closest_point_triangle`, are elemental.
 
 ## Not on the device
 
-Only the routines of the [device-callable API](./gpu) run inside an OpenACC kernel: the operators of vectors with `R8P`
-numbers, the matrices, and the geometric methods. The other operators, the comparisons and the input/output do not.
+Only the routines of the [device-callable API](./gpu) run inside an OpenACC kernel: the sum, the difference and the
+products of vectors, the products with an `R8P` number, the matrices, the geometric methods, the accurate products, the
+measures and the point location. The other operators, the comparisons and the input/output do not.
 
 ## Not available
 

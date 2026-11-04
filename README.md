@@ -21,19 +21,19 @@
 <table>
 <tr>
 <td width="50%"><b>➕ The maths, as you write it</b><br><sub><code>a + b</code>, <code>-a</code>, <code>2 * a</code>, <code>a / 4</code>, <code>a .dot. b</code>, <code>a .cross. b</code>, <code>a .paral. n</code>, <code>a .ortho. n</code>, <code>R .matrix. a</code>: numbers of any integer or real kind on either side, converted for you. <a href="https://szaghi.github.io/VecFor/manual/tutorial/02-arithmetic">Arithmetic</a></sub></td>
-<td width="50%"><b>📐 Lengths, angles, directions</b><br><sub><code>normL2</code>, <code>sq_norm</code>, a unit vector in place or as a copy, the angle between two vectors computed with <code>atan2</code>: accurate near 0 and 180 degrees. <a href="https://szaghi.github.io/VecFor/manual/tutorial/03-lengths-angles">Lengths and angles</a></sub></td>
+<td width="50%"><b>📐 Lengths, angles, directions</b><br><sub><code>normL2</code>, <code>sq_norm</code>, a unit vector in place or as a copy, a unit vector checked for a degenerate length, the angle between two vectors computed with <code>atan2</code>: accurate near 0 and 180 degrees; cross and dot products accurate when their terms cancel. <a href="https://szaghi.github.io/VecFor/manual/tutorial/03-lengths-angles">Lengths and angles</a></sub></td>
 </tr>
 <tr>
-<td width="50%"><b>🔺 Faces of a mesh</b><br><sub>The normal of a triangle or a quadrilateral, as long as the face is large or of unit length: areas, outward normals, the volume of a body by the divergence theorem. <a href="https://szaghi.github.io/VecFor/manual/tutorial/04-faces">Faces, area, volume</a></sub></td>
-<td width="50%"><b>📍 Points, lines, planes</b><br><sub>The distance from a line, the signed distance from a plane, the foot of a point on it, collinear and concyclic points with a tolerance. <a href="https://szaghi.github.io/VecFor/manual/tutorial/05-point">A point and the body</a></sub></td>
+<td width="50%"><b>🔺 Faces of a mesh</b><br><sub>The normal of a triangle or a quadrilateral, as long as the face is large or of unit length: areas, outward normals, the volume of a body by the divergence theorem; the area of a triangle, the signed volume of a tetrahedron, the vector area of a polygon. <a href="https://szaghi.github.io/VecFor/manual/tutorial/04-faces">Faces, area, volume</a></sub></td>
+<td width="50%"><b>📍 Points, lines, planes</b><br><sub>The distance from a line, the signed distance from a plane, the foot of a point on it, collinear and concyclic points with a tolerance; barycentric coordinates in a triangle or a tetrahedron, the closest point of a triangle. <a href="https://szaghi.github.io/VecFor/manual/tutorial/05-point">A point and the body</a></sub></td>
 </tr>
 <tr>
 <td width="50%"><b>🔄 Rotations and mirrors</b><br><sub>A rotation about any axis, a reflection across any plane, as a call or as a matrix computed once and applied to many vectors. <a href="https://szaghi.github.io/VecFor/manual/tutorial/07-transforms">Rotations and mirrors</a></sub></td>
-<td width="50%"><b>🧮 Whole arrays at once</b><br><sub>Operators and functions are elemental: one call computes the normals of every face, or the distances of a million points. <a href="https://szaghi.github.io/VecFor/manual/tutorial/08-arrays">Many vectors at once</a></sub></td>
+<td width="50%"><b>🧮 Whole arrays at once</b><br><sub>The operators and the functions are elemental: one call computes the normals of every face, or the distances of a million points. <a href="https://szaghi.github.io/VecFor/manual/tutorial/08-arrays">Many vectors at once</a></sub></td>
 </tr>
 <tr>
 <td width="50%"><b>🎚️ Single, double, quadruple</b><br><sub><code>vector_R4P</code>, <code>vector_R8P</code>, <code>vector_R16P</code>, each with its versors and functions, from one <code>use vecfor</code>; true quadruple precision by default with gfortran and ifx (<code>-DPENF_R16P</code>). <a href="https://szaghi.github.io/VecFor/manual/tutorial/09-precision">Precision</a></sub></td>
-<td width="50%"><b>🚀 On the GPU</b><br><sub>A device-callable API for OpenACC kernels: sum, difference, scaling, dot and cross products, assignment, with the results of the operators. <a href="https://szaghi.github.io/VecFor/manual/tutorial/11-gpu">On the GPU</a></sub></td>
+<td width="50%"><b>🚀 On the GPU</b><br><sub>A device-callable API for OpenACC kernels, the <code>_dev</code> routines: the vector operators, the rotation and mirror matrices, and the geometry (lengths, distances, face normals, measures, point location). <a href="https://szaghi.github.io/VecFor/manual/tutorial/11-gpu">On the GPU</a></sub></td>
 </tr>
 <tr>
 <td width="50%"><b>🛠️ Standard Fortran, small</b><br><sub>Fortran 2008, one module to use, one small dependency (<a href="https://github.com/szaghi/PENF">PENF</a>, portable kinds) fetched by <code>fobis fetch</code>; built with FoBiS or Make. <a href="https://szaghi.github.io/VecFor/guide/install">Installation</a></sub></td>

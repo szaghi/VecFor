@@ -4,10 +4,11 @@ title: Device-callable API
 
 # Device-callable API
 
-Plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device. They mirror seven
-operators of the vector, the matrices and the matrix product, and the geometric methods (norms, components, distances,
-face normals, predicates, rotations, mirrors, angle); the other operators, the comparisons and the input/output run on
-the host only.
+Plain procedures, each marked `!$acc routine seq`, that an OpenACC kernel can call on the device: 38 for each kind.
+They mirror seven operators of the vector, the matrices and the matrix product, the geometric methods (norms,
+components, distances, face normals, predicates, rotations, mirrors, angle), the checked normalization, the accurate
+products, the measures and the point location; the other operators, the comparisons and the input/output run on the
+host only.
 
 The suffix `_dev` names what the routines are for, code running on an accelerator, not the directive set: today they
 are OpenACC routines, and OpenMP offload (`!$omp declare target`) is planned for the same routines. Until v1.8.0 the
@@ -76,8 +77,10 @@ The optional arguments are those of the host: `norm` (`character(1)`, present fo
 and `tolerance` (a real of the kind of the vector, 0 when absent); optional arguments work in device code with
 nvfortran 26.1 and 26.9.
 
-`a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal`, `pt1` to `pt4` are `type(vector)` (not `class`); `c`, `lhs` and `matrix`, a `(3, 3)` real array
-of the kind of the vector, are `intent(out)` (`matrix` is `intent(in)` in `matrixproduct_dev`). `s` is `real(R8P)` for
+`a`, `b`, `c`, `lhs`, `rhs`, `axis`, `normal`, `p`, `q`, `pt1` to `pt4` and the `n` elements of `pts` are
+`type(vector)` (not `class`); `c`, `lhs`, `q` and `matrix`, a `(3, 3)` real array of the kind of the vector, are
+`intent(out)` (`matrix` is `intent(in)` in `matrixproduct_dev`, `rotate_by_matrix_dev` and `mirror_by_matrix_dev`).
+`l` is a real array of the kind of the vector, `ok` a `logical`, `feature` an `integer`, all `intent(out)`. `s` is `real(R8P)` for
 every kind of vector. `dotproduct_dev` returns a real of the kind of the vectors. Each kind has its set, with the
 suffix of the kind before `_dev`: `vector_sum_vector_R4P_dev`, `crossproduct_R16P_dev`, ...; the names without a kind
 are those of the default `vector`. All are exported by `use vecfor`.

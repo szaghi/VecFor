@@ -1,0 +1,7 @@
+$ accurate_products
+z of a x b, exact      268435457.0
+z of a .cross. b       268435456.0
+crossproduct_accurate  268435457.0
+a . b, exact           268435458.0
+a .dot. b              268435457.0
+dotproduct_accurate    268435458.0

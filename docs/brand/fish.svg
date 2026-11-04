@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="VecFor">
+  <!-- VecFor spare mark: a fish of two crossing arcs (the cross x), its spine an arrow cooling plum to orange like the rocket wake. Slate lifts when the OS theme is dark. -->
+  <style>@media (prefers-color-scheme: dark){[stroke="#33415c"]{stroke:#9fb2d4}}</style>
+  <path d="M56 32 Q35 4.7 7.7 50.9 M56 32 Q35 59.3 7.7 13.1" fill="none" stroke="#33415c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M23 30.4 H29 V33.6 H23 Z" fill="#862e9c"/>
+  <path d="M29 30.4 H35 V33.6 H29 Z" fill="#c92a2a"/>
+  <path d="M35 30.4 H41 V33.6 H35 Z" fill="#e8590c"/>
+  <path d="M41 30.4 L43 30.4 L43 27 L51.5 32 L43 37 L43 33.6 L41 33.6 Z" fill="#f08c2e"/>
+  <circle cx="40.5" cy="25" r="2.6" fill="#a61e4d"/>
+</svg>

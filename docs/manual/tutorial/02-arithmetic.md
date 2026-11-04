@@ -28,8 +28,8 @@ is not a translation along any axis: to move a point, add a vector, as `p + (2 *
 
 ## On arrays of vectors
 
-`p + (2 * ex - 0.5_R8P * ez)` and `c + 2 * (p - c)` act on all four vertices at once: every operator of VecFor is
-elemental, so it applies to arrays element by element, as the intrinsic operators do on arrays of numbers. A
+`p + (2 * ex - 0.5_R8P * ez)` and `c + 2 * (p - c)` act on all four vertices at once: the operators of this chapter
+are elemental, so they apply to arrays element by element, as the intrinsic operators do on arrays of numbers. A
 [later chapter](./08-arrays) does the same with the functions.
 
 Fortran has no `sum` of an array of a derived type, so the centroid is summed in a loop, or component by component
