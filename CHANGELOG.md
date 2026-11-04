@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 Versions follow [Semantic Versioning](https://semver.org/).
 Format follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.10.0] — 2026-11-04
+### Added
+- **vector**: Add normalized_checked, a normalize that reports degenerate norms
+
+- **vector**: Add accurate cross and dot products
+
+- **vector**: Add triangle area, tetrahedron volume and polygon vector area
+
+- **vector**: Add barycentric coordinates in a triangle and a tetrahedron
+
+- **vector**: Add closest point on a triangle with its feature
+
+
+### Documentation
+- **vector**: Document the accurate products, measures and point location
+
+- Audit the guide and tutorial, add recipes and a new identity
+
+
 ## [1.9.0] — 2026-11-03
 ### Changed
 - **dev**: Rename the device-callable suffix _oac to _dev ⚠ BREAKING CHANGE
