@@ -27,42 +27,74 @@ hero:
       link: https://github.com/szaghi/VecFor
 
 features:
-  - icon: ➕
+  - icon:
+      light: /icons/plus.svg
+      dark: /icons/plus-dark.svg
+      width: 40
+      height: 40
     title: The maths, as you write it
     details: "a + b, a - b, -a, 2 * a, a / 4, a .dot. b, a .cross. b, a .paral. n, a .ortho. n, R .matrix. a: a scalar of any integer or real kind on either side, converted for you."
     link: /manual/tutorial/02-arithmetic
     linkText: Arithmetic
-  - icon: 📐
+  - icon:
+      light: /icons/angle.svg
+      dark: /icons/angle-dark.svg
+      width: 40
+      height: 40
     title: Lengths, angles, directions
     details: "normL2, sq_norm, a unit vector in place, as a copy or checked for a degenerate length, the angle between two vectors with atan2, so it is accurate near 0 and 180 degrees; cross and dot products accurate when their terms cancel."
     link: /manual/tutorial/03-lengths-angles
     linkText: Lengths and angles
-  - icon: 🔺
+  - icon:
+      light: /icons/normal.svg
+      dark: /icons/normal-dark.svg
+      width: 40
+      height: 40
     title: Faces of a mesh
     details: "The normal of a triangle or a quadrilateral, as long as the face is large or of unit length: areas, outward normals, the volume of a body by the divergence theorem; the area of a triangle, the signed volume of a tetrahedron, the vector area of a polygon."
     link: /manual/tutorial/04-faces
     linkText: Faces, area, volume
-  - icon: 📍
+  - icon:
+      light: /icons/distance.svg
+      dark: /icons/distance-dark.svg
+      width: 40
+      height: 40
     title: Points, lines, planes
     details: "The distance from a line, the signed distance from a plane, the foot of a point on it, collinear and concyclic points, with a tolerance when the points are computed; barycentric coordinates, the closest point of a triangle."
     link: /manual/tutorial/05-point
     linkText: A point and the body
-  - icon: 🔄
+  - icon:
+      light: /icons/rotate.svg
+      dark: /icons/rotate-dark.svg
+      width: 40
+      height: 40
     title: Rotations and mirrors
     details: "A rotation about any axis, a reflection across any plane, as a call or as a matrix computed once and applied to many vectors."
     link: /manual/tutorial/07-transforms
     linkText: Rotations and mirrors
-  - icon: 🧮
+  - icon:
+      light: /icons/array.svg
+      dark: /icons/array-dark.svg
+      width: 40
+      height: 40
     title: Whole arrays at once
     details: "The operators and the functions are elemental: one call computes the normals of all the faces, or the distances of a million points."
     link: /manual/tutorial/08-arrays
     linkText: Many vectors at once
-  - icon: 🎚️
+  - icon:
+      light: /icons/kinds.svg
+      dark: /icons/kinds-dark.svg
+      width: 40
+      height: 40
     title: Single, double, quadruple
     details: "vector_R4P, vector_R8P, vector_R16P, each with its versors and functions, from one use vecfor; the default vector is double precision."
     link: /manual/tutorial/09-precision
     linkText: Precision
-  - icon: 🚀
+  - icon:
+      light: /icons/dev.svg
+      dark: /icons/dev-dark.svg
+      width: 40
+      height: 40
     title: On the GPU
     details: "A device-callable API for OpenACC kernels, the _dev routines: the vector operators, the rotation and mirror matrices, and the geometry: lengths, distances, face normals, measures, point location."
     link: /manual/tutorial/11-gpu

@@ -62,7 +62,14 @@ export default withMermaid({
   title: 'VecFor',
   description: 'Vector algebra class for Fortran',
   base: '/VecFor/',
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/VecFor/favicon.svg' }]],
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/VecFor/favicon.svg' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/VecFor/favicon-32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/VecFor/favicon-16.png' }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/VecFor/apple-touch-icon.png' }],
+    ['meta', { name: 'theme-color', media: '(prefers-color-scheme: light)', content: '#f3ede1' }],
+    ['meta', { name: 'theme-color', media: '(prefers-color-scheme: dark)', content: '#120e0f' }],
+  ],
 
   markdown: {
     math: true,
