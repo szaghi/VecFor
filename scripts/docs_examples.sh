@@ -13,6 +13,13 @@
 #   docs/examples/output/        generated: <ID>.txt, "$ COMMAND" then what the run writes on standard output and error
 #   docs/public/figures/         generated: <figure>.svg, drawn by foresight
 #
+# The figures are drawn in the Beni palette of the identity (docs/brand/naruto.py), one colour per role, on washi:
+#   ink  #1f1a1a  the body under study: faces, edges, points; the default text
+#   mesh #716868  axes and their labels, planes, construction lines
+#   carp #c92a2a  what VecFor computes: normals, products, images, results
+#   ai   #1f4f8a  the input, the probe: points q, distances, velocities, axes of rotation (Hiroshige's Prussian blue)
+# The .gp scripts give the four colours; the page and the default text are set below, after foresight has drawn.
+#
 # The library is rebuilt from scratch by FoBiS (mode static-gnu) and the examples are built by the same compiler, gfortran
 # or $FC. Each run happens in a scratch directory, with HOME pointing there and a minimal environment, so nothing outside
 # it is read or written. The figures need foresight (https://github.com/szaghi/foresight, v0.4.0 or later): `foresight`
@@ -28,6 +35,9 @@ build=$root/build/docs-examples # git-ignored
 run_dir=$build/run
 fig_dir=$build/figures
 home=/home/user                 # how the run directory is shown
+washi='#f3ede1'                 # the page of the figures
+sumi='#1f1a1a'                  # their default text
+font='Inter,Arial,Helvetica,sans-serif'
 
 fc=${FC:-gfortran}
 foresight=${FORESIGHT:-foresight}
@@ -98,7 +108,10 @@ for src in "$ex"/figures/*.f90; do
         "$root/static/libvecfor.a"
   (cd "$fig_dir" && "$build/bin/fig-$name" && cat "$name.frame.gp" "$ex/figures/$name.gp" > "$name.gp" \
                  && "$foresight" "$name.gp" > /dev/null)
-  cp "$fig_dir/$name.svg" "$figures/$name.svg"
+  # foresight's classic theme fixes the page (white), the default text (black) and the font: the identity's instead
+  sed -e "s|fill=\"white\"|fill=\"$washi\"|g" -e "s|fill=\"black\"|fill=\"$sumi\"|g" \
+      -e "s|font-family=\"Arial,Helvetica,sans-serif\"|font-family=\"$font\"|" \
+      "$fig_dir/$name.svg" > "$figures/$name.svg"
 done
 echo "docs_examples: $(ls "$ex"/src/*.f90 | wc -l) programs, $(ls "$ex"/output/*.txt | wc -l) runs," \
      "$(ls "$figures"/*.svg | wc -l) figures"

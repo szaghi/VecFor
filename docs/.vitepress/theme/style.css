@@ -1,7 +1,7 @@
 /* VecFor: Naruto in Beni, the sumi identity (docs/brand/naruto.py). Washi and night, shared tokens with the family:
    ground, ink, mesh, link, action, carp. Contrast on the grounds they are used on: text 14.8:1 / 15.8:1, links
    6.2:1 / 8.3:1 (#a82222 on washi, #ff8787 at night), buttons 7.2:1 / 7.0:1, the carp 4.7:1 / 6.9:1. No gradients
-   and no halo behind the logo: the ink carries it. The figures keep their own colours, on white cards. */
+   and no halo behind the logo: the ink carries it. The figures are drawn in the same ink, on washi cards. */
 @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap');
 
 :root {
@@ -74,14 +74,15 @@
   border-radius: 8px;
 }
 
-/* a figure: drawn on white by foresight, so a white card in both modes, never wider than the column */
+/* a figure: drawn on washi in the Beni palette (scripts/docs_examples.sh), so a washi card in both modes, a sheet of
+   paper at night, never wider than the column */
 img.figure {
   display: block;
   max-width: 100%;
   height: auto;
   margin: 1.5rem auto;
   padding: 8px;
-  background: #ffffff;
+  background: #f3ede1;
   border-radius: 12px;
   box-shadow: var(--vecfor-shadow);
 }
