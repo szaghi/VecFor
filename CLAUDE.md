@@ -62,6 +62,13 @@ fobis rule --ex makecoverage     # gcov coverage analysis
 bash scripts/docs_examples.sh    # rebuild docs/examples programs, snippets, outputs and figures
 ```
 
+Regenerate the figures with the CI toolchain (`FC=gfortran-14`, foresight v0.4.0 via `FORESIGHT=`): CI's
+`docs-examples.yml` diffs them byte for byte. The identity is Naruto in Beni (`docs/brand/naruto.py` generates the
+logo, favicons and home icons; never hand-edit them). The figures use its palette, one colour per role, on washi
+`#f3ede1`: ink `#1f1a1a` for the body under study, mesh `#716868` for axes, planes and construction lines, carp
+`#c92a2a` for what VecFor computes, ai `#1f4f8a` for the input or probe. A new figure's `.gp` uses only these four.
+`docs_examples.sh` rewrites foresight's fixed white page, black text and Arial font after drawing.
+
 ## Architecture
 
 ### Precision Variants via Preprocessor
