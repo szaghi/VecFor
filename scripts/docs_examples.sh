@@ -23,7 +23,7 @@
 # The library is rebuilt from scratch by FoBiS (mode static-gnu) and the examples are built by the same compiler, gfortran
 # or $FC. Each run happens in a scratch directory, with HOME pointing there and a minimal environment, so nothing outside
 # it is read or written. The figures need foresight (https://github.com/szaghi/foresight, v0.4.0 or later): `foresight`
-# on the PATH, or $FORESIGHT.
+# on the PATH, or $FORESIGHT; without either, foresight v0.4.0 is cloned and built by FoBiS into build/ (once).
 #
 # Usage: bash scripts/docs_examples.sh            (FC=gfortran-14 bash scripts/docs_examples.sh: another compiler)
 set -euo pipefail
@@ -41,8 +41,21 @@ font='Inter,Arial,Helvetica,sans-serif'
 
 fc=${FC:-gfortran}
 foresight=${FORESIGHT:-foresight}
-command -v "$foresight" > /dev/null || { echo "docs_examples: foresight not found (PATH or \$FORESIGHT)" >&2; exit 1; }
 mkdir -p "$root/build"
+if ! command -v "$foresight" > /dev/null; then
+  # not installed (a CI image): foresight $foresight_tag built once by FoBiS into build/ (git-ignored), with $fc
+  foresight_tag=v0.4.0
+  foresight_dir=$root/build/foresight-$foresight_tag
+  foresight=$foresight_dir/bin/foresight
+  if [ ! -x "$foresight" ]; then
+    echo "docs_examples: foresight not found (PATH or \$FORESIGHT): building foresight $foresight_tag in build/"
+    rm -rf -- "$foresight_dir"
+    { git clone -q --depth 1 --branch "$foresight_tag" https://github.com/szaghi/foresight "$foresight_dir" \
+      && (cd "$foresight_dir" && fobis fetch && fobis build --mode foresight-gnu --fc "$fc"); } \
+      > "$root/build/foresight.log" 2>&1 || {
+      cat "$root/build/foresight.log"; echo "docs_examples: foresight build failed" >&2; exit 1; }
+  fi
+fi
 (cd "$root" && fobis clean --mode static-gnu && fobis build --mode static-gnu --fc "$fc") \
   > "$root/build/docs-examples.log" 2>&1 || {
   cat "$root/build/docs-examples.log"; echo "docs_examples: library build failed" >&2; exit 1; }
