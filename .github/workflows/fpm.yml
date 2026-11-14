@@ -1,42 +1,25 @@
 name: fpm
 
-# Project-owned workflow (not managed by `fobis scaffold`): builds and tests VecFor with fpm on every push. The
-# scaffold's ci.yml runs only the doctests (fobis doctests, for the coverage), so the hand-written tests of src/tests
-# run here: vecfor_test_quad_precision (vector_R16P must be true quadruple precision, which catches a dead PENF_R16P
-# macro) and vecfor_test_device_loop (the _dev API, serial here: no OpenACC).
-
+# The project built and tested by fpm (fpm test, fpm build --profile release) in the project's toolchain image, with
+# its compilers, by the reusable workflow of fortran-toolchains (https://github.com/szaghi/fortran-toolchains).
+# Managed by fobis scaffold while [scaffold] fpm is set.
 on:
   push:
     branches: ["**"]
     tags-ignore: ["**"]
   pull_request:
 
+# a newer push to the same ref supersedes the running check
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
 jobs:
   fpm:
-    name: fpm test / gfortran-14
-    runs-on: ubuntu-24.04
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - name: Setup build environment
-      uses: ./.github/actions/setup-build-env
-      with:
-        gcc-version: '14'
-
-    - name: Setup fpm
-      uses: fortran-lang/setup-fpm@v9
-      with:
-        # the same fpm as the install smoke test of the release (install.yml)
-        fpm-version: v0.13.0
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Test
-      run: fpm test --compiler gfortran
-
-    - name: Build the release profile
-      run: fpm build --profile release --compiler gfortran
+    uses: szaghi/fortran-toolchains/.github/workflows/fpm.yml@v1
+    with:
+      toolchain: 'linux-gnu'
+      apt-packages: ''
