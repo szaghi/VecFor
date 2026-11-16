@@ -36,7 +36,7 @@ generic overloads become ambiguous. fpm path is gfortran/ifx only (nvfortran: no
 with fpm 0.12.0 and 0.13.0 (the version pinned by the scaffold's `install.yml`, which runs `fpm build --profile release`
 on release whenever `fpm.toml` exists).
 
-### Simple Make Build (produces `static/vecfor.a`)
+### Simple Make Build (produces `static/libvecfor.a`)
 ```bash
 make          # Build static library with gfortran (compiles PENF sources from src/third_party/ too)
 make clean    # Remove object files
@@ -279,8 +279,7 @@ one concrete consumer's needs under nvfortran.
 
 | Path | Contents |
 |------|----------|
-| `static/vecfor.a` | Static library (make build) |
-| `static/libvecfor.a`, `shared/libvecfor.so` | Libraries (FoBiS `static-*` / `shared-*` modes) |
+| `static/libvecfor.a`, `shared/libvecfor.so` | Libraries (the make build, FoBiS `static-*` / `shared-*` modes) |
 | `static/mod/` | Module files (.mod) |
 | `exe/` | Test executables (FoBiS doctests) |
 | `src/tests/` | Auto-generated doctest sources (tracked in git) |

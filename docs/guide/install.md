@@ -102,11 +102,11 @@ bash install.sh --download wget --build fobis     # or --build make, --build fpm
 
 ## GNU Make
 
-The `makefile` builds `static/vecfor.a` with gfortran, from the sources of VecFor and of PENF; fetch PENF first:
+The `makefile` builds `static/libvecfor.a` with gfortran, from the sources of VecFor and of PENF; fetch PENF first:
 
 ```bash
 fobis fetch       # or git clone https://github.com/szaghi/PENF src/third_party/PENF
-make              # static/vecfor.a, modules in static/mod
+make              # static/libvecfor.a, modules in static/mod
 ```
 
 ## Repository layout

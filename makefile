@@ -16,7 +16,7 @@ COTEXT  = "Compiling $(<F)"
 LITEXT  = "Assembling $@"
 
 #building rules
-$(DEXE)vecfor.a: $(MKDIRS) $(DOBJ)vecfor.o
+$(DEXE)libvecfor.a: $(MKDIRS) $(DOBJ)vecfor.o
 	@echo $(LITEXT)
 	@ar -rcs $@ $(DOBJ)*.o ; ranlib $@
 

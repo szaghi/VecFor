@@ -157,7 +157,7 @@ wget https://github.com/szaghi/VecFor/releases/latest/download/install.sh
 bash install.sh --download wget --build fobis     # or --build make, --build fpm
 ```
 
-With PENF fetched, the `makefile` builds `static/vecfor.a` with gfortran: `make`.
+With PENF fetched, the `makefile` builds `static/libvecfor.a` with gfortran: `make`.
 
 VecFor is tested on every push with gfortran; its FoBiS modes also build it with the Intel compiler and NVIDIA
 nvfortran (see [Installation](https://szaghi.github.io/VecFor/guide/install)).
