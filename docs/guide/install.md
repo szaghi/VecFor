@@ -89,16 +89,19 @@ VecFor = { git = "https://github.com/szaghi/VecFor" }
 PENF   = { git = "https://github.com/szaghi/PENF", preprocess.cpp.macros = ["PENF_R16P"] }
 ```
 
-## The install script
-
-Each release has `install.sh`, which downloads the release (with `wget`, or `git`) and builds it, fetching PENF:
+## One-line install
 
 ```bash
-wget https://github.com/szaghi/VecFor/releases/latest/download/install.sh
-bash install.sh --download wget --build fobis     # or --build make, --build fpm
+curl -fsSL https://github.com/szaghi/VecFor/releases/latest/download/install.sh | bash
 ```
 
-`--tag vX.Y.Z` picks a release, `--mode` a FoBiS mode.
+It installs the latest release into `~/.local` with the build system you choose among those VecFor ships
+(`--build fobis|fpm|make`: a menu asks when you do not say), the compiler you name (`--fc`, `--gnu`, `--intel`), one
+install per compiler (`lib/vecfor/<compiler>-<version>/`, `include/vecfor/<compiler>-<version>/`), and makes it usable
+through pkg-config (`pkg-config --cflags --libs vecfor`, with `PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig`). The
+release carries PENF, so make needs no network. Pass options after `bash -s --`, e.g.
+`... | bash -s -- --build fpm --prefix /opt/vecfor`; `--help` lists them all, `--uninstall` removes the install. The
+installer is FoBiS's ([One-line installer](https://szaghi.github.io/FoBiS/cookbook/installer)).
 
 ## GNU Make
 
