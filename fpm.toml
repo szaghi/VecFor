@@ -12,14 +12,19 @@ homepage = "https://github.com/szaghi/VecFor"
 [library]
 source-dir = "src/lib"
 
-# PENF_R16P enables the quadruple-precision kind. It must reach PENF too: without it PENF aliases R16P to R8P and
-# VecFor's R16P and R8P overloads collide as ambiguous generics. nvfortran has no real(16): build there with fobis.
+# No PENF_R16P here (issue #23): fpm builds a shared dependency once, from the root package's declaration, so a macro
+# set by VecFor for PENF is dropped whenever VecFor is a dependency, while its own copy would still compile the R16P
+# overloads against a PENF whose R16P is R8P (ambiguous generics). Without it R16P is R8P and the build never depends
+# on the root. Quadruple precision is the root's opt-in, the same macro for both packages (fpm test: --flag):
+#   PENF   = { git = "https://github.com/szaghi/PENF",   preprocess.cpp.macros = ["PENF_R16P"] }
+#   VecFor = { git = "https://github.com/szaghi/VecFor", preprocess.cpp.macros = ["PENF_R16P"] }
+# VECFOR_NO_QUAD tells vecfor_test_quad_precision that this R8P fallback is intended, not a dead macro.
 [dependencies]
-PENF = { git = "https://github.com/szaghi/PENF", preprocess.cpp.macros = ["PENF_R16P"] }
+PENF = { git = "https://github.com/szaghi/PENF" }
 
 [preprocess]
 [preprocess.cpp]
-macros = ["PENF_R16P"]
+macros = ["VECFOR_NO_QUAD"]
 
 [build]
 auto-executables = false
@@ -39,7 +44,7 @@ library = true
 [[test]]
 name = "vecfor_test_quad_precision"
 source-dir = "src/tests"
-main = "vecfor_test_quad_precision.f90"
+main = "vecfor_test_quad_precision.F90"
 
 [[test]]
 name = "vecfor_test_device_loop"

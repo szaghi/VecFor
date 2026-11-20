@@ -5,11 +5,18 @@
 !< silently aliases `R16P` to double precision; v1.5.0 to v1.5.2 shipped that way because the build passed a dead
 !< macro, and no test noticed. The expectation is taken from the compiler, not from the macro, so a dead macro fails
 !< here. A compiler without real(16) (e.g. nvfortran on x86-64) must get the documented double fallback.
+!<
+!< A build that is meant to be double only says so with `VECFOR_NO_QUAD` (fpm.toml, issue #23): then `R16P` must be
+!< `R8P`. `PENF_R16P` overrides it (an fpm root opting in to quad), so the opt-in is tested like the fobis builds.
 program vecfor_test_quad_precision
 use penf, only : R8P, R16P
 use vecfor, only : ex_R16P, vector_R16P
 implicit none
+#if defined(PENF_R16P) || !defined(VECFOR_NO_QUAD)
 integer, parameter :: QUAD = selected_real_kind(33, 4931) !< Compiler's 128-bit kind, negative if none.
+#else
+integer, parameter :: QUAD = -1                           !< Double-only build by intent: no quad expected.
+#endif
 type(vector_R16P)  :: a                                   !< Vector with a component just above 1.
 type(vector_R16P)  :: c                                   !< Difference that only survives in quad precision.
 real(R16P)         :: tiny_q                              !< Offset below the double epsilon, above the quad one.
@@ -23,7 +30,7 @@ if (QUAD > 0) then
 else
   passed = R16P == R8P .and. c%x == 0._R16P
 endif
-print '(A,I0,A,I0,A,I0)', 'compiler quad kind: ', QUAD, ', R16P precision: ', precision(a%x), &
+print '(A,I0,A,I0,A,I0)', 'expected quad kind: ', QUAD, ', R16P precision: ', precision(a%x), &
                           ', storage bits: ', storage_size(a%x)
 print '(A,L1)', 'Are all tests passed? ', passed
 if (.not. passed) error stop 1
