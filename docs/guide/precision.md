@@ -42,12 +42,13 @@ There are no operations between vectors of two kinds: convert by components, `re
 
 PENF defines `R16P` as a true quadruple precision kind (33 decimal digits, `real128` with gfortran) only when it is
 compiled with `-DPENF_R16P`; otherwise `R16P` is `R8P`, and `vector_R16P` is double precision. The GNU and Intel FoBiS
-modes, the `makefile` and `fpm.toml` of VecFor define it, for PENF and VecFor alike: `vector_R16P` has `real128`
-components, and the operators accept `real(R16P)` scalars.
+modes and the `makefile` of VecFor define it, for PENF and VecFor alike: `vector_R16P` has `real128` components, and
+the operators accept `real(R16P)` scalars. Its `fpm.toml` does not: an fpm build is double precision unless the root
+package gives the flag to both (see [VecFor in an fpm project](./install#vecfor-in-an-fpm-project)).
 
 The flag must reach PENF and VecFor alike. A build of your own (another build system, or the sources compiled in your
-project) passes `-DPENF_R16P` to both; with fpm, `fpm.toml` passes it to the PENF dependency too. Compiled for VecFor
-alone, the `R16P` and `R8P` versions of the operators clash as ambiguous generics.
+project) passes `-DPENF_R16P` to both. Compiled for VecFor alone, the `R16P` and `R8P` versions of the operators clash
+as ambiguous generics; compiled for PENF alone, VecFor lacks the `real(R16P)` operators of `vector_R16P`.
 
 A compiler without a 128-bit real kind, as nvfortran on x86-64, gets double precision: its FoBiS modes do not define
 the flag, and `vector_R16P` is a double precision vector there. `precision(v%x)` tells which build a program has: 33

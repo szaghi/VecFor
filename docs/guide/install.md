@@ -32,9 +32,10 @@ gfortran -I static/mod my_program.f90 static/libvecfor.a -o my_program
 ```
 
 The library has the vector in [single, double and quadruple precision](./precision); quadruple is true quadruple
-precision when PENF and VecFor are compiled with `-DPENF_R16P`, as the GNU and Intel FoBiS modes, the `makefile` and
-`fpm.toml` do; with nvfortran, which has no 128-bit real kind, it is double precision (see
-[True quadruple precision](./precision#true-quadruple-precision)).
+precision when PENF and VecFor are compiled with `-DPENF_R16P`, as the GNU and Intel FoBiS modes and the `makefile`
+do. An fpm build is double precision unless your project asks for quadruple (see
+[VecFor in an fpm project](#vecfor-in-an-fpm-project)); with nvfortran, which has no 128-bit real kind, it is double
+precision (see [True quadruple precision](./precision#true-quadruple-precision)).
 
 ### Tests
 
@@ -69,7 +70,7 @@ fobis fetch
 ```bash
 git clone https://github.com/szaghi/VecFor && cd VecFor
 fpm build --profile release       # libVecFor.a, PENF fetched into build/dependencies
-fpm test                          # the hand-written tests of src/tests
+fpm test                          # the hand-written tests of src/tests (--flag -DPENF_R16P: in quadruple)
 fpm install --prefix ~/.local     # the archive and the modules of VecFor and PENF
 ```
 
@@ -80,14 +81,21 @@ fpm install --prefix ~/.local     # the archive and the modules of VecFor and PE
 VecFor = { git = "https://github.com/szaghi/VecFor" }
 ```
 
-VecFor passes `-DPENF_R16P` to itself and to its PENF. If your project declares PENF too, your declaration replaces
-that of VecFor: give it the flag, or VecFor fails to compile with ambiguous `R16P` and `R8P` generics.
+Under fpm VecFor is built without `-DPENF_R16P`: `vector_R16P` is double precision, and the build does not depend
+on how your project declares PENF. fpm builds a dependency once, from the declaration of the root package, so a flag
+VecFor gave its PENF would be lost whenever your project declares PENF too.
+
+For quadruple precision, give the flag to PENF and to VecFor alike:
 
 ```toml
 [dependencies]
-VecFor = { git = "https://github.com/szaghi/VecFor" }
-PENF   = { git = "https://github.com/szaghi/PENF", preprocess.cpp.macros = ["PENF_R16P"] }
+VecFor = { git = "https://github.com/szaghi/VecFor", preprocess.cpp.macros = ["PENF_R16P"] }
+PENF   = { git = "https://github.com/szaghi/PENF",   preprocess.cpp.macros = ["PENF_R16P"] }
 ```
+
+A flag on only one of the two does not build: on VecFor alone its `R16P` and `R8P` operators clash as ambiguous
+generics, on PENF alone (the workaround this page gave before issue #23) VecFor lacks the operators with `real(R16P)`
+scalars that `vector_R16P` needs.
 
 ## One-line install
 

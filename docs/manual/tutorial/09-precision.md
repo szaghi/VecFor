@@ -21,8 +21,9 @@ has 15, and is off by $9.7 \times 10^{-17}$, less than half a unit in the last p
 ## True quadruple precision
 
 `vector_R16P` is as precise as the kind `R16P` of PENF, and PENF makes `R16P` a true quadruple precision kind only when
-it is compiled with `-DPENF_R16P`. The GNU and Intel builds of VecFor define it (FoBiS modes, `makefile` and
-`fpm.toml`, for PENF and VecFor alike): `vector_R16P` has 33 digits and the length is exact to all the digits
+it is compiled with `-DPENF_R16P`. The GNU and Intel builds of VecFor define it (FoBiS modes and `makefile`, for PENF
+and VecFor alike; fpm only when your project asks, see [Installation](/guide/install#vecfor-in-an-fpm-project)):
+`vector_R16P` has 33 digits and the length is exact to all the digits
 printed. The reference here is `real128` of `iso_fortran_env`, which does not depend on PENF. A compiler without a
 128-bit real kind, as nvfortran, builds VecFor without the flag: there `vector_R16P` has 15 digits, as `vector_R8P`
 (see [Precision and kinds](/guide/precision#true-quadruple-precision)).

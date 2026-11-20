@@ -342,7 +342,7 @@ next recipe).
 
 <<< @/examples/output/quad_precision.txt{console}
 
-33 significant digits, with VecFor and PENF compiled with `-DPENF_R16P`, as the GNU and Intel builds are (see
+33 significant digits, with VecFor and PENF compiled with `-DPENF_R16P`, as the GNU and Intel FoBiS builds are (see
 [Precision and kinds](/guide/precision#true-quadruple-precision)).
 
 ## Input and output

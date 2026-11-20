@@ -145,8 +145,8 @@ As a dependency of a FoBiS project, add VecFor to the `[dependencies]` of your `
 fpm build --profile release           # or, in your fpm.toml: VecFor = { git = "https://github.com/szaghi/VecFor" }
 ```
 
-If your project declares PENF too, give it `preprocess.cpp.macros = ["PENF_R16P"]` (see
-[Installation](https://szaghi.github.io/VecFor/guide/install#fpm)).
+Under fpm `vector_R16P` is double precision unless your project gives `preprocess.cpp.macros = ["PENF_R16P"]` to
+both VecFor and PENF (see [Installation](https://szaghi.github.io/VecFor/guide/install#vecfor-in-an-fpm-project)).
 
 ### One-line install
 

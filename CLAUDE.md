@@ -30,9 +30,15 @@ fpm install --prefix <dir>               # libVecFor.a + VecFor and PENF .mod fi
 ```
 
 `fpm.toml` is project-owned (scaffold category `init-only`); `scripts/release.sh` keeps its `version` aligned with
-`VERSION`. `PENF_R16P` is passed both to VecFor (`[preprocess.cpp]`) and to the PENF dependency
-(`preprocess.cpp.macros` in its inline table): if only VecFor gets it, PENF aliases R16P to R8P and the R16P/R8P
-generic overloads become ambiguous. fpm path is gfortran/ifx only (nvfortran: no real(16), use fobis). Validated
+`VERSION`. Since issue #23 it does **not** define `PENF_R16P` (neither for VecFor nor for its PENF): fpm builds a shared
+dependency once, from the root's declaration, so a macro VecFor gave PENF was dropped whenever VecFor was a dependency
+of a root declaring PENF, while VecFor still compiled its R16P overloads (ambiguous R16P/R8P generics). Under fpm
+`vector_R16P` is therefore R8P unless the root gives the macro to both PENF and VecFor (dependency-level
+`preprocess.cpp.macros`; `fpm test --flag -DPENF_R16P` locally). On one only it breaks: VecFor alone → ambiguous
+generics; PENF alone (FOSSIL's old workaround) → `vecfor_R16P` lacks the `real(R16P)` scalar overloads it uses
+internally. `fpm.toml` defines `VECFOR_NO_QUAD` instead, read only by `vecfor_test_quad_precision.F90` to accept the R8P
+fallback; without it (fobis) the test expects quad whenever the compiler has it. fpm path is tested with gfortran only
+(nvfortran: use fobis). Validated
 with fpm 0.12.0 and 0.13.0 (the version pinned by the scaffold's `install.yml`, which runs `fpm build --profile release`
 on release whenever `fpm.toml` exists).
 
@@ -50,7 +56,7 @@ fobis doctests --mode tests-gnu-debug    # Build and generate test executables i
 fobis build --mode tests-nvf-acc --varset local_nvf   # OpenACC device test (local only, not in CI)
 ```
 
-Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.F90` and `vecfor_test_device_geometry.F90` (`_dev` API; under `_OPENACC` they also fail if any iteration ran on the host), `vecfor_test_accurate_products.f90` (accurate cross/dot: exact crafted cases on every compiler, quad references where available), `vecfor_test_quad_precision.f90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
+Tests are mostly doctest-driven: they are extracted from source documentation comments and auto-generated into `src/tests/vecfor_R*/` (the generated snapshots are tracked in git). Hand-written tests sit directly in `src/tests/`: `vecfor_test_device_loop.F90` and `vecfor_test_device_geometry.F90` (`_dev` API; under `_OPENACC` they also fail if any iteration ran on the host), `vecfor_test_accurate_products.f90` (accurate cross/dot: exact crafted cases on every compiler, quad references where available), `vecfor_test_quad_precision.F90` (R16P must be real quad whenever the compiler has a 128-bit kind, else the R8P fallback; the expectation comes from `selected_real_kind`, not from the macro, so a dead macro fails it; `VECFOR_NO_QUAD` without `PENF_R16P`, set by `fpm.toml`, declares the R8P fallback intended) and `vecfor_test_front_module.f90` (compile-only). `run_tests.sh` is FoBiS scaffold boilerplate: a test passes on exit 0 and, if a `.result` file exists, on matching it.
 
 ### CI and the FoBiS scaffold
 `fobis scaffold status` must report every managed file `OK`. Scaffold-managed (`verbatim`) files such as `.github/workflows/ci.yml`, `docs.yml`, `install.yml` and the scripts in `scripts/` must stay byte-identical to the FoBiS templates: never add project jobs to them, `fobis scaffold sync` would drop them. Every workflow is a thin caller of a reusable workflow of `szaghi/fortran-toolchains` pinned at `@v1` (repo `~/fortran/fortran-toolchains`), rendered from the `fobos` `[scaffold]` section; `toolchain = linux-gnu` is the `gnu-16.2` image (gfortran 16.2, FoBiS, formal), where `ci.yml` (coverage, `fobis doctests` only), `docs.yml`, `fpm.yml` (`fpm = true`: `fpm test`, the only CI job that runs the hand-written tests of `src/tests`, and the release build) and `docs-examples.yml` (`docs_examples = docs/examples docs/public/figures`: `scripts/docs_examples.sh` must leave both unchanged) run. `release.yml` publishes a tag's release, then `install.yml` installs it on a fresh runner.
