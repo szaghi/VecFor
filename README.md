@@ -32,7 +32,7 @@
 <td width="50%"><b>🧮 Whole arrays at once</b><br><sub>The operators and the functions are elemental: one call computes the normals of every face, or the distances of a million points. <a href="https://szaghi.github.io/VecFor/manual/tutorial/08-arrays">Many vectors at once</a></sub></td>
 </tr>
 <tr>
-<td width="50%"><b>🎚️ Single, double, quadruple</b><br><sub><code>vector_R4P</code>, <code>vector_R8P</code>, <code>vector_R16P</code>, each with its versors and functions, from one <code>use vecfor</code>; true quadruple precision by default with gfortran and ifx (<code>-DPENF_R16P</code>). <a href="https://szaghi.github.io/VecFor/manual/tutorial/09-precision">Precision</a></sub></td>
+<td width="50%"><b>🎚️ Single, double, quadruple</b><br><sub><code>vector_R4P</code>, <code>vector_R8P</code>, <code>vector_R16P</code>, each with its versors and functions, from one <code>use vecfor</code>; true quadruple precision by default with gfortran and ifx in the FoBiS and make builds (<code>-DPENF_R16P</code>; fpm on request). <a href="https://szaghi.github.io/VecFor/manual/tutorial/09-precision">Precision</a></sub></td>
 <td width="50%"><b>🚀 On the GPU</b><br><sub>A device-callable API for OpenACC kernels, the <code>_dev</code> routines: the vector operators, the rotation and mirror matrices, and the geometry (lengths, distances, face normals, measures, point location). <a href="https://szaghi.github.io/VecFor/manual/tutorial/11-gpu">On the GPU</a></sub></td>
 </tr>
 <tr>

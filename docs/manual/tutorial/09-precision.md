@@ -41,7 +41,7 @@ precision: `vector` comes from its own module, so a `vector_R8P` is not assigned
 
 ::: tip What you learned
 `vector_R4P`, `vector_R8P`, `vector_R16P` and their versors and functions; true quadruple precision with
-`-DPENF_R16P`, the default of the GNU and Intel builds; scalars of any kind, vectors converted by components. Reference:
+`-DPENF_R16P`, the default of the GNU and Intel FoBiS and make builds (fpm on request); scalars of any kind, vectors converted by components. Reference:
 [Precision and kinds](/guide/precision).
 :::
 

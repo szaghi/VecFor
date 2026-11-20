@@ -81,8 +81,8 @@ fpm install --prefix ~/.local     # the archive and the modules of VecFor and PE
 VecFor = { git = "https://github.com/szaghi/VecFor" }
 ```
 
-Under fpm VecFor is built without `-DPENF_R16P`: `vector_R16P` is double precision, and the build does not depend
-on how your project declares PENF. fpm builds a dependency once, from the declaration of the root package, so a flag
+Under fpm VecFor is built without `-DPENF_R16P`: `vector_R16P` is double precision, and your project may declare
+PENF too, as long as it does not give the flag to PENF alone (see below). fpm builds a dependency once, from the declaration of the root package, so a flag
 VecFor gave its PENF would be lost whenever your project declares PENF too.
 
 For quadruple precision, give the flag to PENF and to VecFor alike:
