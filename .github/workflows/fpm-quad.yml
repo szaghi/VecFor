@@ -1,0 +1,28 @@
+name: fpm quad
+
+# The hand-written tests of src/tests with quadruple precision: fpm.toml builds VecFor and PENF without PENF_R16P
+# (issue #23), so fpm.yml tests the R8P fallback, and ci.yml runs the doctests, which pass in either precision. Here
+# --flag gives the macro to VecFor and PENF alike, as a root package opting in does, and vecfor_test_quad_precision
+# requires a genuine 128-bit R16P. Project-owned (not managed by fobis scaffold): the reusable workflow of
+# fortran-toolchains (https://github.com/szaghi/fortran-toolchains) with its test command overridden.
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["**"]
+  pull_request:
+
+# a newer push to the same ref supersedes the running check
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  fpm-quad:
+    uses: szaghi/fortran-toolchains/.github/workflows/fpm.yml@v1
+    with:
+      toolchain: 'linux-gnu'
+      test-command: fpm test --flag "-DPENF_R16P"
+      build-command: ''
